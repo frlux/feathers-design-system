@@ -38,7 +38,7 @@ Through partnerships in the community, we are able to bring you art and historic
 
                     <div class="col col-lg-8">
 
-                        <div class="alert alert--primary mb-3 pl-4 pr-4">
+                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="filter">
                             <heading class="h3 text--dark text--serif" level="h2">Search</heading>
                             <p class="channel__subtitle mt-1 text--dark text--sans" v-if="filter">
                                 Here is everything we can find that matches your search for <mark class="mark">{{ filter }}</mark> <template v-if="location">happening at <router-link class="link" :to="`location/${location.slug}`">{{ locationDetails.name }}</router-link></template>.
@@ -83,62 +83,68 @@ Through partnerships in the community, we are able to bring you art and historic
 </template>
 
 <script>
-import Card from "../patterns/Card.vue"
-import flatpickr from "flatpickr"
-import Heading from "../elements/Heading.vue"
+import Card from "../patterns/Card.vue";
+import flatpickr from "flatpickr";
+import Heading from "../elements/Heading.vue";
 
 export default {
   name: "Events",
 
   components: {
-    Card,
+    Card
   },
 
   computed: {
     events() {
-      return this.$store.getters.getEvents(this.selectedDate, this.location)
+      return this.$store.getters.getEvents(this.selectedDate, this.location);
     },
 
     locationDetails() {
-      return this.location ? this.$store.state.locations.find(location => location.slug === this.location) : null
+      return this.location
+        ? this.$store.state.locations.find(
+            location => location.slug === this.location
+          )
+        : null;
     },
 
     filteredEvents() {
       if (!this.filter) {
-        return this.events
+        return this.events;
       }
 
-      return this.events.filter(event => event.title.toLowerCase().includes(this.filter))
-    },
+      return this.events.filter(event =>
+        event.title.toLowerCase().includes(this.filter)
+      );
+    }
   },
 
   data() {
     return {
-      selectedDate: null,
-    }
+      selectedDate: null
+    };
   },
 
   methods: {
     clearSelectedDate() {
-      this.selectedDate = null
-    },
+      this.selectedDate = null;
+    }
   },
 
   mounted() {
     flatpickr("#test", {
-      inline: true,
-    })
+      inline: true
+    });
   },
 
   props: {
     filter: {
-      type: String,
+      type: String
     },
     location: {
-      type: String,
-    },
-  },
-}
+      type: String
+    }
+  }
+};
 </script>
 
 <style>
@@ -163,9 +169,10 @@ export default {
   -ms-touch-action: manipulation;
   touch-action: manipulation;
   background: #fff;
-  -webkit-box-shadow: 1px 0 0 #e6e6e6, -1px 0 0 #e6e6e6, 0 1px 0 #e6e6e6, 0 -1px 0 #e6e6e6,
-    0 3px 13px rgba(0, 0, 0, 0.08);
-  box-shadow: 1px 0 0 #e6e6e6, -1px 0 0 #e6e6e6, 0 1px 0 #e6e6e6, 0 -1px 0 #e6e6e6, 0 3px 13px rgba(0, 0, 0, 0.08);
+  -webkit-box-shadow: 1px 0 0 #e6e6e6, -1px 0 0 #e6e6e6, 0 1px 0 #e6e6e6,
+    0 -1px 0 #e6e6e6, 0 3px 13px rgba(0, 0, 0, 0.08);
+  box-shadow: 1px 0 0 #e6e6e6, -1px 0 0 #e6e6e6, 0 1px 0 #e6e6e6,
+    0 -1px 0 #e6e6e6, 0 3px 13px rgba(0, 0, 0, 0.08);
 }
 .flatpickr-calendar.open,
 .flatpickr-calendar.inline {
@@ -194,11 +201,17 @@ export default {
   z-index: 999;
   display: block;
 }
-.flatpickr-calendar.multiMonth .flatpickr-days .dayContainer:nth-child(n + 1) .flatpickr-day.inRange:nth-child(7n + 7) {
+.flatpickr-calendar.multiMonth
+  .flatpickr-days
+  .dayContainer:nth-child(n + 1)
+  .flatpickr-day.inRange:nth-child(7n + 7) {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
-.flatpickr-calendar.multiMonth .flatpickr-days .dayContainer:nth-child(n + 2) .flatpickr-day.inRange:nth-child(7n + 1) {
+.flatpickr-calendar.multiMonth
+  .flatpickr-days
+  .dayContainer:nth-child(n + 2)
+  .flatpickr-day.inRange:nth-child(7n + 1) {
   -webkit-box-shadow: -2px 0 0 #e6e6e6, 5px 0 0 #e6e6e6;
   box-shadow: -2px 0 0 #e6e6e6, 5px 0 0 #e6e6e6;
 }
