@@ -1,0 +1,15 @@
+#
+# BORDER TOKENS
+# Use these tokens to set border style, widths, and radius.
+#
+
+props:
+  border_style_default:
+    value: "solid"
+  border_width_default:
+    value: "1px"
+  border_width_bold:
+    value: "3px"
+global:
+  type: number
+  category: border
