@@ -8,6 +8,22 @@
 #
 
 aliases:
+  aqua:
+    value: "211, 100%"
+  blue_alternate:
+    value: "207, 53%"
+  blue_base:
+    value: "210, 60%"
+  blue_dark:
+    value: "211, 69%"
+  gray:
+    value: "0, 0%"
+  orange:
+    value: "43, 81%"
+  pink:
+    value: "311, 41%"
+  teal:
+    value: "195, 80%"
   vermilion:
     value: "7, 83%"
   ucla_gold:
@@ -21,6 +37,28 @@ aliases:
   white:
     value: "#fff"
 props:
+  color_aqua:
+    value: "hsla({!aqua}, 64%, 1)"
+  color_aqua_darker:
+    value: "hsla({!aqua}, 33%, 1)"
+  color_blue_alternate:
+    value: "hsla({!blue_alternate}, 26%, 1)"
+  color_blue_base:
+    value: "hsla({!blue_base}, 20%, 1)"
+  color_blue_dark:
+    value: "hsla({!blue_dark}, 14%, 1)"
+  color_gray:
+    value: "hsla({!gray}, 96%, 1)"
+  color_gray_dark:
+    value: "hsla({!gray}, 66%, 1)"
+  color_orange:
+    value: "hsla({!orange}, 52%, 1)"
+  color_pink:
+    value: "hsla({!pink}, 52%, 1)"
+  color_pink_darker:
+    value: "hsla({!pink}, 33%, 1)"
+  color_teal:
+    value: "hsla({!teal}, 46%, 1}"
   color_vermilion_darker:
     value: "hsla({!vermilion}, 33%, 1)"
     category: color_group_1

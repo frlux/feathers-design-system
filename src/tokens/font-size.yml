@@ -13,11 +13,11 @@ props:
   font_size_large:
     value: "24px"
   font_size_base:
-    value: "16px"
+    value: "1rem"
   font_size_small:
     value: "13px"
   font_size_x_small:
-    value: "11px"
+    value: "12px"
 global:
   type: number
   category: font-size

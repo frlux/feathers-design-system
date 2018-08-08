@@ -5,7 +5,7 @@
 
 props:
   duration_quickly:
-    value: "0.08s"
+    value: "0.15s"
   duration_slowly:
     value: "0.5s"
 global:

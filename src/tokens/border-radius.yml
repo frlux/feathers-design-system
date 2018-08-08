@@ -5,9 +5,11 @@
 
 props:
   border_radius_default:
-    value: "3px"
+    value: "0"
   border_radius_circle:
     value: "50%"
+  border_radius_none:
+    value: "0"
 global:
   type: number
   category: border-radius

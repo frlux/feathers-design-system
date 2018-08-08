@@ -30,48 +30,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.heading {
-  @include reset;
-  @include stack-space($space-base);
-  font-family: $font-family-heading;
-  line-height: $line-height-heading;
-  color: $color-rich-black;
-  @media #{$media-query-large} {
-    // This is how you’d use design tokens with media queries
-  }
-}
-h1 {
-  letter-spacing: $letter-spacing-x-small;
-  font-size: $font-size-xx-large;
-  font-weight: $font-weight-bold;
-  @media #{$media-query-large} {
-    font-size: $font-size-xxx-large;
-  }
-}
-h2 {
-  letter-spacing: $letter-spacing-small;
-  font-size: $font-size-xx-large;
-  font-weight: $font-weight-bold;
-}
-h3 {
-  font-size: $font-size-x-large;
-  font-weight: $font-weight-bold;
-}
-h4 {
-  font-size: $font-size-large;
-  font-weight: $font-weight-semi-bold;
-}
-h5 {
-  font-size: $font-size-base;
-  font-weight: $font-weight-regular;
-}
-h6 {
-  font-size: $font-size-small;
-  font-weight: $font-weight-regular;
-}
-</style>
-
 <docs>
   ```jsx
   <div>

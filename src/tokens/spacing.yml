@@ -18,6 +18,18 @@ props:
     value: "8px"
   space_xx_small:
     value: "4px"
+  padding_horizontal_default:
+    value: ".75rem"
+  padding_horizontal_small:
+    value: ".5rem"
+  padding_horizontal_large:
+    value: "1rem"
+  padding_vertical_default:
+    value: ".375rem"
+  padding_vertical_large:
+    value: ".5rem"
+  padding_vertical_small:
+    value: ".25rem"
 global:
   type: number
   category: space

@@ -9,3 +9,87 @@
 @import "../styles/functions";
 @import "../styles/mixins";
 @import "../styles/spacing";
+
+/**
+ * Here, we can define additional Sass variables that
+ * help keep our themes in line.
+ */
+$theme-colors: ();
+$theme-colors: map-merge(
+  (
+    "aqua": $color-aqua,
+    "aqua-dark": $color-aqua-darker,
+    "blue-alternate": $color-blue-alternate,
+    "blue-base": $color-blue-base,
+    "blue-dark": $color-blue-dark,
+    "gray": $color-gray,
+    "gray-dark": $color-gray-dark,
+    "orange": $color-orange,
+    "pink": $color-pink,
+    "pink-dark": $color-pink-darker,
+    "teal": $color-teal,
+    "white": $color-white
+  ),
+  $theme-colors
+);
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+$border-radius: 0;
+$border-radius-lg: 0;
+$border-radius-sm: 0;
+
+@import "~bootstrap/scss/mixins";
+
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/utilities/borders";
+@import "~bootstrap/scss/utilities/display";
+@import "~bootstrap/scss/input-group";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/utilities/flex";
+
+@import "~bootstrap/scss/utilities/screenreaders";
+
+@import "~bootstrap/scss/utilities/spacing";
+@import "~bootstrap/scss/utilities/shadows";
+
+img {
+  max-width: 100%;
+}
+
+.link {
+  color: $color-blue-base;
+
+  &--undecorated {
+    text-decoration: none;
+  }
+}
+
+.mark {
+  background-color: inherit;
+  color: $color-blue-alternate;
+  font-weight: $font-weight-bold;
+  position: relative;
+  z-index: 1;
+
+  &::before {
+    background-color: rgba($color-teal, 0.3);
+    bottom: -0.333rem;
+    content: "";
+    left: 0;
+    height: 2rem;
+    position: absolute;
+    transform: translateX(-9%);
+    width: 125%;
+    z-index: -1;
+  }
+}
+
+.alert {
+  &--primary {
+    border-color: $color-blue-dark;
+    border-width: $border-width-bold;
+    border-style: dotted;
+  }
+}

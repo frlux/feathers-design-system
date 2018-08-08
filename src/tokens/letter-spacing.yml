@@ -9,7 +9,7 @@ props:
   letter_spacing_large:
     value: "1px"
   letter_spacing_base:
-    value: "0"
+    value: ".5px"
   letter_spacing_small:
     value: "-0.5px"
   letter_spacing_x_small:
