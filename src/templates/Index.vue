@@ -35,16 +35,24 @@
 
           </template>
 
-          <card class="card--background-blue-dark mb-3 mb-md-0 col-md-6 col-xl-4 ml-xl-3 mr-xl-3"
-                content-type="service"
-                copy="lorem ipsum dol asd asd asasdasdasdasdasdasd asd asd asor sit amet and sdasd asd asd asd ome more stuff"
-                heading="Hey everybody hi doctor nick">
+          <template v-for="(service, index) in services" v-if="index === 0">
 
-            <template slot="action">
-              <router-link class="button button--aqua" to="/events">Let's go</router-link>
-            </template>
+            <card class="card--background-blue-dark mb-3 mb-md-0 col-md-6 col-xl-4 ml-xl-3 mr-xl-3"
+                  content-type="service"
+                  :copy="service.description"
+                  :heading="service.name">
 
-          </card>
+              <template slot="action">
+
+                <router-link class="button button--aqua" :to="`/services/${service.slug}`">
+                  {{ service.acf.button_text ? service.acf.button_text : 'Read more'}}
+                </router-link>
+
+              </template>
+
+            </card>
+
+          </template>
 
           <card class="card--background-blue-dark col-md-6 col-xl-4"
                 content-type="collection"
@@ -307,8 +315,8 @@
 </template>
 
 <script>
-import CallToAction from "../patterns/CallToAction.vue"
-import Card from "../patterns/Card.vue"
+import CallToAction from "../patterns/CallToAction.vue";
+import Card from "../patterns/Card.vue";
 
 /**
  * Shows how to layout and structure a home page.
@@ -320,32 +328,40 @@ export default {
 
   components: {
     CallToAction,
-    Card,
+    Card
   },
 
   computed: {
     callsToAction() {
-      return this.$store.getters.getContentByService("callsToAction", "any", this.location)
+      return this.$store.getters.getContentByService(
+        "callsToAction",
+        "any",
+        this.location
+      );
     },
 
     events() {
-      return this.$store.state.events
+      return this.$store.state.events;
     },
+
+    services() {
+      return this.$store.state.services;
+    }
   },
 
   props: {
     location: {
-      type: String,
+      type: String
     },
     /**
      * The html element name used for the component.
      */
     type: {
       type: String,
-      default: "div",
-    },
-  },
-}
+      default: "div"
+    }
+  }
+};
 </script>
 
 
