@@ -10,7 +10,7 @@ import Services from "../templates/Services.vue";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
 
   routes: [
@@ -88,3 +88,17 @@ export default new Router({
     return { x: 0, y: 0 };
   }
 });
+
+router.beforeEach((to, from, next) => {
+  if(!hasLocationQueryParameter(to) && hasLocationQueryParameter(from)){
+    next({name: to.name, query: from.query});
+  } else {
+    next();
+  }
+});
+
+function hasLocationQueryParameter(route) {
+  return !!route.query.location;
+}
+
+export default router;

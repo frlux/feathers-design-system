@@ -47,16 +47,18 @@
 
         </a>
 
-        <Dropdown button-class="button--blue-alternate d-none d-md-block menu__item nav-link text--white"
+        <Dropdown button-class="button--blue-alternate d-none d-md-block menu__item menu__item--location nav-link text--ellipsis text--nowrap text--white"
                   class="align-self-center nav-item"
                   dropdown-menu-class="text--nowrap text--right"
                   label-class="menu__item__label">
-            <template slot="label">All Libraries</template>
+            <template slot="label">{{ currentLocation }}</template>
             <template slot="items">
+
+                <router-link :to="setLocationInQueryParameter('all')">All Libraries</router-link>
                 <router-link
                   class="d-block dropdown__menu__item link link--undecorated mb-1 mt-1 text--underlined"
                  :key="location.id"
-                 :to="{ query: Object.assign({}, $route.query, { location: `${location.slug}`}) }"
+                 :to="setLocationInQueryParameter(`${location.slug}`)"
                  v-for="location in locations">
                     {{ location.name }}
                 </router-link>
@@ -78,15 +80,35 @@ export default {
   },
 
   computed: {
+
+    /**
+     * The `currentLocation` will return the name of the library as its slug
+     * if it's present in the url.
+     */
+    currentLocation() {
+      const locationSlugInUrl = this.$route.query.location;
+      const location = this.locations.find(location => location.slug === locationSlugInUrl);
+
+      return (location ? location.name : 'All Libraries');
+    },
+
     locations() {
-      return this.$store.state.locations
+      return this.$store.state.locations;
+    },
+  },
+
+  methods: {
+    setLocationInQueryParameter(locationSlug) {
+      return {
+        query: Object.assign({}, this.$route.query, { location: `${locationSlug}` }),
+      };
     },
   },
 
   mounted() {
-    this.$store.dispatch("getLocations")
+    this.$store.dispatch('getLocations');
   },
-}
+};
 </script>
 
 <style lang="scss">

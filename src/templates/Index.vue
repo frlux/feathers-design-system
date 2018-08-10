@@ -265,9 +265,9 @@ export default {
   computed: {
     callsToAction() {
       return this.$store.getters.getContentByService(
-        "callsToAction",
-        "any",
-        this.location
+        'callsToAction',
+        'any',
+        this.location,
       );
     },
 

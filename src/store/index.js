@@ -123,13 +123,13 @@ export default new Vuex.Store({
 
     getContentByService: state => (
       contentType,
-      serviceName = "any",
-      locationName = null
+      serviceName = 'any',
+      locationName = null,
     ) => {
       let contentFilteredByLocation;
       let contentByService;
 
-      if (serviceName === "any") {
+      if (serviceName === 'any') {
         contentByService = state[`${contentType}`];
       } else {
         contentByService = state[`${contentType}`].filter(
@@ -140,7 +140,7 @@ export default new Vuex.Store({
         );
       }
 
-      if (locationName) {
+      if (locationName && locationName !== 'all') {
         contentFilteredByLocation = contentByService.filter(
           content =>
             content.acf.location
@@ -150,7 +150,7 @@ export default new Vuex.Store({
               : []
         );
       }
-      return locationName ? contentFilteredByLocation : contentByService;
+      return locationName && locationName !== 'all' ? contentFilteredByLocation : contentByService;
     },
 
     getEvents: state => (dateString = null, locationName = null) => {
@@ -168,13 +168,13 @@ export default new Vuex.Store({
         events = state.events;
       }
 
-      if (locationName) {
+      if (locationName && locationName !== 'all') {
         eventsFilteredByLocation = events.filter(
           event => event.venue.slug === locationName
         );
       }
 
-      return locationName ? eventsFilteredByLocation : events;
+      return locationName && locationName !== 'all' ? eventsFilteredByLocation : events;
     },
 
     getEventBySlug: state => slug => {
