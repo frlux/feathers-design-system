@@ -75,95 +75,117 @@
 </template>
 
 <script>
-import CButton from "../elements/Button.vue"
-import Dropdown from "../elements/Dropdown.vue"
+import CButton from "../elements/Button.vue";
+import Dropdown from "../elements/Dropdown.vue";
 
 export default {
   name: "Search",
 
   components: {
     CButton,
-    Dropdown,
+    Dropdown
   },
 
   computed: {
     isCatalogSearch() {
-      return this.searchAction === "catalog"
+      return this.searchAction === "catalog";
     },
 
     isEventSearch() {
-      return this.searchAction === "events"
+      return this.searchAction === "events";
     },
 
     isServicesSearch() {
-      return this.searchAction === "services"
-    },
+      return this.searchAction === "services";
+    }
   },
 
   data() {
     return {
       searchAction: "catalog",
       searchFormAction: "https://www.nccardinal.org/eg/opac/results",
-      searchQuery: "",
-    }
+      searchQuery: ""
+    };
   },
 
   methods: {
     resetSearchAction() {
-      const routeName = this.$route.name
+      const routeName = this.$route.name;
 
       if (routeName === "Events" || routeName === "Services") {
-        this.$set(this, "searchAction", routeName.toLowerCase())
+        this.$set(this, "searchAction", routeName.toLowerCase());
       } else {
-        this.$set(this, "searchAction", "catalog")
+        this.$set(this, "searchAction", "catalog");
       }
     },
 
     search() {
       if (this.isCatalogSearch) {
-        return this.searchCatalog()
+        return this.searchCatalog();
       }
 
       if (this.isEventSearch) {
-        return this.$router.push({ path: "events", query: { filter: `${this.searchQuery}` } })
+        return this.$router.push({
+          path: "/events",
+          query: { filter: `${this.searchQuery}` }
+        });
       }
 
       if (this.isServicesSearch) {
-        return this.$router.push({ path: "/services", query: { filter: `${this.searchQuery}` } })
+        return this.$router.push({
+          path: "/services",
+          query: { filter: `${this.searchQuery}` }
+        });
       }
 
-      return this.$router.push({ path: "search", query: { filter: `${this.searchQuery}` } })
+      return this.$router.push({
+        path: "search",
+        query: { filter: `${this.searchQuery}` }
+      });
     },
 
     searchCatalog() {
-      location.replace(`${this.searchFormAction}?query=${this.searchQuery}&qtype=keyword&locg=1`) // eslint-disable-line
+      location.replace(
+        `${this.searchFormAction}?query=${
+          this.searchQuery
+        }&qtype=keyword&locg=1`
+      ); // eslint-disable-line
     },
 
     setCatalogSearch() {
-      this.$set(this, "searchAction", "catalog")
+      this.$set(this, "searchAction", "catalog");
     },
 
     setEventSearch() {
-      this.$set(this, "searchAction", "events")
+      this.$set(this, "searchAction", "events");
     },
 
     setEverythingSearch() {
-      this.$set(this, "searchAction", "everything")
+      this.$set(this, "searchAction", "everything");
     },
 
     setServicesSearch() {
-      this.$set(this, "searchAction", "services")
-    },
+      this.$set(this, "searchAction", "services");
+    }
   },
 
   mounted() {
-    this.resetSearchAction()
+    /**
+     * As soon as the `search` component renders for the first time,
+     * let's make sure it sets itself to an appropriate default, so that
+     * it's as useful as possible.
+     */
+    this.resetSearchAction();
   },
 
   watch: {
+    /**
+     * We want to make sure that the search is always as relevant as possible,
+     * so, when the route changes, we can try to set a sane default.
+     */
     $route() {
-      this.resetSearchAction()
-    },
-  },
-}
+      this.resetSearchAction();
+    }
+  }
+};
 </script>

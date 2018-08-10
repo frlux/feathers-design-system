@@ -54,6 +54,7 @@
         </div>
 
         </div>
+
         <div class="card__image img-fluid" v-if="image && !isDeck">
             <img :src="image" alt="">
         </div>
@@ -62,90 +63,90 @@
 </template>
 
 <script>
-import Heading from "../elements/Heading.vue"
+import Heading from "../elements/Heading.vue";
 
 export default {
   name: "Card",
 
   components: {
-    Heading,
+    Heading
   },
 
   computed: {
     isDeck() {
-      return this.type === "deck"
-    },
+      return this.type === "deck";
+    }
   },
 
   props: {
     badgeLabel: {
-      type: String,
+      type: String
     },
 
     copy: {
-      type: String,
+      type: String
     },
 
     contentContainerClass: {
       default: "p-4",
-      type: String,
+      type: String
     },
 
     contentType: {
       type: String,
-      validator: value => value.match(/(event|blog|collection|service)/),
+      validator: value => value.match(/(event|blog|collection|service)/)
     },
 
     element: {
       default: "div",
-      type: String,
+      type: String
     },
 
     explainer: {
-      type: String,
+      type: String
     },
 
     heading: {
-      type: String,
+      type: String
     },
 
     headingLevel: {
       default: "h2",
-      type: String,
+      type: String
     },
 
     headingClass: {
-      type: String,
+      type: String
     },
 
     image: {
-      type: String,
+      type: String
     },
 
     subExplainer: {
-      type: String,
+      type: String
     },
 
     subheading: {
-      type: String,
+      type: String
     },
 
     subheadingClass: {
-      type: String,
+      type: String
     },
 
     subheadingLevel: {
       default: "h3",
-      type: String,
+      type: String
     },
 
     type: {
       default: "default",
       type: String,
-      validator: value => value.match(/(default|deck)/),
-    },
-  },
-}
+      validator: value => value.match(/(default|deck)/)
+    }
+  }
+};
 </script>
 
 <style lang="scss">

@@ -1,9 +1,13 @@
 <template>
+
   <div class="library" id="app">
+
     <header class="align-items-center d-flex justify-content-center justify-content-md-between library__header p-3">
 
       <router-link to="/">
+
         <Logo fill="white" />
+
       </router-link>
 
       <Menu />
@@ -22,9 +26,9 @@
 </template>
 
 <script>
-import Logo from "./elements/Logo.vue"
-import Menu from "./patterns/Menu.vue"
-import Search from "./patterns/Search.vue"
+import Logo from "./elements/Logo.vue";
+import Menu from "./patterns/Menu.vue";
+import Search from "./patterns/Search.vue";
 
 export default {
   name: "app",
@@ -32,16 +36,18 @@ export default {
   components: {
     Logo,
     Menu,
-    Search,
+    Search
   },
 
   mounted() {
-    this.$store.dispatch("getCallsToAction")
-    this.$store.dispatch("getUpcomingEvents")
-    this.$store.dispatch("getServices")
-    this.$store.dispatch("getPages")
-  },
-}
+    this.$store.dispatch("getCallsToAction");
+    this.$store.dispatch("getUpcomingEvents");
+    this.$store.dispatch("getServices");
+    this.$store.dispatch("getPages");
+    this.$store.dispatch("getCollection");
+    this.$store.dispatch("getPosts");
+  }
+};
 </script>
 
 <style lang="scss">

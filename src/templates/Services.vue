@@ -122,9 +122,9 @@
 </template>
 
 <script>
-import CallToAction from "../patterns/CallToAction.vue"
-import Card from "../patterns/Card.vue"
-import Heading from "../elements/Heading.vue"
+import CallToAction from "../patterns/CallToAction.vue";
+import Card from "../patterns/Card.vue";
+import Heading from "../elements/Heading.vue";
 
 export default {
   name: "Services",
@@ -132,32 +132,36 @@ export default {
   components: {
     CallToAction,
     Card,
-    Heading,
+    Heading
   },
 
   computed: {
     featuredServices() {
-      const servicesWithDescriptions = this.services.filter(service => service.description !== "")
-      return servicesWithDescriptions
+      const servicesWithDescriptions = this.services.filter(
+        service => service.description !== ""
+      );
+      return servicesWithDescriptions;
     },
 
     filteredServices() {
       if (!this.filter) {
-        return this.services
+        return this.services;
       }
 
-      return this.services.filter(service => service.name.toLowerCase().includes(this.filter))
+      return this.services.filter(service =>
+        service.name.toLowerCase().includes(this.filter)
+      );
     },
 
     services() {
-      return this.$store.state.services
-    },
+      return this.$store.state.services;
+    }
   },
 
   props: {
     filter: {
-      type: String,
-    },
-  },
-}
+      type: String
+    }
+  }
+};
 </script>

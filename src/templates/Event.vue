@@ -89,36 +89,36 @@
 </template>
 
 <script>
-import AddToCalendar from "vue-add-to-calendar"
-import CallToAction from "../patterns/CallToAction.vue"
-import Heading from "../elements/Heading.vue"
-import Vue from "vue"
-import VueMoment from "vue-moment"
+import AddToCalendar from "vue-add-to-calendar";
+import CallToAction from "../patterns/CallToAction.vue";
+import Heading from "../elements/Heading.vue";
+import Vue from "vue";
+import VueMoment from "vue-moment";
 
-Vue.use(AddToCalendar)
-Vue.use(VueMoment)
+Vue.use(AddToCalendar);
+Vue.use(VueMoment);
 
 export default {
   name: "Event",
 
   components: {
     CallToAction,
-    Heading,
+    Heading
   },
 
   computed: {
     event() {
-      return this.$store.getters.getEventBySlug(this.slug)
-    },
+      return this.$store.getters.getEventBySlug(this.slug);
+    }
   },
 
   props: {
     slug: {
       required: true,
-      type: String,
-    },
-  },
-}
+      type: String
+    }
+  }
+};
 </script>
 
 <style lang="scss">

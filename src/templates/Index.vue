@@ -35,32 +35,28 @@
 
           </template>
 
-          <template v-for="(service, index) in services" v-if="index === 0">
+          <card class="card--background-blue-dark mb-3 mb-md-0 col-md-6 col-xl-4 ml-xl-3 mr-xl-3"
+                content-type="service"
+                :copy="service.description"
+                :heading="service.name" v-if="service">
 
-            <card class="card--background-blue-dark mb-3 mb-md-0 col-md-6 col-xl-4 ml-xl-3 mr-xl-3"
-                  content-type="service"
-                  :copy="service.description"
-                  :heading="service.name">
+            <template slot="action">
 
-              <template slot="action">
+              <router-link class="button button--orange" :to="`/services/${service.slug}`">
+                {{ service.acf.button_text ? service.acf.button_text : 'Read more'}}
+              </router-link>
 
-                <router-link class="button button--aqua" :to="`/services/${service.slug}`">
-                  {{ service.acf.button_text ? service.acf.button_text : 'Read more'}}
-                </router-link>
+            </template>
 
-              </template>
-
-            </card>
-
-          </template>
+          </card>
 
           <card class="card--background-blue-dark col-md-6 col-xl-4"
                 content-type="collection"
-                copy="lorem ipsum dolosd asd asd asdr sit amet and sdasd asd asd asd ome more stuff"
-                 heading="Hey everybody h asd asdasd asd asd i doctor nick">
+                :copy="collectionItem.acf.abstract"
+                :heading="collectionItem.title.rendered" v-if="collectionItem">
 
             <template slot="action">
-              <router-link class="button button--aqua" to="/events">Let's go</router-link>
+              <router-link class="button button--pink" to="/events">Let's go</router-link>
             </template>
 
           </card>
@@ -171,7 +167,7 @@
 
             </card>
 
-            <template v-for="(event, index) in events" v-if="index === 0">
+            <template v-for="(event, index) in events" v-if="index === 1">
 
               <card class="card--background-gray"
                     content-type="event"
@@ -191,107 +187,40 @@
 
             </template>
 
-            <card class="card--background-gray mb-3 mt-3"
-                  content-type="collection"
-                  heading="Featured Collection">
+            <article class="blog">
 
-              <template slot="copy">
+              <heading class="text--serif text--dark" level="h2">{{ post.title }}</heading>
 
-                <div class="d-flex flex-wrap">
+              <span class="event__time text--dark">
+                {{post.date | moment("dddd, MMMM Do YYYY h:mm a")}}
+              </span>
 
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
+              <div class="heading__separator"></div>
 
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
+              <div class="d-flex">
+                <div class="col-6">
+                  <div class="align-items-center background--gray card d-flex row mb-3 person">
+
+                    <div class="person__avatar">
+                      <img class="rounded-circle" :src="post.author.avatar_URL" alt="">
+                    </div>
+
+                    <div class="person__content">
+                      <p class="align-items-center mt-3">
+                        <span class="text--dark text--bold text--underlined person__name">{{ post.author.nice_name }}</span> <br>
+                        <span class="text--small text--dark">Young Adult Librarian</span>
+                      </p>
+                    </div>
+
                   </div>
 
                 </div>
 
-                <router-link class="link" to="/">See more</router-link>
+              </div>
 
-              </template>
+              <section v-html="post.content"></section>
 
-            </card>
-
-            <card class="card--background-gray mb-3"
-                  content-type="blog"
-                  heading="Some blog">
-
-            </card>
+            </article>
 
           </div>
 
@@ -323,7 +252,9 @@ import Card from "../patterns/Card.vue";
  */
 export default {
   name: "Index",
+
   status: "prototype",
+
   release: "1.0.0",
 
   components: {
@@ -340,12 +271,23 @@ export default {
       );
     },
 
+    collectionItem() {
+      return this.$store.getters.getRandomContentItem("collection");
+    },
+
     events() {
       return this.$store.state.events;
     },
 
-    services() {
-      return this.$store.state.services;
+    post() {
+      return this.$store.state.posts[0];
+    },
+
+    /**
+     * A random service <3.
+     */
+    service() {
+      return this.$store.getters.getRandomContentItem("services");
     }
   },
 

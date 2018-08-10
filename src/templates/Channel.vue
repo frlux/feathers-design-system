@@ -35,43 +35,43 @@
 </template>
 
 <script>
-import CallToAction from "../patterns/CallToAction.vue"
-import Heading from "../elements/Heading.vue"
+import CallToAction from "../patterns/CallToAction.vue";
+import Heading from "../elements/Heading.vue";
 
 export default {
   name: "Channel",
 
   components: {
     CallToAction,
-    Heading,
+    Heading
   },
 
   computed: {
     callsToAction() {
-      return this.$store.getters.getCallsToActionByCategory(this.slug)
+      return this.$store.getters.getCallsToActionByCategory(this.slug);
     },
 
     collection() {
-      return this.$store.getters.getContentByService("collection", this.slug)
+      return this.$store.getters.getContentByService("collection", this.slug);
     },
 
     pages() {
-      return this.$store.getters.getContentByService("pages", this.slug)
+      return this.$store.getters.getContentByService("pages", this.slug);
     },
 
     service() {
-      return this.$store.getters.getServiceBySlug(this.slug)
-    },
+      return this.$store.getters.getServiceBySlug(this.slug);
+    }
   },
 
   props: {
     slug: {
       default: "any",
       required: true,
-      type: String,
-    },
-  },
-}
+      type: String
+    }
+  }
+};
 </script>
 
 <style lang="scss">
