@@ -2,7 +2,8 @@
 
     <nav class="d-flex justify-content-md-end menu" role="navigation">
 
-        <a href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item nav-link nav-item text--white">
+        <a class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item nav-link nav-item text--white"
+           href="https://fontana.nccardinal.org/eg/opac/login?redirect_to=%2Feg%2Fopac%2Fmyopac%2Fmain">
 
             <span class="menu__item__icon">
                 <svg fill="#000000" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill: #fff;" aria-role="img" aria-labelledby="accountsvg">
