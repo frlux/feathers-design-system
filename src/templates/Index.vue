@@ -301,8 +301,8 @@ export default {
     type: {
       type: String,
       default: 'div',
-    }
-  }
+    },
+  },
 };
 </script>
 
