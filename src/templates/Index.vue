@@ -300,7 +300,7 @@ export default {
      */
     type: {
       type: String,
-      default: "div"
+      default: 'div',
     }
   }
 };
