@@ -1,6 +1,6 @@
 {
   "name": "feathers-design-system",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Vue Design System is an open-source tool for building Design Systems with Vue.js",
   "author": "viljamis <me@viljamis.com>",
   "main": "dist/system/system.js",
