@@ -3,6 +3,7 @@
           class="form--search pb-3 pt-3 p-md-4"
           method="GET"
           role="search"
+          v-on:keydown.enter.prevent="search"
           v-on:submit.prevent="search">
 
         <div class="m-auto col-lg-6 pl-m-0 pr-m-0">
@@ -12,6 +13,7 @@
                 <div class="card__color-code mb-1"
                      :class="{
                         'card__color-code--collection': isCatalogSearch,
+                        'card__color-code--everything': isEverythingSearch,
                         'card__color-code--service': isServicesSearch,
                         'card__color-code--event': isEventSearch,
                       }"></div>
@@ -24,12 +26,13 @@
                         <template slot="label" v-if="isEventSearch">Events</template>
                         <template slot="label" v-else-if="isCatalogSearch">the Catalog</template>
                         <template slot="label" v-else-if="isServicesSearch">Services</template>
+                        <template slot="label" v-else-if="isEverythingSearch">Everything (beta)</template>
 
                         <template slot="items">
-                            <button v-on:click.prevent="setCatalogSearch">Catalog</button>
-                            <button v-on:click.prevent="setEventSearch">Events</button>
-                            <button v-on:click.prevent="setServicesSearch">Services</button>
-                            <button v-on:click.prevent="setEverythingSearch">Everything (beta)</button>
+                            <button class="button button--link d-block dropdown__menu__item link link--undecorated mb-1 mt-1 p-0 text--underlined" v-on:click.prevent="setCatalogSearch">Catalog</button>
+                            <button class="button button--link d-block dropdown__menu__item link link--undecorated mb-1 mt-1 p-0 text--underlined" v-on:click.prevent="setEventSearch">Events</button>
+                            <button class="button button--link d-block dropdown__menu__item link link--undecorated mb-1 mt-1 p-0 text--underlined" v-on:click.prevent="setServicesSearch">Services</button>
+                            <button class="button button--link d-block dropdown__menu__item link link--undecorated mb-1 mt-1 p-0 text--underlined" v-on:click.prevent="setEverythingSearch">Everything (beta)</button>
                         </template>
                     </Dropdown>
                 </label>
@@ -95,16 +98,24 @@ export default {
       return this.searchAction === "events";
     },
 
+    isEverythingSearch() {
+      return this.searchAction === 'everything';
+    },
+
     isServicesSearch() {
       return this.searchAction === "services";
-    }
+    },
+
+    locationFilter() {
+      return this.$route.query.location;
+    },
   },
 
   data() {
     return {
-      searchAction: "catalog",
-      searchFormAction: "https://www.nccardinal.org/eg/opac/results",
-      searchQuery: ""
+      searchAction: 'catalog',
+      searchFormAction: 'https://www.nccardinal.org/eg/opac/results',
+      searchQuery: '',
     };
   },
 
@@ -127,20 +138,39 @@ export default {
       if (this.isEventSearch) {
         return this.$router.push({
           path: "/events",
-          query: { filter: `${this.searchQuery}` }
+          query: {
+            filter: `${this.searchQuery}`,
+            location: this.locationFilter ? `${this.locationFilter}` : '',
+          },
+        });
+      }
+
+      if (this.isEverythingSearch) {
+        return this.$router.push({
+          path: '/search',
+          query: {
+            filter: `${this.searchQuery}`,
+            location: this.locationFilter ? `${this.locationFilter}` : '',
+          },
         });
       }
 
       if (this.isServicesSearch) {
         return this.$router.push({
           path: "/services",
-          query: { filter: `${this.searchQuery}` }
+          query: {
+            filter: `${this.searchQuery}`,
+            location: this.locationFilter ? `${this.locationFilter}` : '',
+          },
         });
       }
 
       return this.$router.push({
         path: "search",
-        query: { filter: `${this.searchQuery}` }
+        query: {
+          filter: `${this.searchQuery}`,
+          location: this.locationFilter ? `${this.locationFilter}` : '',
+        },
       });
     },
 
@@ -148,25 +178,25 @@ export default {
       location.replace(
         `${this.searchFormAction}?query=${
           this.searchQuery
-        }&qtype=keyword&locg=1`
+        }&qtype=keyword&locg=1`,
       ); // eslint-disable-line
     },
 
     setCatalogSearch() {
-      this.$set(this, "searchAction", "catalog");
+      this.$set(this, 'searchAction', 'catalog');
     },
 
     setEventSearch() {
-      this.$set(this, "searchAction", "events");
+      this.$set(this, 'searchAction', 'events');
     },
 
     setEverythingSearch() {
-      this.$set(this, "searchAction", "everything");
+      this.$set(this, 'searchAction', 'everything');
     },
 
     setServicesSearch() {
-      this.$set(this, "searchAction", "services");
-    }
+      this.$set(this, 'searchAction', 'services');
+    },
   },
 
   mounted() {

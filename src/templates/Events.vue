@@ -138,12 +138,13 @@ export default {
 
   props: {
     filter: {
-      type: String
+      type: String,
     },
     location: {
-      type: String
-    }
-  }
+      default: '',
+      type: String,
+    },
+  },
 };
 </script>
 

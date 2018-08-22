@@ -15,6 +15,27 @@ const router = new Router({
 
   routes: [
     {
+      component: Channel,
+      meta: {
+        title: 'Blog',
+      },
+      name: 'Blog',
+      path: '/blog',
+      props: route => ({
+        channelTitle: 'Shelf Life in the Mountains',
+        channelDescription: `
+          This is the blog for the Fontana Regional Library system, 
+          serving Jackson, Macon, and Swain counties in western North Carolina.
+          Our blog contributors come from all over our three county region and cover a 
+          vast array of topics including historical and current events, technology, 
+          cats and much more, as well as related books suggestions!
+        `,
+        network: 'blog',
+        slug: 'any',
+      }),
+    },
+
+    {
       component: Index,
       meta: {
         title: "Home"
@@ -54,6 +75,7 @@ const router = new Router({
         location: route.query.location
       })
     },
+
     {
       component: Services,
       name: "Services",

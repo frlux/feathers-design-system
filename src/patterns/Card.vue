@@ -209,6 +209,10 @@ export default {
       background-color: $color-aqua;
     }
 
+    &--everything::before {
+      background: linear-gradient(90deg, $color-pink, $color-orange);
+    }
+
     &--service::before {
       background-color: $color-orange;
     }

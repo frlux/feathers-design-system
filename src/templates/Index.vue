@@ -53,7 +53,8 @@
           <card class="card--background-blue-dark col-md-6 col-xl-4"
                 content-type="collection"
                 :copy="collectionItem.acf.abstract"
-                :heading="collectionItem.title.rendered" v-if="collectionItem">
+                :heading="collectionItem.title.rendered"
+                v-if="collectionItem">
 
             <template slot="action">
               <router-link class="button button--pink" to="/events">Let's go</router-link>
@@ -187,40 +188,24 @@
 
             </template>
 
-            <article class="blog">
+            <card class="card--background-white text--dark"
+                  content-type="blog"
+                  :explainer="post.author.nice_name"
+                  :sub-explainer="post.date | moment('dddd, MMMM Do')"
+                  :heading="post.title"
+                  v-if="post">
 
-              <heading class="text--serif text--dark" level="h2">{{ post.title }}</heading>
-
-              <span class="event__time text--dark">
-                {{post.date | moment("dddd, MMMM Do YYYY h:mm a")}}
-              </span>
-
-              <div class="heading__separator"></div>
-
-              <div class="d-flex">
-                <div class="col-6">
-                  <div class="align-items-center background--gray card d-flex row mb-3 person">
-
-                    <div class="person__avatar">
-                      <img class="rounded-circle" :src="post.author.avatar_URL" alt="">
-                    </div>
-
-                    <div class="person__content">
-                      <p class="align-items-center mt-3">
-                        <span class="text--dark text--bold text--underlined person__name">{{ post.author.nice_name }}</span> <br>
-                        <span class="text--small text--dark">Young Adult Librarian</span>
-                      </p>
-                    </div>
-
-                  </div>
-
-                </div>
-
+              <div slot="copy">
+                <div v-html="post.excerpt"></div>
               </div>
 
-              <section v-html="post.content"></section>
+              <template slot="action">
+                <router-link class="button button--aqua" :to="`/posts/${post.slug}`">
+                  Info
+                </router-link>
+              </template>
 
-            </article>
+            </card>
 
           </div>
 

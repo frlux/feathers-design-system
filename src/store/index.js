@@ -10,11 +10,13 @@ export default new Vuex.Store({
     callsToAction: [],
     collection: [],
     events: [],
+    featuredCollections: [],
     locations: [],
+    menu: [],
     pages: [],
     posts: [],
     resources: [],
-    services: []
+    services: [],
   },
 
   actions: {
@@ -35,6 +37,16 @@ export default new Vuex.Store({
           .get("http://fontana.local/wp-json/wp/v2/collection")
           .then(({ data }) => {
             commit("addCollectionToState", data);
+            resolve();
+          });
+      });
+    },
+
+    getFeaturedCollections({ commit }) {
+      return new Promise(resolve => {
+        axios.get('http://fontana.local/wp-json/wp/v2/featured-collection')
+          .then(({ data }) => {
+            commit('addFeaturedCollectionToState', data);
             resolve();
           });
       });
@@ -190,9 +202,19 @@ export default new Vuex.Store({
       return content[Math.floor(Math.random() * content.length)];
     },
 
+    getSiteContent: state => () => {
+      return [
+        ...state.collection,
+        ...state.events,
+        ...state.pages,
+        ...state.posts,
+        ...state.services,
+      ];
+    },
+
     getServiceBySlug: state => slug => {
       return state.services.find(service => service.slug === slug);
-    }
+    },
   },
 
   mutations: {
@@ -202,6 +224,10 @@ export default new Vuex.Store({
 
     addCollectionToState(state, collection) {
       state.collection = collection;
+    },
+
+    addFeaturedCollectionToState(state, featuredCollections) {
+      state.featuredCollections = featuredCollections;
     },
 
     addLocationsToState(state, locations) {
