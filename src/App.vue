@@ -31,7 +31,7 @@ import Menu from "./patterns/Menu.vue";
 import Search from "./patterns/Search.vue";
 
 export default {
-  name: "app",
+  name: 'app',
 
   components: {
     Logo,
