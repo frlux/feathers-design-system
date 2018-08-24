@@ -17,7 +17,7 @@
 
         </a>
 
-        <router-link to="/events" href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white">
+        <vue-link to="/events" href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white">
 
             <span class="menu__item__icon">
                 <svg id="icon-calendar" fill="white" height="20" viewBox="0 0 32 32">
@@ -28,15 +28,15 @@
 
             <span class="menu__item__label">Events</span>
 
-        </router-link>
+        </vue-link>
 
-        <router-link class="align-items-center align-self-center d-none d-lg-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white"
+        <vue-link class="align-items-center align-self-center d-none d-lg-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white"
                      href="#"
                      to="/services" >
 
             <span class="menu__item__label">Services</span>
 
-        </router-link>
+        </vue-link>
 
         <div class="menu__divider"></div>
 
@@ -71,13 +71,15 @@
 </template>
 
 <script>
-import Dropdown from "../elements/Dropdown.vue"
+import VueLink from 'vue-link';
+import Dropdown from '../elements/Dropdown.vue';
 
 export default {
-  name: "Menu",
+  name: 'Menu',
 
   components: {
     Dropdown,
+    VueLink,
   },
 
   computed: {
