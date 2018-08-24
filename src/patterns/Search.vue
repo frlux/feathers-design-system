@@ -113,7 +113,6 @@ export default {
 
   data() {
     return {
-      searchAction: 'catalog',
       searchFormAction: 'https://www.nccardinal.org/eg/opac/results',
       searchQuery: '',
     };
@@ -206,6 +205,13 @@ export default {
      * it's as useful as possible.
      */
     this.resetSearchAction();
+  },
+
+  props: {
+    searchAction: {
+      default: 'catalog',
+      type: String,
+    },
   },
 
   watch: {
