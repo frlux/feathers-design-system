@@ -27,7 +27,8 @@
       }
 
       &:hover::after,
-      &.router-link-active::after {
+      &.router-link-active::after,
+      &.nuxt-link-active::after {
         background-color: $color-white;
         content: "";
         position: absolute;
