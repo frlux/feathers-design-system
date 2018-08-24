@@ -123,8 +123,6 @@ export default {
     resetSearchAction() {
       const routeName = this.$route.name;
 
-      console.log(routeName);
-
       if (routeName === "Events" || routeName === "Services") {
         this.$set(this, "searchAction", routeName.toLowerCase());
       } else {

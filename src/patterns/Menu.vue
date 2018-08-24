@@ -17,7 +17,7 @@
 
         </a>
 
-        <vue-link to="/events" href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white">
+        <router-link to="/events" href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white">
 
             <span class="menu__item__icon">
                 <svg id="icon-calendar" fill="white" height="20" viewBox="0 0 32 32">
@@ -28,15 +28,15 @@
 
             <span class="menu__item__label">Events</span>
 
-        </vue-link>
+        </router-link>
 
-        <vue-link class="align-items-center align-self-center d-none d-lg-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white"
+        <router-link class="align-items-center align-self-center d-none d-lg-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white"
                      href="#"
                      to="/services" >
 
             <span class="menu__item__label">Services</span>
 
-        </vue-link>
+        </router-link>
 
         <div class="menu__divider"></div>
 
@@ -71,7 +71,6 @@
 </template>
 
 <script>
-import VueLink from 'vue-link';
 import Dropdown from '../elements/Dropdown.vue';
 
 export default {
@@ -79,7 +78,6 @@ export default {
 
   components: {
     Dropdown,
-    VueLink,
   },
 
   computed: {
@@ -113,74 +111,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-@import "~bootstrap/scss/nav";
-
-.menu {
-  background-color: $color-blue-alternate;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  z-index: 5;
-
-  @media #{$media-query-medium} {
-    background-color: transparent;
-    position: static;
-
-    &__item:not(.dropdown__toggle) {
-      position: relative;
-
-      &::after {
-        background-color: transparent;
-        bottom: 0;
-        content: "";
-        height: 3px;
-        left: 0;
-        position: absolute;
-        transition: all $duration-quickly ease-in-out;
-        width: 100%;
-      }
-
-      &:hover::after,
-      &.router-link-active::after {
-        background-color: $color-white;
-        content: "";
-        position: absolute;
-      }
-    }
-  }
-
-  &__divider {
-    background-color: white;
-    display: inline-block;
-    vertical-align: middle;
-    margin: 18px 8px 12px;
-    height: 18px;
-    width: 1px;
-  }
-
-  &__item {
-    text-decoration: none;
-
-    &:hover {
-      border-bottom: 1px solid white;
-    }
-
-    &__icon {
-      @media #{$media-query-medium} {
-        display: none;
-      }
-    }
-
-    &__label {
-      font-family: $font-family-text;
-      font-weight: 700;
-      font-size: $font-size-sm;
-      letter-spacing: $letter-spacing-base;
-      text-transform: uppercase;
-    }
-  }
-}
-</style>

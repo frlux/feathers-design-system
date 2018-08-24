@@ -1,0 +1,68 @@
+@import "~bootstrap/scss/nav";
+
+.menu {
+  background-color: $color-blue-alternate;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  right: 0;
+  z-index: 5;
+
+  @media #{$media-query-medium} {
+    background-color: transparent;
+    position: static;
+
+    &__item:not(.dropdown__toggle) {
+      position: relative;
+
+      &::after {
+        background-color: transparent;
+        bottom: 0;
+        content: "";
+        height: 3px;
+        left: 0;
+        position: absolute;
+        transition: all $duration-quickly ease-in-out;
+        width: 100%;
+      }
+
+      &:hover::after,
+      &.router-link-active::after {
+        background-color: $color-white;
+        content: "";
+        position: absolute;
+      }
+    }
+  }
+
+  &__divider {
+    background-color: white;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 18px 8px 12px;
+    height: 18px;
+    width: 1px;
+  }
+
+  &__item {
+    text-decoration: none;
+
+    &:hover {
+      border-bottom: 1px solid white;
+    }
+
+    &__icon {
+      @media #{$media-query-medium} {
+        display: none;
+      }
+    }
+
+    &__label {
+      font-family: $font-family-text;
+      font-weight: 700;
+      font-size: $font-size-sm;
+      letter-spacing: $letter-spacing-base;
+      text-transform: uppercase;
+    }
+  }
+}
