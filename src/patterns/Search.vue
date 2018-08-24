@@ -109,10 +109,6 @@ export default {
     locationFilter() {
       return this.$route.query.location;
     },
-
-    searchAction() {
-
-    },
   },
 
   data() {
@@ -128,9 +124,9 @@ export default {
       const routeName = this.$route.name;
 
       if (routeName === "Events" || routeName === "Services") {
-        this.$set(this, "searchAction", routeName.toLowerCase());
+        this.searchAction = routeName.toLowerCase();
       } else {
-        this.$set(this, "searchAction", "catalog");
+        this.searchAction = 'catalog';
       }
     },
 
