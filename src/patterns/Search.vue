@@ -113,6 +113,7 @@ export default {
 
   data() {
     return {
+      searchAction: 'catalog',
       searchFormAction: 'https://www.nccardinal.org/eg/opac/results',
       searchQuery: '',
     };
@@ -121,6 +122,8 @@ export default {
   methods: {
     resetSearchAction() {
       const routeName = this.$route.name;
+
+      console.log(routeName);
 
       if (routeName === "Events" || routeName === "Services") {
         this.$set(this, "searchAction", routeName.toLowerCase());
@@ -207,13 +210,6 @@ export default {
     this.resetSearchAction();
   },
 
-  props: {
-    searchAction: {
-      default: 'catalog',
-      type: String,
-    },
-  },
-
   watch: {
     /**
      * We want to make sure that the search is always as relevant as possible,
@@ -221,7 +217,7 @@ export default {
      */
     $route() {
       this.resetSearchAction();
-    }
-  }
+    },
+  },
 };
 </script>

@@ -1,6 +1,6 @@
 {
   "name": "feathers-design-system",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Vue Design System is an open-source tool for building Design Systems with Vue.js",
   "author": "viljamis <me@viljamis.com>",
   "main": "dist/system/system.js",
@@ -24,6 +24,7 @@
     "node:build:system": "node ./build/build-system.js",
     "release:minor": "npm run build:system && release-it minor",
     "release:major": "npm run build:system && release-it major",
+    "release:patch": "npm run build:system && release-it patch",
     "styleguide": "vue-styleguidist server --config ./config/docs.config.js",
     "styleguide:build": "vue-styleguidist build --config ./config/docs.config.js",
     "theo": "theo ./src/tokens/tokens.yml --transform web --format map.scss,scss,raw.json,json --dest ./src/assets/tokens",
