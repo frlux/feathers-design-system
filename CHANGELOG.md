@@ -1,3 +1,13 @@
+<a name="0.4.5"></a>
+## [0.4.5](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.4.4...v0.4.5) (2018-08-24)
+
+
+### Features
+
+* adds styles for nuxt-link-active ([b4e7b52](https://github.com/fontana-regional-library/feathers-design-system/commit/b4e7b52))
+
+
+
 <a name="0.4.4"></a>
 ## [0.4.4](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.4.3...v0.4.4) (2018-08-24)
 

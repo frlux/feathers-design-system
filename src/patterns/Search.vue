@@ -109,6 +109,10 @@ export default {
     locationFilter() {
       return this.$route.query.location;
     },
+
+    searchAction() {
+
+    },
   },
 
   data() {
