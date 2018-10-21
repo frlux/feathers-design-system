@@ -74,92 +74,30 @@
 
             <card class="card--background-gray mb-3"
                   content-type="collection"
-                  heading="New This Week">
+                  heading="Latest">
 
               <template slot="copy">
 
                 <div class="d-flex flex-wrap">
 
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
+                  <div class="col-6 col-md-2"
+                       :key="item.id"
+                       v-for="(item, index) in collection"
+                       v-if="index < 6">
 
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
+                    <a class="link link--undecorated" :href="`https://www.nccardinal.org/eg/opac/record/${item.acf.record_identifier}`">
                       <card content-container-class="p-0"
-                            heading="Out of Bounds"
+                            :heading="item.title.rendered"
                             heading-class="h4 text--bold text--nowrap text--ellipsis"
                             heading-level="h3"
                             image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
+                            :subheading="`by ${item.acf.creators[0].name}`"
                             subheading-class="h5 mt-1  text--nowrap text--ellipsis"
                             subheading-level="h4">
                       </card>
-                    </router-link>
-                  </div>
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
-                  <div class="col-6 col-md-2">
-                    <router-link class="link link--undecorated" to="www.google.com">
-                      <card content-container-class="p-0"
-                            heading="Out of Bounds"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
-                            subheading="by Michael Schofield"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </router-link>
-                  </div>
+                    </a>
 
+                  </div>
                 </div>
 
                 <router-link class="link" to="/">See more</router-link>
@@ -244,7 +182,7 @@ export default {
 
   components: {
     CallToAction,
-    Card
+    Card,
   },
 
   computed: {
@@ -256,8 +194,12 @@ export default {
       );
     },
 
+    collection() {
+      return this.$store.state.collection;
+    },
+
     collectionItem() {
-      return this.$store.getters.getRandomContentItem("collection");
+      return this.$store.getters.getRandomContentItem('collection');
     },
 
     events() {

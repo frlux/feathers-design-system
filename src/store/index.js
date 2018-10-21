@@ -32,11 +32,11 @@ export default new Vuex.Store({
     },
 
     getCollection({ commit }) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         axios
-          .get("http://fontana.local/wp-json/wp/v2/collection")
+          .get('http://fontana.local/wp-json/wp/v2/collection')
           .then(({ data }) => {
-            commit("addCollectionToState", data);
+            commit('addCollectionToState', data);
             resolve();
           });
       });
