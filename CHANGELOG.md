@@ -1,3 +1,13 @@
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.4.6...v0.5.0) (2018-10-23)
+
+
+### Features
+
+* ties the homepage collection card to the collection api ([913740d](https://github.com/fontana-regional-library/feathers-design-system/commit/913740d))
+
+
+
 <a name="0.4.6"></a>
 ## [0.4.6](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.4.5...v0.4.6) (2018-08-24)
 
