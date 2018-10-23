@@ -23,7 +23,7 @@ export default new Vuex.Store({
     getCallsToAction({ commit }) {
       return new Promise(resolve => {
         axios
-          .get("http://fontana.local/wp-json/wp/v2/calls-to-action")
+          .get("https://fontana.librarians.design/wp-json/wp/v2/calls-to-action")
           .then(({ data }) => {
             commit("addCallsToActionToState", data);
             resolve();
@@ -34,7 +34,7 @@ export default new Vuex.Store({
     getCollection({ commit }) {
       return new Promise((resolve) => {
         axios
-          .get('http://fontana.local/wp-json/wp/v2/collection')
+          .get('https://fontana.librarians.design/wp-json/wp/v2/collection?_embed')
           .then(({ data }) => {
             commit('addCollectionToState', data);
             resolve();
@@ -44,7 +44,7 @@ export default new Vuex.Store({
 
     getFeaturedCollections({ commit }) {
       return new Promise(resolve => {
-        axios.get('http://fontana.local/wp-json/wp/v2/featured-collection')
+        axios.get('https://fontana.librarians.design/wp-json/wp/v2/featured-collection')
           .then(({ data }) => {
             commit('addFeaturedCollectionToState', data);
             resolve();
@@ -55,7 +55,7 @@ export default new Vuex.Store({
     getLocations({ commit }) {
       return new Promise(resolve => {
         axios
-          .get("http://fontana.local/wp-json/wp/v2/locations")
+          .get("https://fontana.librarians.design/wp-json/wp/v2/locations")
           .then(({ data }) => {
             commit("addLocationsToState", data);
             resolve();
@@ -66,7 +66,7 @@ export default new Vuex.Store({
     getPages({ commit }) {
       return new Promise(resolve => {
         axios
-          .get("http://fontana.local/wp-json/wp/v2/pages")
+          .get("https://fontana.librarians.design/wp-json/wp/v2/pages")
           .then(({ data }) => {
             commit("addPagesToState", data);
             resolve();
@@ -90,7 +90,7 @@ export default new Vuex.Store({
     getResources({ commit }) {
       return new Promise(resolve => {
         axios
-          .get("http://fontana.local/wp-json/wp/v2/resources")
+          .get("https://fontana.librarians.design/wp-json/wp/v2/resources")
           .then(({ data }) => {
             commit("addResourcesToState", data);
             resolve();
@@ -101,7 +101,7 @@ export default new Vuex.Store({
     getServices({ commit }) {
       return new Promise(resolve => {
         axios
-          .get("http://fontana.local/wp-json/wp/v2/services")
+          .get("https://fontana.librarians.design/wp-json/wp/v2/services")
           .then(({ data }) => {
             commit("addServicesToState", data);
             resolve();
@@ -112,7 +112,7 @@ export default new Vuex.Store({
     getUpcomingEvents({ commit }) {
       return new Promise(resolve => {
         axios
-          .get("http://fontana.local/wp-json/tribe/events/v1/events")
+          .get("https://fontana.librarians.design/wp-json/tribe/events/v1/events")
           .then(({ data }) => {
             commit("addEventsToState", data.events);
             resolve();

@@ -74,7 +74,7 @@
 
             <card class="card--background-gray mb-3"
                   content-type="collection"
-                  heading="Latest">
+                  heading="New this week">
 
               <template slot="copy">
 
@@ -90,9 +90,9 @@
                             :heading="item.title.rendered"
                             heading-class="h4 text--bold text--nowrap text--ellipsis"
                             heading-level="h3"
-                            image="https://syndetics.com/index.aspx?isbn=9781501932007/LC.GIF&client=springshare"
+                            :image="item._embedded['wp:featuredmedia'][0].source_url"
                             :subheading="`by ${item.acf.creators[0].name}`"
-                            subheading-class="h5 mt-1  text--nowrap text--ellipsis"
+                            subheading-class="h5 mt-1 text--nowrap text--ellipsis"
                             subheading-level="h4">
                       </card>
                     </a>
@@ -100,7 +100,7 @@
                   </div>
                 </div>
 
-                <router-link class="link" to="/">See more</router-link>
+                <router-link class="link" to="/collection">See more</router-link>
 
               </template>
 

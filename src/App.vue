@@ -18,14 +18,13 @@
 
     <router-view class="view" />
 
-    <footer class="col-md-10 m-auto library__footer p-3 text--white">
-      I am a footer
-    </footer>
+    <app-footer />
 
   </div>
 </template>
 
 <script>
+import AppFooter from './patterns/AppFooter.vue';
 import Logo from "./elements/Logo.vue";
 import Menu from "./patterns/Menu.vue";
 import Search from "./patterns/Search.vue";
@@ -34,9 +33,10 @@ export default {
   name: 'app',
 
   components: {
+    AppFooter,
     Logo,
     Menu,
-    Search
+    Search,
   },
 
   mounted() {
