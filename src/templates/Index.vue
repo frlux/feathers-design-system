@@ -72,41 +72,11 @@
 
           <div class="col-md-8 p-0">
 
-            <card class="card--background-gray mb-3"
-                  content-type="collection"
-                  heading="New this week">
+            <Showcase collection-link="/collection"
+                      :collection-items="collection"
+                      heading="New this week" />
 
-              <template slot="copy">
-
-                <div class="d-flex flex-wrap">
-
-                  <div class="col-6 col-md-2"
-                       :key="item.id"
-                       v-for="(item, index) in collection"
-                       v-if="index < 6">
-
-                    <a class="link link--undecorated" :href="`https://www.nccardinal.org/eg/opac/record/${item.acf.record_identifier}`">
-                      <card content-container-class="p-0"
-                            :heading="item.title.rendered"
-                            heading-class="h4 text--bold text--nowrap text--ellipsis"
-                            heading-level="h3"
-                            :image="item._embedded['wp:featuredmedia'][0].source_url"
-                            :subheading="`by ${item.acf.creators[0].name}`"
-                            subheading-class="h5 mt-1 text--nowrap text--ellipsis"
-                            subheading-level="h4">
-                      </card>
-                    </a>
-
-                  </div>
-                </div>
-
-                <router-link class="link" to="/collection">See more</router-link>
-
-              </template>
-
-            </card>
-
-            <template v-for="(event, index) in events" v-if="index === 1">
+             <template v-for="(event, index) in events" v-if="index === 1">
 
               <card class="card--background-gray"
                     content-type="event"
@@ -169,6 +139,7 @@
 <script>
 import CallToAction from "../patterns/CallToAction.vue";
 import Card from "../patterns/Card.vue";
+import Showcase from '../patterns/Showcase.vue';
 
 /**
  * Shows how to layout and structure a home page.
@@ -183,6 +154,7 @@ export default {
   components: {
     CallToAction,
     Card,
+    Showcase,
   },
 
   computed: {
