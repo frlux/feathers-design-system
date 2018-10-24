@@ -1,3 +1,13 @@
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.6.0...v0.7.0) (2018-10-24)
+
+
+### Features
+
+* adds a collection item component ([cc2b12f](https://github.com/fontana-regional-library/feathers-design-system/commit/cc2b12f))
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.5.0...v0.6.0) (2018-10-23)
 
