@@ -2,10 +2,10 @@
     <main class="channel" role="main">
         <template v-for="(call, index) in callsToAction" v-if="index === 0">
             <call-to-action :action="call.acf.action"
-                            class="p-3"
                             :copy="call.acf.copy"
-                            image="https://source.unsplash.com/random"
-                            :heading="call.acf.heading"></call-to-action>
+                            :image="call.acf.image"
+                            :heading="call.acf.heading"
+                            :link="call.acf.link" />
         </template>
 
         <header class="background--white d-flex p-4">
