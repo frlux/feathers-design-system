@@ -156,7 +156,7 @@ export default {
       this.selectedDate = null;
       this.filter = null;
       this.location = null;
-    }
+    },
   },
 
   mounted() {

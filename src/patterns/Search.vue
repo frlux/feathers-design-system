@@ -126,7 +126,11 @@ export default {
       if (routeName === "Events" || routeName === "Services") {
         this.searchAction = routeName.toLowerCase();
       } else {
-        this.searchAction = 'catalog';
+        if (routeName === 'Event') {
+          this.searchAction = 'events';
+        } else {
+          this.searchAction = 'catalog';
+        }
       }
     },
 

@@ -72,7 +72,7 @@ const router = new Router({
       props: route => ({
         filter: route.query.filter,
         location: route.query.location
-      })
+      }),
     },
 
     {

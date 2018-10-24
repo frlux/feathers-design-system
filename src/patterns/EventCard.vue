@@ -8,6 +8,7 @@
                   content-type="event"
                   :explainer="event.start_date | moment('dddd, MMMM Do YYYY h:mm a')"
                   :heading="event.title"
+                  :heading-class="headingClass"
                   :sub-explainer="event.venue.venue">
 
                 <template slot="copy">
@@ -53,11 +54,17 @@ export default {
 
       excerptContainer.innerHTML = excerpt;
 
-      return excerptContainer.textContent;
+      return this.truncateExcerpt
+        ? `${excerptContainer.textContent.substring(0, 140)} ...`
+        : excerptContainer.textContent;
     },
   },
 
   props: {
+    headingClass: {
+      type: String,
+    },
+
     headingLevel: {
       type: String,
     },
@@ -74,6 +81,11 @@ export default {
     event: {
       required: true,
       type: Object,
+    },
+
+    truncateExcerpt: {
+      default: false,
+      type: Boolean,
     },
 
     variant: {

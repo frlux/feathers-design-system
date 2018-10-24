@@ -16,60 +16,34 @@
 
         <div class="m-md-auto d-md-flex flex-md-wrap flex-xl-nowrap justify-content-md-between col-md-10 pl-md-0 pr-md-0 pt-4 pb-4">
 
-          <card class="card--background-blue-dark mb-3 mb-xl-0 col-md-12 col-xl-4"
-                content-type="event"
-                :explainer="randomEventWithDescription.start_date"
-                :sub-explainer="randomEventWithDescription.venue.venue"
-                :heading="randomEventWithDescription.title"
-                v-if="randomEventWithDescription">
+          <div class="card card--background-blue-dark mb-3 mb-xl-0 col-md-12 col-xl-4 mr-xl-3 p-4">
 
-            <div slot="copy" v-html="randomEventWithDescription.excerpt"></div>
+            <event-card class="card--background-blue-alternate"
+                        :event="randomEvent"
+                        heading-class="h4 text--white text--bold mt-4"
+                        :key="randomEvent.id"
+                        truncate-excerpt="true"
+                        v-if="randomEvent "/>
 
-            <template slot="action">
-              <router-link class="button button--aqua" :to="`/events/${randomEventWithDescription.slug}`">
-                Info
-              </router-link>
-            </template>
+            <card content-container-class="p-3"
+                  content-type="service"
+                  :copy="randomServiceItem.description"
+                  :heading="randomServiceItem.name"
+                  v-if="randomServiceItem">
 
-          </card>
+              <template slot="action">
 
-          <div class="card card--background-blue-dark mb-3 mb-xl-0 col-md-12 col-xl-4 mr-xl-3 p-4"
-                v-if="!randomEventWithDescription">
+                <router-link class="button button--orange" :to="`/services/${randomServiceItem.slug}`">
+                  {{ randomServiceItem.acf.button_text ? randomServiceItem.acf.button_text : 'Explore'}}
+                </router-link>
 
-              <card class="card--background-blue-alternate d-block"
-                    :class="[index !== 2 ? 'mb-3' : '']"
-                    content-container-class="pl-4 pr-4 pt-4 pb-2"
-                    content-type="event"
-                    element="a"
-                    :explainer="event.start_date"
-                    :sub-explainer="event.venue.venue"
-                    :heading="event.title"
-                    heading-class="h4 text--white link--undecorated"
-                    :href="`/events/${event.slug}`"
-                    :key="event.id"
-                    v-for="(event, index) in events"
-                    v-if="index < 3"/>
+              </template>
+
+            </card>
 
           </div>
 
-          <card class="card--background-blue-dark mb-3 mb-md-0 col-md-6 col-xl-4 ml-xl-3 mr-xl-3"
-                content-type="service"
-                :copy="service.description"
-                :heading="service.name"
-                v-if="service && randomEventWithDescription">
-
-            <template slot="action">
-
-              <router-link class="button button--orange" :to="`/services/${service.slug}`">
-                {{ service.acf.button_text ? service.acf.button_text : 'Read more'}}
-              </router-link>
-
-            </template>
-
-          </card>
-
-          <collection-item class="card--background-blue-dark col-md-6 col-xl-4 mb-xl-0"
-                           :class="[randomEventWithDescription ? 'col-xl-4' : 'col-xl-8']"
+          <collection-item class="card--background-blue-dark col-md-6 col-xl-8 mb-xl-0"
                            :item="randomCollectionItem"
                            heading-level="h3"
                            subheading-class="mt-1 text--white"
@@ -90,26 +64,6 @@
             <Showcase collection-link="/collection"
                       :collection-items="collection"
                       heading="New this week" />
-
-             <template v-for="(event, index) in events" v-if="index === 1">
-
-              <card class="card--background-gray"
-                    content-type="event"
-                    :explainer="event.start_date"
-                    :sub-explainer="event.venue.venue"
-                    :heading="event.title">
-
-                <div slot="copy" v-html="event.excerpt"></div>
-
-                <template slot="action">
-                  <router-link class="button button--aqua" :to="`/events/${event.slug}`">
-                    Info
-                  </router-link>
-                </template>
-
-              </card>
-
-            </template>
 
             <card class="card--background-white text--dark"
                   content-type="blog"
@@ -155,6 +109,7 @@
 import CallToAction from "../patterns/CallToAction.vue";
 import Card from "../patterns/Card.vue";
 import CollectionItem from '../patterns/CollectionItem.vue';
+import EventCard from '../patterns/EventCard.vue';
 import Showcase from '../patterns/Showcase.vue';
 
 /**
@@ -171,6 +126,7 @@ export default {
     CallToAction,
     Card,
     CollectionItem,
+    EventCard,
     Showcase,
   },
 
@@ -189,20 +145,23 @@ export default {
 
     randomCollectionItem() {
       const collectionItemsWithAbstracts = this.collection
-        .filter(item => item.acf.abstract !== '' && item.acf.abstract.length < 280);
+        .filter(item => item.acf.abstract !== '' && item.acf.abstract.length < 400);
       return collectionItemsWithAbstracts[
         Math.floor(Math.random() * collectionItemsWithAbstracts.length)
       ];
     },
 
-    randomEventWithDescription() {
-      const eventsWithDescriptions = this.events
-        .filter(event => event.excerpt !== ''
-          && event.excerpt.length > 100
-          && event.excerpts.length < 200);
+    randomEvent() {
+      return this.events[
+        Math.floor(Math.random() * this.events.length)
+      ];
+    },
 
-      return eventsWithDescriptions[
-        Math.floor(Math.random() * eventsWithDescriptions.length)
+    randomServiceItem() {
+      const servicesWithDescription = this.services
+        .filter(service => service.description !== '');
+      return servicesWithDescription[
+        Math.floor(Math.random() * servicesWithDescription.length)
       ];
     },
 
@@ -214,12 +173,9 @@ export default {
       return this.$store.state.posts[0];
     },
 
-    /**
-     * A random service <3.
-     */
-    service() {
-      return this.$store.getters.getRandomContentItem("services");
-    }
+    services() {
+      return this.$store.state.services;
+    },
   },
 
   props: {

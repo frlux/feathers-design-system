@@ -1,5 +1,5 @@
 <template>
-    <main class="background--white d-flex event" role="main">
+    <main class="background--white event" role="main">
 
         <article>
 
@@ -41,13 +41,13 @@
                         <div class="align-items-center background--gray card d-flex row mb-3 person">
 
                             <div class="person__avatar">
-                                <img class="rounded-circle" src="https://source.unsplash.com/random/128x128" alt="">
+                                <img class="rounded-circle" :src="author.avatar_urls['96']" alt="">
                             </div>
 
                             <div class="person__content">
                                 <p class="align-items-center mt-3">
-                                    <span class="text--dark text--bold text--underlined person__name">Michael Schofield</span> <br>
-                                    <span class="text--small text--dark">Young Adult Librarian</span>
+                                    <span class="text--dark text--bold text--underlined person__name">{{ author.name }}</span> <br>
+                                    <span class="text--small text--dark">No Position Added Yet</span>
                                 </p>
                             </div>
 
@@ -89,35 +89,56 @@
 </template>
 
 <script>
-import AddToCalendar from "vue-add-to-calendar";
-import CallToAction from "../patterns/CallToAction.vue";
-import Heading from "../elements/Heading.vue";
-import Vue from "vue";
-import VueMoment from "vue-moment";
+import AddToCalendar from 'vue-add-to-calendar';
+import axios from 'axios';
+import Vue from 'vue';
+import VueMoment from 'vue-moment';
+
+import CallToAction from '../patterns/CallToAction.vue';
+import Heading from '../elements/Heading.vue';
 
 Vue.use(AddToCalendar);
 Vue.use(VueMoment);
 
 export default {
-  name: "Event",
+  name: 'Event',
 
   components: {
     CallToAction,
-    Heading
+    Heading,
   },
 
   computed: {
     event() {
       return this.$store.getters.getEventBySlug(this.slug);
-    }
+    },
+  },
+
+  data() {
+    return {
+      author: {},
+    };
+  },
+
+  methods: {
+    getAuthor() {
+      axios.get(`https://fontana.librarians.design/wp-json/wp/v2/users/${this.event.author}`)
+        .then(({ data }) => {
+          this.author = data;
+        });
+    },
+  },
+
+  mounted() {
+    this.getAuthor();
   },
 
   props: {
     slug: {
       required: true,
-      type: String
-    }
-  }
+      type: String,
+    },
+  },
 };
 </script>
 
