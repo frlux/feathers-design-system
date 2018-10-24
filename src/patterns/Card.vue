@@ -237,6 +237,7 @@ export default {
 
       &__heading {
         font-size: $font-size-x-large;
+        font-weight: $font-weight-regular;
 
         @media #{$media-query-medium} {
           font-size: $font-size-xxx-large;
@@ -273,6 +274,7 @@ export default {
 
   &__heading {
     font-size: $font-size-large;
+    font-weight: $font-weight-bold;
   }
 
   &__image img {

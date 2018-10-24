@@ -32,16 +32,53 @@ Through partnerships in the community, we are able to bring you art and historic
                     <div class="col col-md-6 col-lg-4">
 
                         <input class="d-none" id="test" type="text" v-model="selectedDate" />
-                        <button v-on:click="clearSelectedDate">Clear</button>
+
+                        <div class="mt-3" style="width: 307.875px">
+                            <div class="form-group">
+                                <label class="form-label text--bold text--sans text--dark" for="eventSidebarFilter">
+                                    Filter events by title
+                                </label>
+
+                                <input class="form-control"
+                                       id="eventSidebarFilter"
+                                       type="text"
+                                       v-model="filter">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label text--bold text--sans text--dark"
+                                       for="eventSidebarLocation">
+                                    Filter events by location
+                                </label>
+
+                                <select class="form-control"
+                                        id="eventSidebarLocation"
+                                        v-model="location">
+
+                                    <option :key="location.id"
+                                            :value="location.slug"
+                                            v-for="location in locations">
+                                        {{ location.name }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <button class="button button--blue-alternate"
+                                    v-on:click="clearSelectedDate">Clear Filter</button>
+                        </div>
 
                     </div>
 
                     <div class="col col-lg-8">
 
-                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="filter">
+                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="filter || location">
                             <heading class="h3 text--dark text--serif" level="h2">Search</heading>
-                            <p class="channel__subtitle mt-1 text--dark text--sans" v-if="filter">
-                                Here is everything we can find that matches your search for <mark class="mark">{{ filter }}</mark> <template v-if="location">happening at <router-link class="link" :to="`location/${location.slug}`">{{ locationDetails.name }}</router-link></template>.
+                            <p class="channel__subtitle mt-1 text--dark text--sans"
+                               v-if="filter || location">
+                                Here is everything we can find that matches your search
+                                {{ filter ? 'for' : '' }} <mark class="mark">{{ filter }}</mark>
+                                <template v-if="location">happening at <router-link class="link" :to="`location/${location.slug}`">{{ locationDetails.name }}</router-link></template>.
                             </p>
 
                             <p class="channel__subtitle text--dark text--large" v-if="selectedDate">
@@ -51,21 +88,8 @@ Through partnerships in the community, we are able to bring you art and historic
 
                         <template v-for="event in filteredEvents">
 
-                            <card class="card--background-gray"
-                                  content-type="event"
-                                  :explainer="event.start_date"
-                                  :sub-explainer="event.venue.venue"
-                                  :heading="event.title">
-
-                                <div slot="copy" v-html="event.excerpt"></div>
-
-                                <template slot="action">
-                                    <router-link class="button button--aqua" :to="`/events/${event.slug}`">
-                                        Info
-                                    </router-link>
-                                </template>
-
-                            </card>
+                            <event-card class="card--background-gray"
+                                        :event="event" />
 
                         </template>
 
@@ -83,15 +107,14 @@ Through partnerships in the community, we are able to bring you art and historic
 </template>
 
 <script>
-import Card from "../patterns/Card.vue";
-import flatpickr from "flatpickr";
-import Heading from "../elements/Heading.vue";
+import flatpickr from 'flatpickr';
+import EventCard from '../patterns/EventCard.vue';
 
 export default {
-  name: "Events",
+  name: 'Events',
 
   components: {
-    Card
+    EventCard,
   },
 
   computed: {
@@ -105,6 +128,10 @@ export default {
             location => location.slug === this.location
           )
         : null;
+    },
+
+    locations() {
+      return this.$store.state.locations;
     },
 
     filteredEvents() {
@@ -127,6 +154,8 @@ export default {
   methods: {
     clearSelectedDate() {
       this.selectedDate = null;
+      this.filter = null;
+      this.location = null;
     }
   },
 
@@ -148,9 +177,8 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .flatpickr-calendar {
-  background: transparent;
   opacity: 0;
   display: none;
   text-align: center;
@@ -162,18 +190,16 @@ export default {
   border: 0;
   font-size: 14px;
   line-height: 24px;
-  border-radius: 5px;
+  border-radius: $border-radius-default;
   position: absolute;
   width: 307.875px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   -ms-touch-action: manipulation;
   touch-action: manipulation;
-  background: #fff;
-  -webkit-box-shadow: 1px 0 0 #e6e6e6, -1px 0 0 #e6e6e6, 0 1px 0 #e6e6e6,
-    0 -1px 0 #e6e6e6, 0 3px 13px rgba(0, 0, 0, 0.08);
-  box-shadow: 1px 0 0 #e6e6e6, -1px 0 0 #e6e6e6, 0 1px 0 #e6e6e6,
-    0 -1px 0 #e6e6e6, 0 3px 13px rgba(0, 0, 0, 0.08);
+  background-color: $color-blue-alternate;
+  box-shadow: $box-shadow-small;
+  border-top: 5px solid $color-aqua;
 }
 .flatpickr-calendar.open,
 .flatpickr-calendar.inline {
@@ -291,7 +317,7 @@ export default {
 }
 .flatpickr-months .flatpickr-month {
   background: transparent;
-  color: rgba(0, 0, 0, 0.9);
+  color: white;
   fill: rgba(0, 0, 0, 0.9);
   height: 28px;
   line-height: 1;
@@ -317,7 +343,7 @@ export default {
   height: 28px;
   padding: 10px;
   z-index: 3;
-  color: rgba(0, 0, 0, 0.9);
+  color: white;
   fill: rgba(0, 0, 0, 0.9);
 }
 .flatpickr-months .flatpickr-prev-month.disabled,
@@ -350,7 +376,7 @@ export default {
           /*rtl:end:ignore*/
 .flatpickr-months .flatpickr-prev-month:hover,
 .flatpickr-months .flatpickr-next-month:hover {
-  color: #959ea9;
+  color: $color-aqua;
 }
 .flatpickr-months .flatpickr-prev-month:hover svg,
 .flatpickr-months .flatpickr-next-month:hover svg {
@@ -365,7 +391,7 @@ export default {
 .flatpickr-months .flatpickr-next-month svg path {
   -webkit-transition: fill 0.1s;
   transition: fill 0.1s;
-  fill: inherit;
+  fill: white;
 }
 .numInputWrapper {
   position: relative;
@@ -441,7 +467,7 @@ export default {
   font-size: 135%;
   line-height: inherit;
   font-weight: 300;
-  color: inherit;
+  color: white;
   position: absolute;
   width: 75%;
   left: 12.5%;
@@ -456,7 +482,7 @@ export default {
 .flatpickr-current-month span.cur-month {
   font-family: inherit;
   font-weight: 700;
-  color: inherit;
+  color: white;
   display: inline-block;
   margin-left: 0.5ch;
   padding: 0;
@@ -479,7 +505,7 @@ export default {
   background: transparent;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  color: inherit;
+  color: white;
   cursor: text;
   padding: 0 0 0 0.5ch;
   margin: 0;
@@ -532,7 +558,7 @@ span.flatpickr-weekday {
   cursor: default;
   font-size: 90%;
   background: transparent;
-  color: rgba(0, 0, 0, 0.54);
+  color: white;
   line-height: 1;
   margin: 0;
   text-align: center;
@@ -597,7 +623,7 @@ span.flatpickr-weekday {
   border-radius: 150px;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  color: #393939;
+  color: white;
   cursor: pointer;
   font-weight: 400;
   width: 14.2857143%;
@@ -628,6 +654,7 @@ span.flatpickr-weekday {
 .flatpickr-day:focus,
 .flatpickr-day.prevMonthDay:focus,
 .flatpickr-day.nextMonthDay:focus {
+  color: $color-blue-alternate;
   cursor: pointer;
   outline: 0;
   background: #e6e6e6;
@@ -640,7 +667,7 @@ span.flatpickr-weekday {
 .flatpickr-day.today:focus {
   border-color: #959ea9;
   background: #959ea9;
-  color: #fff;
+  color: $color-blue-alternate;
 }
 .flatpickr-day.selected,
 .flatpickr-day.startRange,
@@ -699,7 +726,7 @@ span.flatpickr-weekday {
 .flatpickr-day.notAllowed,
 .flatpickr-day.notAllowed.prevMonthDay,
 .flatpickr-day.notAllowed.nextMonthDay {
-  color: rgba(57, 57, 57, 0.3);
+  color: white;
   background: transparent;
   border-color: transparent;
   cursor: default;
@@ -739,7 +766,7 @@ span.flatpickr-weekday {
   display: block;
   width: 100%;
   max-width: none;
-  color: rgba(57, 57, 57, 0.3);
+  color: $color-blue-alternate;
   background: transparent;
   cursor: default;
   border: none;
