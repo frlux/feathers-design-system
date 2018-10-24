@@ -14,7 +14,7 @@
 
     </header>
 
-    <Search />
+    <Search :search-action="$route.name"/>
 
     <router-view class="view" />
 

@@ -91,11 +91,13 @@ export default {
 
   computed: {
     isCatalogSearch() {
-      return this.searchAction === "catalog";
+      return this.searchAction.toLowerCase() === 'catalog'
+        || this.searchAction.toLowerCase() === 'index';
     },
 
     isEventSearch() {
-      return this.searchAction === "events";
+      return this.searchAction.toLowerCase() === 'events'
+        || this.searchAction.toLowerCase() === 'events-slug';
     },
 
     isEverythingSearch() {
@@ -103,7 +105,8 @@ export default {
     },
 
     isServicesSearch() {
-      return this.searchAction === "services";
+      return this.searchAction.toLowerCase() === 'services'
+        || this.searchAction.toLowerCase() === 'events-slug';
     },
 
     locationFilter() {
@@ -113,7 +116,6 @@ export default {
 
   data() {
     return {
-      searchAction: 'catalog',
       searchFormAction: 'https://www.nccardinal.org/eg/opac/results',
       searchQuery: '',
     };
@@ -121,17 +123,8 @@ export default {
 
   methods: {
     resetSearchAction() {
-      const routeName = this.$route.name;
-
-      if (routeName === "Events" || routeName === "Services") {
-        this.searchAction = routeName.toLowerCase();
-      } else {
-        if (routeName === 'Event') {
-          this.searchAction = 'events';
-        } else {
-          this.searchAction = 'catalog';
-        }
-      }
+      const routeName = this.$route.name.toLowerCase();
+      this.searchAction = routeName;
     },
 
     search() {
@@ -210,6 +203,13 @@ export default {
      * it's as useful as possible.
      */
     this.resetSearchAction();
+  },
+
+  props: {
+    searchAction: {
+      default: 'catalog',
+      type: String,
+    },
   },
 
   watch: {
