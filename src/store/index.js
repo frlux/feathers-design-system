@@ -7,6 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    authors: [],
     callsToAction: [],
     collection: [],
     events: [],
@@ -20,6 +21,17 @@ export default new Vuex.Store({
   },
 
   actions: {
+    getAuthors({ commit }) {
+      return new Promise((resolve) => {
+        axios
+          .get('https://fontana.librarians.design/wp-json/wp/v2/users')
+          .then(({ data }) => {
+            commit('addAuthorsToState', data);
+            resolve();
+          });
+      });
+    },
+
     getCallsToAction({ commit }) {
       return new Promise(resolve => {
         axios
@@ -122,6 +134,8 @@ export default new Vuex.Store({
   },
 
   getters: {
+    getAuthorById: state => authorId => state.authors.find(author => author.id === 2),
+
     getCallsToActionByCategory: state => categoryName => {
       const actionsByService = state.callsToAction.filter(
         call =>
@@ -218,6 +232,10 @@ export default new Vuex.Store({
   },
 
   mutations: {
+    addAuthorsToState(state, authors) {
+      state.authors = authors;
+    },
+
     addCallsToActionToState(state, callsToAction) {
       state.callsToAction = callsToAction;
     },

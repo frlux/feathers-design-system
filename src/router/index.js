@@ -78,7 +78,9 @@ const router = new Router({
     {
       component: Event,
       path: "/events/:slug",
-      props: true
+      props: route => ({
+        eventObject: router.app.$store.getters.getEventBySlug(route.params.slug),
+      }),
     },
 
     {

@@ -40,6 +40,7 @@ export default {
   },
 
   mounted() {
+    this.$store.dispatch('getAuthors');
     this.$store.dispatch("getCallsToAction");
     this.$store.dispatch("getUpcomingEvents");
     this.$store.dispatch("getServices");

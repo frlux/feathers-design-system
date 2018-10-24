@@ -22,7 +22,7 @@
                         :event="randomEvent"
                         heading-class="h4 text--white text--bold mt-4"
                         :key="randomEvent.id"
-                        truncate-excerpt="true"
+                        :truncate-excerpt="true"
                         v-if="randomEvent "/>
 
             <card content-container-class="p-3"
