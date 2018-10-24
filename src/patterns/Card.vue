@@ -229,7 +229,7 @@ export default {
     .card {
       &__content {
         @media #{$media-query-medium} {
-          max-width: 75%;
+          max-width: 66%;
         }
 
         z-index: 1;
@@ -265,6 +265,7 @@ export default {
         font-size: $font-size-base;
         @media #{$media-query-medium} {
           font-size: $font-size-large;
+          max-width: 75%;
         }
       }
     }

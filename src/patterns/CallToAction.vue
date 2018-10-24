@@ -9,10 +9,10 @@
               type="deck">
 
             <template slot="action">
-                <router-link class="button button--aqua button--large" to="Somewhere"">
-                    Call to Action
-
-                </router-link>
+                <a class="button button--aqua button--large"
+                             :href="link">
+                    {{ action }}
+                </a>
             </template>
 
         </card>
@@ -52,6 +52,9 @@ export default {
     },
     heading: {
       required: true,
+      type: String,
+    },
+    link: {
       type: String,
     },
   },

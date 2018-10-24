@@ -7,38 +7,56 @@
       <template v-for="(call, index) in callsToAction" v-if="index === 0">
         <call-to-action :action="call.acf.action"
                         :copy="call.acf.copy"
-                        image="call.acf.image"
-                        :heading="call.acf.heading"></call-to-action>
+                        :image="call.acf.image"
+                        :heading="call.acf.heading"
+                        :link="call.acf.link"></call-to-action>
       </template>
 
       <section class="background--blue-alternate library__section pb-3 pl-md-2 pb-md-4 pt-md-4 pr-md-2">
 
         <div class="m-md-auto d-md-flex flex-md-wrap flex-xl-nowrap justify-content-md-between col-md-10 pl-md-0 pr-md-0 pt-4 pb-4">
 
-          <template v-for="(event, index) in events" v-if="index === 0">
+          <card class="card--background-blue-dark mb-3 mb-xl-0 col-md-12 col-xl-4"
+                content-type="event"
+                :explainer="randomEventWithDescription.start_date"
+                :sub-explainer="randomEventWithDescription.venue.venue"
+                :heading="randomEventWithDescription.title"
+                v-if="randomEventWithDescription">
 
-            <card class="card--background-blue-dark mb-3 mb-xl-0 col-md-12 col-xl-4"
-                  content-type="event"
-                  :explainer="event.start_date"
-                  :sub-explainer="event.venue.venue"
-                  :heading="event.title">
+            <div slot="copy" v-html="randomEventWithDescription.excerpt"></div>
 
-              <div slot="copy" v-html="event.excerpt"></div>
+            <template slot="action">
+              <router-link class="button button--aqua" :to="`/events/${randomEventWithDescription.slug}`">
+                Info
+              </router-link>
+            </template>
 
-              <template slot="action">
-                <router-link class="button button--aqua" :to="`/events/${event.slug}`">
-                  Info
-                </router-link>
-              </template>
+          </card>
 
-            </card>
+          <div class="card card--background-blue-dark mb-3 mb-xl-0 col-md-12 col-xl-4 mr-xl-3 p-4"
+                v-if="!randomEventWithDescription">
 
-          </template>
+              <card class="card--background-blue-alternate d-block"
+                    :class="[index !== 2 ? 'mb-3' : '']"
+                    content-container-class="pl-4 pr-4 pt-4 pb-2"
+                    content-type="event"
+                    element="a"
+                    :explainer="event.start_date"
+                    :sub-explainer="event.venue.venue"
+                    :heading="event.title"
+                    heading-class="h4 text--white link--undecorated"
+                    :href="`/events/${event.slug}`"
+                    :key="event.id"
+                    v-for="(event, index) in events"
+                    v-if="index < 3"/>
+
+          </div>
 
           <card class="card--background-blue-dark mb-3 mb-md-0 col-md-6 col-xl-4 ml-xl-3 mr-xl-3"
                 content-type="service"
                 :copy="service.description"
-                :heading="service.name" v-if="service">
+                :heading="service.name"
+                v-if="service && randomEventWithDescription">
 
             <template slot="action">
 
@@ -50,17 +68,14 @@
 
           </card>
 
-          <card class="card--background-blue-dark col-md-6 col-xl-4"
-                content-type="collection"
-                :copy="collectionItem.acf.abstract"
-                :heading="collectionItem.title.rendered"
-                v-if="collectionItem">
-
-            <template slot="action">
-              <router-link class="button button--pink" to="/events">Let's go</router-link>
-            </template>
-
-          </card>
+          <collection-item class="card--background-blue-dark col-md-6 col-xl-4 mb-xl-0"
+                           :class="[randomEventWithDescription ? 'col-xl-4' : 'col-xl-8']"
+                           :item="randomCollectionItem"
+                           heading-level="h3"
+                           subheading-class="mt-1 text--white"
+                           subheading-level="h4"
+                           variant="feature"
+                           v-if="randomCollectionItem" />
 
         </div>
 
@@ -139,6 +154,7 @@
 <script>
 import CallToAction from "../patterns/CallToAction.vue";
 import Card from "../patterns/Card.vue";
+import CollectionItem from '../patterns/CollectionItem.vue';
 import Showcase from '../patterns/Showcase.vue';
 
 /**
@@ -154,6 +170,7 @@ export default {
   components: {
     CallToAction,
     Card,
+    CollectionItem,
     Showcase,
   },
 
@@ -170,8 +187,23 @@ export default {
       return this.$store.state.collection;
     },
 
-    collectionItem() {
-      return this.$store.getters.getRandomContentItem('collection');
+    randomCollectionItem() {
+      const collectionItemsWithAbstracts = this.collection
+        .filter(item => item.acf.abstract !== '' && item.acf.abstract.length < 280);
+      return collectionItemsWithAbstracts[
+        Math.floor(Math.random() * collectionItemsWithAbstracts.length)
+      ];
+    },
+
+    randomEventWithDescription() {
+      const eventsWithDescriptions = this.events
+        .filter(event => event.excerpt !== ''
+          && event.excerpt.length > 100
+          && event.excerpts.length < 200);
+
+      return eventsWithDescriptions[
+        Math.floor(Math.random() * eventsWithDescriptions.length)
+      ];
     },
 
     events() {

@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Channel from "../templates/Channel.vue";
+import Collection from '../templates/Collection.vue';
 import Event from "../templates/Event.vue";
 import Events from "../templates/Events.vue";
 import Index from "../templates/Index.vue";
@@ -32,6 +33,20 @@ const router = new Router({
         `,
         network: 'blog',
         slug: 'any',
+      }),
+    },
+
+    {
+      component: Collection,
+      meta: {
+        title: 'Collection',
+      },
+      name: 'Collection',
+      path: '/collection',
+      props: route => ({
+        channelTitle: 'Collection',
+        location: route.query.location,
+        slug: any,
       }),
     },
 

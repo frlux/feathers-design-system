@@ -197,7 +197,7 @@ export default new Vuex.Store({
      * We can use `getRandomContentItem(services)` -- for example -- to return
      * a random service.
      */
-    getRandomContentItem: state => contentType => {
+    getRandomContentItem: state => (contentType) => {
       const content = state[contentType];
       return content[Math.floor(Math.random() * content.length)];
     },
