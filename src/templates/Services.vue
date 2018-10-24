@@ -78,7 +78,23 @@
                 <div class="d-md-flex">
 
                     <div class="col col-md-6 col-lg-4">
-                         Sidebar
+
+                        <div class="mt-3" style="width: 307.875px">
+                            <div class="form-group">
+                                <label class="form-label text--bold text--sans text--dark" for="serviceSidebarFilter">
+                                    Filter services by title
+                                </label>
+
+                                <input class="form-control"
+                                       id="serviceSidebarFilter"
+                                       type="text"
+                                       v-model="filter">
+                            </div>
+
+                            <button class="button button--blue-alternate"
+                                    v-on:click="filter = null">Clear Filter</button>
+                        </div>
+
                     </div>
 
                     <div class="col col-lg-8">
@@ -160,8 +176,8 @@ export default {
 
   props: {
     filter: {
-      type: String
-    }
-  }
+      type: String,
+    },
+  },
 };
 </script>

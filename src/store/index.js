@@ -226,9 +226,7 @@ export default new Vuex.Store({
       ];
     },
 
-    getServiceBySlug: state => slug => {
-      return state.services.find(service => service.slug === slug);
-    },
+    getServiceBySlug: state => slug => state.services.find(service => service.slug === slug),
   },
 
   mutations: {

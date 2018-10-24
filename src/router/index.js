@@ -7,6 +7,7 @@ import Events from "../templates/Events.vue";
 import Index from "../templates/Index.vue";
 import NotFound from "../templates/NotFound.vue";
 import SearchResults from "../templates/SearchResults.vue";
+import Service from '../templates/Service.vue';
 import Services from "../templates/Services.vue";
 
 Vue.use(Router);
@@ -103,16 +104,13 @@ const router = new Router({
       })
     },
     {
-      component: Channel,
-      name: "Services",
+      component: Service,
       path: "/services/:slug",
-      props: true
+      props: route => ({
+        serviceObject: router.app.$store.getters.getServiceBySlug(route.params.slug),
+        location: route.query.location,
+      }),
     },
-    {
-      component: Channel,
-      path: "/service/:slug"
-    },
-
     {
       path: "*",
       name: "NotFound",
