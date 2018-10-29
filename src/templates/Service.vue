@@ -18,12 +18,10 @@
                     <div class="col-md-8">
 
                         <heading class="channel__title text--dark text--serif"
-                                 level="h1">
-                            {{ serviceObject.name }}
+                                 level="h1" v-html="serviceObject.name">
                         </heading>
 
-                        <p class="channel__description">
-                            {{ serviceObject.description }}
+                        <p class="channel__description" v-html="serviceObject.description">
                         </p>
 
                     </div>
