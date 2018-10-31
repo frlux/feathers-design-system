@@ -14,8 +14,7 @@
 
                     <div class="col-9 mt-0 pl-0 pr-0">
 
-                        <heading class="h2 mt-0 text--serif" :level="headingLevel">
-                            {{ item.title.rendered }}
+                        <heading class="h2 mt-0 text--serif" :level="headingLevel" v-html="item.title.rendered">
                         </heading>
 
                         <heading class="h4 mt-0"

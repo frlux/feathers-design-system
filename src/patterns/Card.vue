@@ -33,8 +33,7 @@
 
             <heading :class="[{'text--serif': isDeck}, headingClass ? headingClass : 'card__heading']"
                      :level="headingLevel"
-                     v-if="heading">
-                {{ heading }}
+                     v-if="heading" v-html="heading">
             </heading>
 
              <heading :class="[subheadingClass ? subheadingClass : 'card__subheading mt-2']"
@@ -46,7 +45,7 @@
             <div class="card__heading__separator" v-if="isDeck"></div>
 
             <p class="card__copy">
-                <slot name="copy">{{ copy }}</slot>
+                <slot name="copy">{{decodeHtml(copy)}}</slot>
             </p>
 
             <slot name="action"></slot>
@@ -76,6 +75,15 @@ export default {
     isDeck() {
       return this.type === "deck";
     }
+  },
+  methods:{
+    decodeHtml: function (html) {
+        if(html){
+      var txt = document.createElement("textarea");
+      txt.innerHTML = html;
+      return txt.value;
+        }
+      },
   },
 
   props: {
