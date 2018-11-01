@@ -96,6 +96,11 @@ Through partnerships in the community, we are able to bring you art and historic
                         <template v-if="events.length === 0">
                             <p>Sorry, we couldn't find any events.</p>
                         </template>
+                        <a class="button button--large button--pink"
+                        v-if="events.length < eventCount"
+                          @click="getMoreEvents();">
+                            Load More... 
+                        </a>
 
                     </div>
 
@@ -110,6 +115,8 @@ Through partnerships in the community, we are able to bring you art and historic
 import flatpickr from 'flatpickr';
 import EventCard from '../patterns/EventCard.vue';
 
+window.axios = require('axios');
+
 export default {
   name: 'Events',
 
@@ -120,6 +127,10 @@ export default {
   computed: {
     events() {
       return this.$store.getters.getEvents(this.selectedDate, this.location);
+    },
+
+    eventCount() {
+      return this.$store.getters.getEventCount();
     },
 
     locationDetails() {
@@ -147,7 +158,12 @@ export default {
 
   data() {
     return {
-      selectedDate: null
+      selectedDate: null,
+      eventsUrl: 'https://fontana.librarians.design/wp-json/tribe/events/v1/events?per_page=20&page=',
+      eventsData: {
+        per_page:20,
+        page: 2,
+      },
     };
   },
 
@@ -156,6 +172,17 @@ export default {
       this.selectedDate = null;
       this.filter = null;
       this.location = null;
+    },
+
+    getMoreEvents() {
+      axios.get(this.eventsUrl, {params: this.eventsData})
+      .then((response) =>{
+        this.$store.commit('addMoreEvents', response.data.events);
+        this.eventsData.page++;
+      })
+      .catch( (error)=>{
+        console.log(error);
+      })
     },
   },
 
