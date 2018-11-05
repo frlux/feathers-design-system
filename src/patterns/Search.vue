@@ -6,7 +6,8 @@
           v-on:keydown.enter.prevent="search"
           v-on:submit.prevent="search">
 
-        <div class="m-auto col-lg-6 pl-m-0 pr-m-0">
+        <div class="m-auto pl-m-0 pr-m-0"
+             :class="containerClass">
 
             <div class="background--blue-dark card form-group form__group p-4">
 
@@ -206,6 +207,11 @@ export default {
   },
 
   props: {
+    containerClass: {
+      default: 'col-lg-6',
+      type: String,
+    },
+
     searchAction: {
       default: 'catalog',
       type: String,

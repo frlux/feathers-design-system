@@ -1,37 +1,40 @@
 @import "~bootstrap/scss/nav";
 
 .menu {
-  background-color: $color-blue-alternate;
-  bottom: 0;
-  left: 0;
-  position: fixed;
-  right: 0;
-  z-index: 5;
 
-  @media #{$media-query-medium} {
-    background-color: transparent;
-    position: static;
+  &--header {
+    background-color: $color-blue-alternate;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    z-index: 5;
 
-    &__item:not(.dropdown__toggle) {
-      position: relative;
+    @media #{$media-query-medium} {
+      background-color: transparent;
+      position: static;
 
-      &::after {
-        background-color: transparent;
-        bottom: 0;
-        content: "";
-        height: 3px;
-        left: 0;
-        position: absolute;
-        transition: all $duration-quickly ease-in-out;
-        width: 100%;
-      }
+      &__item:not(.dropdown__toggle) {
+        position: relative;
 
-      &:hover::after,
-      &.router-link-active::after,
-      &.nuxt-link-active::after {
-        background-color: $color-white;
-        content: "";
-        position: absolute;
+        &::after {
+          background-color: transparent;
+          bottom: 0;
+          content: "";
+          height: 3px;
+          left: 0;
+          position: absolute;
+          transition: all $duration-quickly ease-in-out;
+          width: 100%;
+        }
+
+        &:hover::after,
+        &.router-link-active::after,
+        &.nuxt-link-active::after {
+          background-color: $color-white;
+          content: "";
+          position: absolute;
+        }
       }
     }
   }
@@ -45,12 +48,17 @@
     width: 1px;
   }
 
+  &--header .menu__item:hover,
+  &--header .menu__item:focus {
+    border-bottom: 1px solid white;
+  }
+  &--footer .menu__item:hover,
+  &--footer .menu__item:focus {
+    box-shadow: $box-shadow-small;
+  }
+
   &__item {
     text-decoration: none;
-
-    &:hover {
-      border-bottom: 1px solid white;
-    }
 
     &__icon {
       @media #{$media-query-medium} {

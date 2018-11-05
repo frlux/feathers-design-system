@@ -1,6 +1,6 @@
 <template>
 
-    <nav class="d-flex justify-content-md-end menu" role="navigation">
+    <nav class="d-flex justify-content-md-end menu menu--header" role="navigation">
 
         <a class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item nav-link nav-item text--white"
            href="https://fontana.nccardinal.org/eg/opac/login?redirect_to=%2Feg%2Fopac%2Fmyopac%2Fmain">
