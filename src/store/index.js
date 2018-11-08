@@ -124,9 +124,9 @@ export default new Vuex.Store({
     getUpcomingEvents({ commit }) {
       return new Promise(resolve => {
         axios
-          .get("https://fontana.librarians.design/wp-json/tribe/events/v1/events")
+          .get("https://fontana.librarians.design/wp-json/wp/v2/events")
           .then(({ data }) => {
-            commit("addEventsToState", data.events);
+            commit("addEventsToState", data);
             resolve();
           });
       });
@@ -196,7 +196,7 @@ export default new Vuex.Store({
 
       if (locationName && locationName !== 'all') {
         eventsFilteredByLocation = events.filter(
-          event => event.venue.slug === locationName
+          event => event.acf.location.some(location => location.slug === locationName)
         );
       }
 
