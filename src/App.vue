@@ -47,6 +47,7 @@ export default {
     this.$store.dispatch("getPages");
     this.$store.dispatch("getCollection");
     this.$store.dispatch("getPosts");
+	this.$store.dispatch("getArticles");
   }
 };
 </script>
