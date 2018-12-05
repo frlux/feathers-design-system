@@ -39,17 +39,63 @@
                         <div class="co col-md-6 col-lg-4"></div>
 
                         <div class="col col-lg-8">
+<!--            NEEDS WORK              -->
+                                                      <Showcase v-if="collection"
+                            collection-link=""
+                      :collection-items="collection"
+                      heading="Related Materials" />
+                          <template v-for="event in events">
 
-                            <p class="text--large">
-                                These service pages are what we call <b>channels</b>, and they rely on
-                                content -- like books, events, tutorials, and the like -- that all share
-                                the same common taxonomy to self generate, so that we can present relevant
-                                collection items and events on the fly.
-                            </p>
+                            <event-card class="card--background-gray"
+                                        :event="event" />
 
-                            <p class="text--large">
-                                Right now, there's not enough content to self generate. Hooray for betas!
-                            </p>
+                        </template>
+                          <template v-for="page in pages">
+                          <card class="card--background-white text--dark"
+                                :content-type="blog"
+                                :heading="page.title.rendered">
+
+                            <div slot="copy">
+                              <div v-html="page.excerpt.rendered"></div>
+                            </div>
+
+                            <template slot="action">
+                              <router-link class="button button--aqua" :to="`${page.slug}`">
+                                Info
+                              </router-link>
+                            </template>
+
+                          </card>
+                          </template>
+                        <template v-for="article in articles">
+                          <card class="card--background-white text--dark"
+                                :content-type="blog"
+                                :explainer="getAuthor(article.author)"
+                                :sub-explainer="article.date | moment('dddd, MMMM Do')"
+                                :heading="article.title.rendered">
+
+                            <div slot="copy">
+                              <div v-html="article.excerpt.rendered"></div>
+                            </div>
+
+                            <template slot="action">
+                              <router-link class="button button--aqua" :to="`/articles/${article.slug}`">
+                                Info
+                              </router-link>
+                            </template>
+
+                          </card>
+                          </template>
+                          <template v-for="item in collection">
+                          <collection-item class="card--background-blue-dark col-md-6 col-xl-8 mb-xl-0"
+                           :item="item"
+                           heading-level="h3"
+                           subheading-class="mt-1 text--white"
+                           subheading-level="h4"
+                           variant="feature"
+                           v-if="collection" />
+                           </template>
+	<!-- END CONTENT STREAM -->
 
                         </div>
                     </div>
@@ -77,14 +123,68 @@ export default {
 
   computed: {
     callsToAction() {
-      return this.$store.getters.getContentByService(
+      let serviceCTA = this.$store.getters.getContentByService(
         'callsToAction',
         this.serviceObject.slug,
-        this.location,
+        this.location
       );
+      if (serviceCTA.length > 0){
+        return serviceCTA;
+      }
+      let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'callsToAction'};
+      this.$store.dispatch("getMoreContent", serviceQuery);
+    },
+	  
+    collection() {
+      let serviceCollections = this.$store.getters.getContentByService("collection", this.serviceObject.slug,
+        this.location);
+        console.log(serviceCollections);
+        if (serviceCollections.length > 0){
+        return serviceCollections;
+      }
+      let serviceQuery = {'urlParams': "&services=" + this.serviceObject.id, 'contentType': 'collection'};
+      this.$store.dispatch("getMoreContent", serviceQuery);
+    },
+	  
+    articles() {
+      let serviceArticles = this.$store.getters.getContentByService("articles", this.serviceObject.slug,
+        this.location);
+        if (serviceArticles.length > 0){
+        return serviceArticles;
+      }
+      let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'articles'};
+      this.$store.dispatch("getMoreContent", serviceQuery);
+    }, 
+	  
+    events() {
+      let serviceEvents = this.$store.getters.getContentByService("events", this.serviceObject.slug,
+        this.location);
+        if (serviceEvents.length > 0){
+        return serviceEvents;
+      }
+      let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'events'};
+      this.$store.dispatch("getMoreContent", serviceQuery);
+    },
+	  
+    pages() {
+      let servicePages = this.$store.getters.getContentByService("pages", this.serviceObject.slug,
+        this.location);
+        if (servicePages.length > 0){
+        return servicePages;
+      }
+      let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'pages'};
+      this.$store.dispatch("getMoreContent", serviceQuery);
+    },
+	  
+  },
+	
+ methods: {
+    getAuthor: function(authorId) {
+      let author = this.$store.getters.getAuthorById(Number(authorId));
+      return author.name;
     },
   },
-
+	
   props: {
     serviceObject: {
       type: Object,
