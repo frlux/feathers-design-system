@@ -111,14 +111,22 @@
 
 <script>
 import CallToAction from '../patterns/CallToAction.vue';
+import Card from '../patterns/Card.vue';
+import CollectionItem from '../patterns/CollectionItem.vue';
+import EventCard from '../patterns/EventCard.vue';
 import Heading from '../elements/Heading.vue';
+import Showcase from '../patterns/Showcase.vue';
 
 export default {
   name: 'Service',
 
   components: {
     CallToAction,
+    Card,
+    CollectionItem,
+    EventCard,
     Heading,
+    Showcase,
   },
 
   computed: {
@@ -134,7 +142,7 @@ export default {
       let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'callsToAction'};
       this.$store.dispatch("getMoreContent", serviceQuery);
     },
-	  
+
     collection() {
       let serviceCollections = this.$store.getters.getContentByService("collection", this.serviceObject.slug,
         this.location);
@@ -145,7 +153,7 @@ export default {
       let serviceQuery = {'urlParams': "&services=" + this.serviceObject.id, 'contentType': 'collection'};
       this.$store.dispatch("getMoreContent", serviceQuery);
     },
-	  
+
     articles() {
       let serviceArticles = this.$store.getters.getContentByService("articles", this.serviceObject.slug,
         this.location);
@@ -154,8 +162,8 @@ export default {
       }
       let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'articles'};
       this.$store.dispatch("getMoreContent", serviceQuery);
-    }, 
-	  
+    },
+
     events() {
       let serviceEvents = this.$store.getters.getContentByService("events", this.serviceObject.slug,
         this.location);
@@ -165,7 +173,7 @@ export default {
       let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'events'};
       this.$store.dispatch("getMoreContent", serviceQuery);
     },
-	  
+
     pages() {
       let servicePages = this.$store.getters.getContentByService("pages", this.serviceObject.slug,
         this.location);
@@ -175,16 +183,16 @@ export default {
       let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'pages'};
       this.$store.dispatch("getMoreContent", serviceQuery);
     },
-	  
+
   },
-	
+
  methods: {
     getAuthor: function(authorId) {
       let author = this.$store.getters.getAuthorById(Number(authorId));
       return author.name;
     },
   },
-	
+
   props: {
     serviceObject: {
       type: Object,
