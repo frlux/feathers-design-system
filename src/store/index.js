@@ -235,6 +235,10 @@ export default new Vuex.Store({
       return state.events.find(event => event.slug === slug);
     },
 
+    getEventCount: state => () => {
+      return Number(state.eventCount);
+    },
+
     /**
      * We can use `getRandomContentItem(services)` -- for example -- to return
      * a random service.
@@ -296,6 +300,19 @@ export default new Vuex.Store({
     },
     addEventCount(state, eventCount) {
       state.eventCount = eventCount;
+    },
+
+    addEventCount(state, eventCount) {
+      state.eventCount = eventCount;
+    },
+
+    addMoreEvents(state, moreEvents){
+      for (let i=0; i < moreEvents.length; i++){
+        const index = state.events.findIndex(event => event.id === moreEvents[i].id)
+        if (index === -1){ 
+          state.events.push(moreEvents[i]);
+        }
+      }
     },
 
     addResourcesToState(state, resources) {
