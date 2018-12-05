@@ -1,3 +1,13 @@
+<a name="0.14.0"></a>
+# [0.14.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.13.0...v0.14.0) (2018-12-05)
+
+
+### Bug Fixes
+
+* 🐛 Imports and registers components used in the template ([9a210f9](https://github.com/fontana-regional-library/feathers-design-system/commit/9a210f9))
+
+
+
 <a name="0.13.0"></a>
 # [0.13.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.12.0...v0.13.0) (2018-12-05)
 
