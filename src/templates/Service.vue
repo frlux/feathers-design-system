@@ -53,6 +53,64 @@
 
                             </template>
 
+                            <template v-for="page in pages">
+
+                                <card class="card--background-white text--dark"
+                                      :content-type="blog"
+                                      :heading="page.title.rendered"
+                                      :key="page.id"
+                                      v-if="page">
+
+                                    <div slot="copy">
+                                        <div v-html="page.excerpt.rendered"></div>
+                                    </div>
+
+                                    <template slot="action">
+                                        <router-link class="button button--aqua"
+                                                     :to="`${page.slug}`">
+                                            Info
+                                        </router-link>
+                                    </template>
+
+                                </card>
+
+                            </template>
+
+                            <template v-for="article in articles">
+
+                                <card class="card--background-white text--dark"
+                                      :content-type="blog"
+                                      :explainer="getAuthor(article.author)"
+                                      :sub-explainer="article.date | moment('dddd, MMMM Do')"
+                                      :heading="article.title.rendered"
+                                      v-if="article">
+
+                                    <div slot="copy">
+                                        <div v-html="article.excerpt.rendered"></div>
+                                    </div>
+
+                                    <template slot="action">
+                                        <router-link class="button button--aqua"
+                                                     :to="`/articles/${article.slug}`">
+                                            Info
+                                        </router-link>
+                                    </template>
+
+                                </card>
+                            </template>
+
+                            <template v-for="item in collection">
+
+                                <collection-item class="card--background-blue-dark col-md-6 col-xl-8 mb-xl-0"
+                                                 :item="item"
+                                                 heading-level="h3"
+                                                 :key="item.id"
+                                                 subheading-class="mt-1 text--white"
+                                                 subheading-level="h4"
+                                                 variant="feature"
+                                                 v-if="item" />
+                            </template>
+
                         </div>
                     </div>
 
