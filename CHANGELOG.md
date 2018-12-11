@@ -1,3 +1,13 @@
+<a name="0.18.2"></a>
+## [0.18.2](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.18.1...v0.18.2) (2018-12-11)
+
+
+### Bug Fixes
+
+* ensures that Venue is available before printing ([671b1e7](https://github.com/fontana-regional-library/feathers-design-system/commit/671b1e7))
+
+
+
 <a name="0.18.1"></a>
 ## [0.18.1](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.18.0...v0.18.1) (2018-12-11)
 
