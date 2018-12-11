@@ -1,3 +1,13 @@
+<a name="0.18.1"></a>
+## [0.18.1](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.18.0...v0.18.1) (2018-12-11)
+
+
+### Bug Fixes
+
+* 🐛 Corrects some conditionals in the event-card ([24100ae](https://github.com/fontana-regional-library/feathers-design-system/commit/24100ae))
+
+
+
 <a name="0.18.0"></a>
 # [0.18.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.17.0...v0.18.0) (2018-12-11)
 
