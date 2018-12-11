@@ -1,3 +1,13 @@
+<a name="0.16.0"></a>
+# [0.16.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.15.0...v0.16.0) (2018-12-11)
+
+
+### Bug Fixes
+
+* 🐛 Adds conditional checks to foreach loops ([28fa2fb](https://github.com/fontana-regional-library/feathers-design-system/commit/28fa2fb))
+
+
+
 <a name="0.15.0"></a>
 # [0.15.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.14.0...v0.15.0) (2018-12-11)
 
