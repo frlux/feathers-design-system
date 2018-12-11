@@ -9,7 +9,7 @@
                   :explainer="event.start_date | moment('dddd, MMMM Do YYYY h:mm a')"
                   :heading="event.title"
                   :heading-class="headingClass"
-                  :sub-explainer="event.venue.venue"
+                  :sub-explainer="venue"
                   v-if="event">
 
                 <template slot="copy">
@@ -38,6 +38,12 @@ export default {
   component: {
     Card,
     Heading,
+  },
+
+  computed: {
+    venue() {
+      return this.event.venue ? this.event.venue.venue : '';
+    },
   },
 
   methods: {
