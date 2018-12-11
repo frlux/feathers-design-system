@@ -48,7 +48,8 @@
 
                                 <event-card class="card--background-gray"
                                             :event="event"
-                                            :key="event.id" />
+                                            :key="event.id"
+                                            v-if="event" />
 
                             </template>
 

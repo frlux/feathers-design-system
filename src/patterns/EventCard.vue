@@ -9,7 +9,8 @@
                   :explainer="event.start_date | moment('dddd, MMMM Do YYYY h:mm a')"
                   :heading="event.title"
                   :heading-class="headingClass"
-                  :sub-explainer="event.venue.venue">
+                  :sub-explainer="event.venue.venue"
+                  v-if="event">
 
                 <template slot="copy">
                     {{ getExcerpt(event) }}
