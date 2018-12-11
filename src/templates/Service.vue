@@ -44,6 +44,14 @@
                                       :collection-items="collection"
                                       heading="Related Materials" />
 
+                            <template v-for="event in events">
+
+                                <event-card class="card--background-gray"
+                                            :event="event"
+                                            :key="event.id" />
+
+                            </template>
+
                         </div>
                     </div>
 
