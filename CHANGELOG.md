@@ -1,3 +1,13 @@
+<a name="0.17.0"></a>
+# [0.17.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.16.1...v0.17.0) (2018-12-11)
+
+
+### Features
+
+* 🎸 Adds a related Showcase to the Service template ([c5fe51b](https://github.com/fontana-regional-library/feathers-design-system/commit/c5fe51b))
+
+
+
 <a name="0.16.1"></a>
 ## [0.16.1](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.16.0...v0.16.1) (2018-12-11)
 
