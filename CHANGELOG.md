@@ -1,3 +1,8 @@
+<a name="0.19.0"></a>
+# [0.19.0](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.18.2...v0.19.0) (2018-12-11)
+
+
+
 <a name="0.18.2"></a>
 ## [0.18.2](https://github.com/fontana-regional-library/feathers-design-system/compare/v0.18.1...v0.18.2) (2018-12-11)
 
