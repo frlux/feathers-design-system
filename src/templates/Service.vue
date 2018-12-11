@@ -52,7 +52,7 @@
                           <template v-for="page in pages">
                           <card class="card--background-white text--dark"
                                 :content-type="blog"
-                                :heading="page.title.rendered">
+                                :heading="page.title.rendered" v-if="page">
 
                             <div slot="copy">
                               <div v-html="page.excerpt.rendered"></div>
@@ -71,7 +71,7 @@
                                 :content-type="blog"
                                 :explainer="getAuthor(article.author)"
                                 :sub-explainer="article.date | moment('dddd, MMMM Do')"
-                                :heading="article.title.rendered">
+                                :heading="article.title.rendered" v-if="article">
 
                             <div slot="copy">
                               <div v-html="article.excerpt.rendered"></div>
@@ -92,7 +92,7 @@
                            subheading-class="mt-1 text--white"
                            subheading-level="h4"
                            variant="feature"
-                           v-if="collection" />
+                           v-if="item" />
                            </template>
                         </div>
                     </div>
@@ -158,7 +158,7 @@ export default {
       const serviceArticles = this.$store.getters.getContentByService(
         'articles',
         this.serviceObject.slug,
-        this.location
+        this.location,
       );
 
       if (serviceArticles.length > 0) {
