@@ -39,7 +39,6 @@
                         <div class="co col-md-6 col-lg-4"></div>
 
                         <div class="col col-lg-8">
-<!--            NEEDS WORK              -->
                                                       <Showcase v-if="collection"
                             collection-link=""
                       :collection-items="collection"
@@ -95,8 +94,6 @@
                            variant="feature"
                            v-if="collection" />
                            </template>
-	<!-- END CONTENT STREAM -->
-
                         </div>
                     </div>
 
@@ -131,64 +128,82 @@ export default {
 
   computed: {
     callsToAction() {
-      let serviceCTA = this.$store.getters.getContentByService(
+      const serviceCTA = this.$store.getters.getContentByService(
         'callsToAction',
         this.serviceObject.slug,
-        this.location
+        this.location,
       );
-      if (serviceCTA.length > 0){
+      if (serviceCTA.length > 0) {
         return serviceCTA;
       }
-      let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'callsToAction'};
-      this.$store.dispatch("getMoreContent", serviceQuery);
+      const serviceQuery = { urlParams: `?services=${this.serviceObject.id}`, contentType: 'callsToAction' };
+      return this.$store.dispatch(`getMoreContent`, serviceQuery);
     },
 
     collection() {
-      let serviceCollections = this.$store.getters.getContentByService("collection", this.serviceObject.slug,
-        this.location);
-        console.log(serviceCollections);
-        if (serviceCollections.length > 0){
+      const serviceCollections = this.$store.getters.getContentByService(
+        'collection',
+        this.serviceObject.slug,
+        this.location,
+      );
+
+      if (serviceCollections.length > 0) {
         return serviceCollections;
       }
-      let serviceQuery = {'urlParams': "&services=" + this.serviceObject.id, 'contentType': 'collection'};
-      this.$store.dispatch("getMoreContent", serviceQuery);
+      const serviceQuery = { urlParams: `&services=${this.serviceObject.id}`, contentType: 'collection' };
+      return this.$store.dispatch('getMoreContent', serviceQuery);
     },
 
     articles() {
-      let serviceArticles = this.$store.getters.getContentByService("articles", this.serviceObject.slug,
-        this.location);
-        if (serviceArticles.length > 0){
+      const serviceArticles = this.$store.getters.getContentByService(
+        'articles',
+        this.serviceObject.slug,
+        this.location
+      );
+
+      if (serviceArticles.length > 0) {
         return serviceArticles;
       }
-      let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'articles'};
-      this.$store.dispatch("getMoreContent", serviceQuery);
+
+      const serviceQuery = { urlParams: `&services=${this.serviceObject.id}`, contentType: 'articles' };
+      return this.$store.dispatch('getMoreContent', serviceQuery);
     },
 
     events() {
-      let serviceEvents = this.$store.getters.getContentByService("events", this.serviceObject.slug,
-        this.location);
-        if (serviceEvents.length > 0){
+      const serviceEvents = this.$store.getters.getContentByService(
+        'events',
+        this.serviceObject.slug,
+        this.location
+      );
+
+      if (serviceEvents.length > 0) {
         return serviceEvents;
       }
-      let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'events'};
-      this.$store.dispatch("getMoreContent", serviceQuery);
+
+      const serviceQuery = { urlParams: `?services=${this.serviceObject.id}`, contentType: 'events' };
+      return this.$store.dispatch('getMoreContent', serviceQuery);
     },
 
     pages() {
-      let servicePages = this.$store.getters.getContentByService("pages", this.serviceObject.slug,
-        this.location);
-        if (servicePages.length > 0){
+      const servicePages = this.$store.getters.getContentByService(
+        'pages',
+        this.serviceObject.slug,
+        this.location
+      );
+
+      if (servicePages.length > 0) {
         return servicePages;
       }
-      let serviceQuery = {'urlParams': "?services=" + this.serviceObject.id, 'contentType': 'pages'};
-      this.$store.dispatch("getMoreContent", serviceQuery);
-    },
 
+      const serviceQuery = { urlParams: `?services=${this.serviceObject.id}`, contentType: 'pages' };
+
+      return this.$store.dispatch('getMoreContent', serviceQuery);
+    },
   },
 
- methods: {
-    getAuthor: function(authorId) {
-      let author = this.$store.getters.getAuthorById(Number(authorId));
+  methods: {
+    getAuthor(authorId) {
+      const author = this.$store.getters.getAuthorById(Number(authorId));
       return author.name;
     },
   },
