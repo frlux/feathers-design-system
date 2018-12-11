@@ -40,6 +40,9 @@
 
                         <div class="col col-lg-8">
 
+                            <Showcase v-if="collection"
+                                      :collection-items="collection"
+                                      heading="Related Materials" />
 
                         </div>
                     </div>

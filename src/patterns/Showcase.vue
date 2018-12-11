@@ -23,7 +23,8 @@
                                   :image="item.featured_image"
                                   :subheading="showcaseCreators(item)"
                                   subheading-class="h5 mt-1 text--nowrap text--ellipsis"
-                                  subheading-level="h4">
+                                  subheading-level="h4"
+                                  v-if="item">
                             </card>
 
                         </a>
