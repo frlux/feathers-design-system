@@ -89,16 +89,6 @@ export default {
 };
 </script>
 <style lang="scss">
-body {
-  background-color:red;
-  @media (min-width: 576px) {
-  background-color:lime;
-  }
-  @media (min-width:992px) {
-  background-color:yellow;
-  }
-
-}
 .showcase__card{
   @media only screen and (max-width: 900px) and (min-width:768px) {padding-right:.5vw !important; padding-left:.5vw !important} 
 }
@@ -123,7 +113,5 @@ body {
   height:100%;
   width:auto !important;
   object-fit: cover;
-
-
 }
 </style>
