@@ -90,24 +90,36 @@ export default {
 </script>
 <style lang="scss">
 .showcase__card{
-  @media only screen and (max-width: 900px) and (min-width:768px) {padding-right:.5vw !important; padding-left:.5vw !important} 
+  @media only screen and (max-width: 900px) and (min-width:768px) {
+    padding-right:.5vw !important; 
+    padding-left:.5vw !important
+    } 
 }
 .card__image{
-  
   /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {height:40vw;} 
+  @media only screen and (max-width: 600px) {
+    height:40vw;
+  } 
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) {height:30vw;} 
+  @media only screen and (min-width: 600px) {
+    height:30vw;
+  } 
 
 /* Medium devices (landscape tablets, 768px and up) */
-@media only screen and (min-width: 768px) {height:12vw;} 
+  @media only screen and (min-width: 768px) {
+    height:12vw;
+  } 
 
 /* Large devices (laptops/desktops, 992px and up) */
-@media only screen and (min-width: 992px) {height:15vw;} 
+  @media only screen and (min-width: 992px) {
+    height:15vw;
+  } 
 
 /* Extra large devices (large laptops and desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {height:9vw;}
+  @media only screen and (min-width: 1200px) {
+    height:9vw;
+  }
 }
 .card__image img{
   height:100%;
