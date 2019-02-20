@@ -77,14 +77,10 @@ export default {
       return `by ${creatorName} ${hasMoreThanOneCreator ? 'and others' : ''}`;
     },
     nextItems(){
-      let num = this.currentItem + this.jumpDistance < this.collectionItems.length ? this.currentItem + this.jumpDistance : (this.currentItem + this.jumpDistance) - this.collectionItems.length;
-      console.log(num);
-      this.currentItem = num;
+      this.currentItem = this.currentItem + this.jumpDistance < this.collectionItems.length ? this.currentItem + this.jumpDistance : (this.currentItem + this.jumpDistance) - this.collectionItems.length;
     },
     previousItems(){
-      let num = this.currentItem - this.jumpDistance >= 0 ? this.currentItem - this.jumpDistance : this.collectionItems.length + (this.currentItem - this.jumpDistance);
-      console.log(num);
-      this.currentItem = num;
+      this.currentItem = this.currentItem - this.jumpDistance >= 0 ? this.currentItem - this.jumpDistance : this.collectionItems.length + (this.currentItem - this.jumpDistance);
     },
     computeOrder(index, currentItem){
       return ((index - currentItem) > this.jumpDistance) ? index - (currentItem +this.jumpDistance) :((index - currentItem) < this.jumpDistance) ? (this.collectionItems.length - currentItem - this.jumpDistance) + index : '0' ;
