@@ -59,7 +59,7 @@
 
         <div class="col-md-10 d-md-flex m-auto pb-4 pl-0 pr-0 pt-4">
 
-          <div class="col-md-8 p-0">
+          <div class="p-0">
 
             <Showcase collection-link="/collection"
                       :collection-items="collection"
@@ -86,7 +86,7 @@
 
           </div>
 
-          <div class="col-4 p-0">
+          <div class="ml-2 p-0">
             <call-to-action action="Call to Action"
                             copy="Data tells a powerful story --
                       about your content, who reads it, and what's possible"
