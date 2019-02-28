@@ -38,17 +38,6 @@ export default {
     Menu,
     Search,
   },
-
-  mounted() {
-    this.$store.dispatch('getAuthors');
-    this.$store.dispatch("getCallsToAction");
-    this.$store.dispatch("getUpcomingEvents");
-    this.$store.dispatch("getServices");
-    this.$store.dispatch("getPages");
-    this.$store.dispatch("getCollection");
-    this.$store.dispatch("getPosts");
-	this.$store.dispatch("getArticles");
-  }
 };
 </script>
 
