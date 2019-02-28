@@ -1,5 +1,5 @@
 <template>
-    <component class="dropdown" :is="element" v-on-clickaway="closeDropdown">
+    <component class="dropdown" :is="element">
         <span :aria-expanded="isOpen"
                 aria-haspopup="true"
                 class="dropdown__toggle dropdown-toggle"
@@ -14,8 +14,8 @@
             </span>
 
         </span>
-        <div class="dropdown__menu dropdown-menu" :class="[{show: isOpen}, dropdownMenuClass]">
-            <slot name="items"></slot>
+        <div class="dropdown__menu dropdown-menu" :class="[{show: isOpen}, dropdownMenuClass]" @click="toggleMenu">
+            <slot name="items" ></slot>
         </div>
     </component>
 </template>
@@ -38,7 +38,7 @@ export default {
     },
 
     toggleMenu() {
-      this.isOpen = !this.isOpen
+      this.isOpen = !this.isOpen;
     },
   },
 
