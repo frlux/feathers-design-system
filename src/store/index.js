@@ -1,22 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import axios from "axios";
-
+import * as api from "./api.js";
 Vue.use(Vuex);
-const urls = {
-authors: 'https://fontana.librarians.design/wp-json/wp/v2/users',
-callsToAction: 'https://fontana.librarians.design/wp-json/wp/v2/calls-to-action',
-collection: 'https://fontana.librarians.design/wp-json/wp/v2/collection?_embed',
-featuredCollections: 'https://fontana.librarians.design/wp-json/wp/v2/featured-collections',
-locations: 'https://fontana.librarians.design/wp-json/wp/v2/locations',
-pages: 'https://fontana.librarians.design/wp-json/wp/v2/pages',
-posts: 'https://public-api.wordpress.com/rest/v1.1/sites/fontanalib.wordpress.com/posts/?number=10',
-articles: 'https://fontana.librarians.design/wp-json/wp/v2/posts',
-resources: 'https://fontana.librarians.design/wp-json/wp/v2/resources',
-services: 'https://fontana.librarians.design/wp-json/wp/v2/services?per_page=50',
-events: 'https://fontana.librarians.design/wp-json/wp/v2/events',
-};
+
 
 export default new Vuex.Store({
   state: {
@@ -33,140 +20,138 @@ export default new Vuex.Store({
     resources: [],
     services: [],
     eventCount: 0,
+    userLocation: null,
   },
 
   actions: {
-    getAuthors({ commit }) {
-      return new Promise((resolve) => {
-        axios
-          .get(urls.authors)
-          .then(({ data }) => {
-            commit('addAuthorsToState', data);
-            resolve();
-          });
+    async getAuthors({ commit }) {
+      return new Promise(resolve => {
+        const authors = api.fetchData('authors')
+      .then( data=>{
+        console.log("committing authors");
+        commit('addAuthorsToState', data.data);
+        resolve();
+      });
+    });
+    },
+
+      async getCallsToAction({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('callsToAction')
+        .then( data=>{
+          console.log("committing ctas");
+          commit('addCallsToActionToState', data.data);
+          resolve();
+        });
       });
     },
 
-    getCallsToAction({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .get(urls.callsToAction)
-          .then(({ data }) => {
-            commit("addCallsToActionToState", data);
-            resolve();
-          });
+      async getCollection({ commit }) {
+        console.log("collection...");
+        return new Promise(resolve => {
+          const authors = api.fetchData('collection')
+        .then( data=>{
+          console.log("committing collection");
+          commit('addCollectionToState', data.data);
+          resolve();
+        });
+      });
+      
+    },
+
+      async getFeaturedCollections({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('featuredCollections')
+        .then( data=>{
+          console.log("committing featuredCollections");
+          commit('addFeaturedCollectionToState', data.data);
+          resolve();
+        });
       });
     },
 
-    getCollection({ commit }) {
-      return new Promise((resolve) => {
-        axios
-          .get(urls.collection)
-          .then(({ data }) => {
-            commit('addCollectionToState', data);
-            resolve();
-          });
+      async getLocations({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('locations')
+        .then( data=>{
+          console.log("committing locations");
+          console.log(data);
+          commit('addLocationsToState', data.data);
+          resolve();
+        });
       });
     },
 
-    getFeaturedCollections({ commit }) {
-      return new Promise(resolve => {
-        axios.get(urls.featuredCollections)
-          .then(({ data }) => {
-            commit('addFeaturedCollectionToState', data);
-            resolve();
-          });
+      async getPages({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('pages')
+        .then( data=>{
+          console.log("committing pages");
+          commit('addPagesToState', data.data);
+          resolve();
+        });
       });
     },
 
-    getLocations({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .get(urls.locations)
-          .then(({ data }) => {
-            commit("addLocationsToState", data);
-            resolve();
-          });
+
+      async getPosts({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('posts')
+        .then( data=>{
+          console.log("committing posts");
+          
+          commit('addPostsToState', data.data.posts);
+          resolve();
+        });
       });
     },
 
-    getPages({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .get(urls.pages)
-          .then(({ data }) => {
-            commit("addPagesToState", data);
-            resolve();
-          });
+      async getArticles({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('articles')
+        .then( data=>{
+          console.log("committing getArticles");
+          commit('addArticlesToState', data.data);
+          resolve();
+        });
       });
     },
 
-    getPosts({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .get(urls.posts)
-          .then(({ data }) => {
-            commit("addPostsToState", data.posts);
-            resolve();
-          });
-      });
-    },
-    getArticles({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .get(urls.articles)
-          .then(({ data }) => {
-            commit("addArticlesToState", data);
-            resolve();
-          });
-      });
-    },
-    getResources({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .get(urls.resources)
-          .then(({ data }) => {
-            commit("addResourcesToState", data);
-            resolve();
-          });
+      async getResources({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('resources')
+        .then( data=>{
+          console.log("committing resources");
+          commit('addResourcesToState', data.data);
+          resolve();
+        });
       });
     },
 
-    getServices({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .get(urls.services)
-          .then(({ data }) => {
-            commit("addServicesToState", data);
-            resolve();
-          });
+
+      async getServices({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('services')
+        .then( data=>{
+          console.log("committing services");
+          commit('addServicesToState', data.data);
+          resolve();
+        });
       });
     },
 
-    getUpcomingEvents({ commit }) {
-      return new Promise(resolve => {
-        axios
-          .get(urls.events)
-          .then((data) => {
-            commit("addEventCount",data.headers['x-wp-total']);
-            commit("addEventsToState", data.data);
-            resolve();
-          });
+
+      async getUpcomingEvents({ commit }) {
+        return new Promise(resolve => {
+          const authors = api.fetchData('events')
+        .then( data=>{
+          console.log("committing events");
+          commit("addEventCount",data.headers['x-wp-total']);
+          commit('addEventsToState', data.data);
+          resolve();
+        });
       });
     },
-
-    getMoreContent({commit}, serviceQuery) {
-  
-      return new Promise(resolve => {
-        axios
-          .get(urls[serviceQuery.contentType] + serviceQuery.urlParams)
-          .then(({data}) => {
-            let payload = {'content': data, 'contentType': serviceQuery.contentType};
-            commit("addMoreContent", payload);
-            resolve();
-          });
-      });
-    }
   },
 
   getters: {
@@ -175,9 +160,7 @@ export default new Vuex.Store({
     getCallsToActionByCategory: state => categoryName => {
       const actionsByService = state.callsToAction.filter(
         call =>
-          call.acf.services
-            ? call.acf.services.some(service => service.slug === categoryName)
-            : []
+          call.acf.services && call.acf.services.some(service => service.slug === categoryName)
       );
 
       return actionsByService;
@@ -188,7 +171,7 @@ export default new Vuex.Store({
 
       if (locationName && locationName !== 'all') {
         contents = state[contentType].filter(
-          page => page.acf.location.some(location => location.slug === locationName)
+          page => page.acf && page.acf.location && page.acf.location.some(location => location.slug === locationName)
         );
       } else {
         contents = state[contentType];
@@ -201,10 +184,11 @@ export default new Vuex.Store({
           }
         });
         contentsFilteredByService = contentsFilteredByService.filter(
-          page => page.acf.services.some(service => service.slug === serviceName)
+          page => page.acf && page.acf.services && page.acf.services.some(service => service.slug === serviceName)
         );
-      }
-      return serviceName ? contentsFilteredByService : contents;
+      } 
+
+      return serviceName && serviceName !== 'any' ? contentsFilteredByService : contents;
     },
 
     getEvents: state => (dateString = null, locationName = null) => {
@@ -224,7 +208,7 @@ export default new Vuex.Store({
 
       if (locationName && locationName !== 'all') {
         eventsFilteredByLocation = events.filter(
-          event => event.acf.location.some(location => location.slug === locationName)
+          event => event.acf.location && event.acf.location.some(location => location.slug === locationName)
         );
       }
 
@@ -330,6 +314,9 @@ export default new Vuex.Store({
           state[payload.contentType].push(payload.content[i]);
         }
       }
+    },
+    setUserLocation(state, location){
+      state.userLocation = location;
     }
   }
 });
