@@ -21,14 +21,24 @@ export default new Vuex.Store({
     services: [],
     eventCount: 0,
     userLocation: null,
+    audience: [],
+    genres: []
   },
 
   actions: {
+    async getAudiences({ commit }) {
+      return new Promise(resolve => {
+        const authors = api.fetchData('audience', {per_page: 50})
+      .then( data=>{
+        resolve();
+        commit('addTermsToState', {taxonomy: 'audience', terms: data.data});
+      });
+    });
+  },
     async getAuthors({ commit }) {
       return new Promise(resolve => {
         const authors = api.fetchData('authors')
       .then( data=>{
-        console.log("committing authors");
         commit('addAuthorsToState', data.data);
         resolve();
       });
@@ -39,7 +49,6 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('callsToAction')
         .then( data=>{
-          console.log("committing ctas");
           commit('addCallsToActionToState', data.data);
           resolve();
         });
@@ -47,11 +56,9 @@ export default new Vuex.Store({
     },
 
       async getCollection({ commit }) {
-        console.log("collection...");
         return new Promise(resolve => {
           const authors = api.fetchData('collection')
         .then( data=>{
-          console.log("committing collection");
           commit('addCollectionToState', data.data);
           resolve();
         });
@@ -63,19 +70,27 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('featuredCollections')
         .then( data=>{
-          console.log("committing featuredCollections");
           commit('addFeaturedCollectionToState', data.data);
           resolve();
         });
       });
     },
 
+    async getGenres({ commit }) {
+      return new Promise(resolve => {
+        const authors = api.fetchData('genres', {per_page: 50})
+      .then( data=>{
+        
+        resolve();
+        commit('addTermsToState', {taxonomy: 'genres', terms: data.data});
+      });
+    });
+  },
+
       async getLocations({ commit }) {
         return new Promise(resolve => {
           const authors = api.fetchData('locations')
         .then( data=>{
-          console.log("committing locations");
-          console.log(data);
           commit('addLocationsToState', data.data);
           resolve();
         });
@@ -86,7 +101,6 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('pages')
         .then( data=>{
-          console.log("committing pages");
           commit('addPagesToState', data.data);
           resolve();
         });
@@ -97,9 +111,7 @@ export default new Vuex.Store({
       async getPosts({ commit }) {
         return new Promise(resolve => {
           const authors = api.fetchData('posts')
-        .then( data=>{
-          console.log("committing posts");
-          
+        .then( data=>{          
           commit('addPostsToState', data.data.posts);
           resolve();
         });
@@ -110,7 +122,6 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('articles')
         .then( data=>{
-          console.log("committing getArticles");
           commit('addArticlesToState', data.data);
           resolve();
         });
@@ -121,7 +132,6 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('resources')
         .then( data=>{
-          console.log("committing resources");
           commit('addResourcesToState', data.data);
           resolve();
         });
@@ -133,7 +143,6 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('services')
         .then( data=>{
-          console.log("committing services");
           commit('addServicesToState', data.data);
           resolve();
         });
@@ -145,7 +154,6 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('events')
         .then( data=>{
-          console.log("committing events");
           commit("addEventCount",data.headers['x-wp-total']);
           commit('addEventsToState', data.data);
           resolve();
@@ -316,7 +324,21 @@ export default new Vuex.Store({
       }
     },
     setUserLocation(state, location){
-      state.userLocation = location;
+      state.userLocation = location!=='all' ? location : null;
+    },
+    addTermsToState(state, payload){
+      console.log(payload.taxonomy);
+      console.log(payload.terms);
+      if(state[payload.taxonomy].length < 1){
+        state[payload.taxonomy] = payload.terms;
+      } else {
+        for (let i=0; i < payload.terms.length; i++){
+          const index = state[payload.taxonomy].findIndex(term => term.id === payload.terms[i].id)
+          if (index === -1){ 
+            state[payload.taxonomy].push(payload.terms[i]);
+          }
+        }
+      }
     }
   }
 });
