@@ -45,9 +45,31 @@
 
                         <template v-for="result in filteredSearchResults">
 
-                            <card class="card--background-gray">
-
+                            <card v-if="result.type && result.type ==='post'" class="card--background-gray mt-4" :key="result.id"
+                            content-type="blog"
+                            :heading="result.title.rendered ? result.title.rendered : result.title">
+                            <div slot="copy">
+                                        <div v-html="result.excerpt ? result.excerpt : result.content ? result.content : result.description"></div>
+                                    </div>
                             </card>
+                            <card v-else-if="result.taxonomy && result.taxonomy ==='services'" class="card--background-gray mt-4" :key="result.id"
+                                  content-type="service"
+                                  :copy="result.description"
+                                  :heading="result.name">
+                            </card>
+                             <event-card v-else-if="result.start_date"
+                        class="card--background-gray"
+                        :event="result"
+                        heading-class="h4 text--bold mt-4"
+                        :truncate-excerpt="true"
+                        :key="result.id"
+                        />
+                        <collection-item v-else-if="result.type && result.type ==='collection-item'" :key="result.id" class="card--background-blue-dark"
+                           :item="randomCollectionItem"
+                           heading-level="h3"
+                           subheading-class="mt-1 text--white"
+                           subheading-level="h4"
+                           variant="feature"/>
 
                         </template>
 
@@ -88,7 +110,9 @@ export default {
     },
 
     searchResults() {
-      return this.$store.getters.getSiteContent();
+      let stuff =this.$store.getters.getSiteContent();
+      console.log(stuff)
+      return stuff
     },
   },
 

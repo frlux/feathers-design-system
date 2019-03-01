@@ -46,7 +46,8 @@
                            style="background-color: #3d77b3;border-color: #1f5894;color: white;"
                            aria-label="Recipient's username"
                            aria-describedby="button-addon2"
-                           v-model="searchQuery">
+                           v-model.lazy="searchQuery"
+                           v-on:keyup.enter="searchIt()">
 
                     <div class="input-group-append">
                       
@@ -59,7 +60,7 @@
                                 }"
                                 type="submit"
                                 id="button-addon2">
-                                <router-link class="search__button" @keyup.enter="$router.push(search())" :to="search()">
+                                <router-link :event="'click' || searchIt" class="search__button" :to="searchRoute">
                             <svg class="icon" id="icon-search" viewBox="0 0 32 32" fill="white">
                                 <title>search</title>
                                 <path d="M31.008 27.231l-7.58-6.447c-0.784-0.705-1.622-1.029-2.299-0.998 1.789-2.096 2.87-4.815 2.87-7.787 0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12c2.972 0 5.691-1.081 7.787-2.87-0.031 0.677 0.293 1.515 0.998 2.299l6.447 7.58c1.104 1.226 2.907 1.33 4.007 0.23s0.997-2.903-0.23-4.007zM12 20c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"></path>
@@ -94,6 +95,9 @@ export default {
   },
 
   computed: {
+    searchRoute(){
+      return this.search();
+    },
     isCatalogSearch() {
       return this.searchType.toLowerCase() === 'catalog'
         || this.searchType.toLowerCase() === 'index';
@@ -132,14 +136,22 @@ export default {
       const routeName = this.$route.name.toLowerCase();
       this.searchType = routeName;
     },
-
+    searchIt(){
+      this.$router.push(this.searchRoute);
+    },
     search() {
+      console.log(this.route);
+      console.log("searching...");
       if (this.isCatalogSearch) {
         return `${this.searchFormAction}?query=${this.searchQuery}&qtype=keyword&locg=1`;//this.searchCatalog();
       }
       let route = {name: "Search", params:{} };
       route.params.filter = this.searchQuery ? `${this.searchQuery}` : '';
-      route.params.location = this.locationFilter ? `${this.locationFilter}` : '';
+
+      if(this.locationFilter){
+        route.params.location = `${this.locationFilter}`;
+      }
+      
       if (this.isEventSearch) {
         route.name= "Events";
 
