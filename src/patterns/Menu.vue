@@ -55,14 +55,14 @@
             <template slot="label">{{ currentLocation }}</template>
             <template slot="items">
 
-                <router-link :to="setLocationInQueryParameter('all')">All Libraries</router-link>
-                <router-link
+                <a href="javascript:void(null);" role="button" @click="setLocationInQueryParameter('all')">All Libraries</a>
+                <a href="javascript:void(null);" role="button"
                   class="d-block dropdown__menu__item link link--undecorated mb-1 mt-1 text--underlined"
                  :key="location.id"
-                 :to="setLocationInQueryParameter(`${location.slug}`)"
+                 @click="setLocationInQueryParameter(`${location.slug}`)"
                  v-for="location in locations">
                     {{ location.name }}
-                </router-link>
+                </a>
             </template>
         </Dropdown>
 
@@ -100,14 +100,8 @@ export default {
 
   methods: {
     setLocationInQueryParameter(locationSlug) {
-      return {
-        query: Object.assign({}, this.$route.query, { location: `${locationSlug}` }),
-      };
+      this.$store.commit('setUserLocation', locationSlug);
     },
-  },
-
-  mounted() {
-    this.$store.dispatch('getLocations');
   },
 };
 </script>
