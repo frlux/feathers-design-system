@@ -43,7 +43,7 @@
 
 
         <router-link class="link"
-                    :to="{name:'Collection', params:{slug: collectionLink, channel: heading, type: collectionType}}"
+                    :to="{name:'Collection-type-slug', params:{slug: collectionLink, channel: heading, type: collectionType}}"
                       v-if="collectionLink">
                         {{ collectionLinkLabel }}
         </router-link>

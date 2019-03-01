@@ -2,7 +2,7 @@
 
 
         <router-link class="d-block event link link--undecorated"
-                     :to="{name: 'Event', params:{ slug: event.slug, eventObject: event }}">
+                     :to="{name: 'Events-slug', params:{ slug: event.slug, eventObject: event }}">
 
             <card class="mb-3"
                   content-type="event"

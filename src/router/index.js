@@ -43,7 +43,7 @@ const router = new Router({
       meta: {
         title: 'Collections',
       },
-      name: 'Collections',
+      name: 'Collection',
       path: '/collection',
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
@@ -56,7 +56,7 @@ const router = new Router({
       meta: {
         title: 'Collections',
       },
-      name: 'Subcollections',
+      name: 'Colelction-type',
       path: '/collection/:type',
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
@@ -67,7 +67,7 @@ const router = new Router({
     },
     {
       component: Collection,
-      name: 'Collection',
+      name: 'Collection-type-slug',
       path: '/collection/:type/:slug',
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
@@ -104,7 +104,7 @@ const router = new Router({
 
     {
       component: Event,
-      name: 'Event',
+      name: 'Events-slug',
       path: "/events/:slug",
       props: route => ({
         eventObject: !route.params.eventObject ? router.app.$store.getters.getEventBySlug(route.params.slug) : route.params.eventObject,
@@ -132,6 +132,7 @@ const router = new Router({
     },
     {
       component: Service,
+      name:"Services-slug",
       path: "/services/:slug",
       props: route => ({
         serviceObject: !route.params.serviceObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.serviceObject,
