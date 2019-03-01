@@ -114,6 +114,7 @@ Through partnerships in the community, we are able to bring you art and historic
 <script>
 import flatpickr from 'flatpickr';
 import EventCard from '../patterns/EventCard.vue';
+import * as api from '../store/api.js';
 
 window.axios = require('axios');
 
@@ -151,7 +152,7 @@ export default {
       }
 
       return this.events.filter(event =>
-        event.title.toLowerCase().includes(this.filter)
+        event.title.toLowerCase().includes(this.filter.toLowerCase())
       );
     }
   },
@@ -162,7 +163,7 @@ export default {
       eventsUrl: 'https://fontana.librarians.design/wp-json/tribe/events/v1/events?per_page=20&page=',
       eventsData: {
         per_page:20,
-        page: 2,
+        page: 1,
       },
     };
   },
@@ -175,14 +176,11 @@ export default {
     },
 
     getMoreEvents() {
-      axios.get(this.eventsUrl, {params: this.eventsData})
-      .then((response) =>{
-        this.$store.commit('addMoreEvents', response.data.events);
-        this.eventsData.page++;
-      })
-      .catch( (error)=>{
-        console.log(error);
-      })
+      api.fetchData('events', {page: this.eventsData.page, per_page: this.eventsData.per_page})
+          .then(response =>{
+            this.$store.commit('addMoreEvents', response.data);
+            this.eventsData.page++;
+          }).catch(error=> console.log(error));
     },
   },
 

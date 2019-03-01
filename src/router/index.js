@@ -9,6 +9,7 @@ import NotFound from "../templates/NotFound.vue";
 import SearchResults from "../templates/SearchResults.vue";
 import Service from '../templates/Service.vue';
 import Services from "../templates/Services.vue";
+import * as api from "../store/api.js";
 
 Vue.use(Router);
 
@@ -40,14 +41,39 @@ const router = new Router({
     {
       component: Collection,
       meta: {
-        title: 'Collection',
+        title: 'Collections',
       },
-      name: 'Collection',
+      name: 'Collections',
       path: '/collection',
       props: route => ({
-        channelTitle: 'Collection',
-        location: route.query.location,
-        slug: any,
+        channelTitle: route.params.channel ? route.params.channel : 'Collection',
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
+        slug: 'any',
+      }),
+    },
+    {
+      component: Collection,
+      meta: {
+        title: 'Collections',
+      },
+      name: 'Subcollections',
+      path: '/collection/:type',
+      props: route => ({
+        channelTitle: route.params.channel ? route.params.channel : 'Collection',
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
+        slug: 'any',
+        network: route.params.type,
+      }),
+    },
+    {
+      component: Collection,
+      name: 'Collection',
+      path: '/collection/:type/:slug',
+      props: route => ({
+        channelTitle: route.params.channel ? route.params.channel : 'Collection',
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
+        slug: route.params.slug,
+        network: route.params.type,
       }),
     },
 
@@ -59,7 +85,7 @@ const router = new Router({
       name: "Index",
       path: "/",
       props: route => ({
-        location: route.query.location
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
       })
     },
 
@@ -71,16 +97,17 @@ const router = new Router({
       name: "Events",
       path: "/events",
       props: route => ({
-        filter: route.query.filter,
-        location: route.query.location
-      }),
+        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '' 
+      })
     },
 
     {
       component: Event,
+      name: 'Event',
       path: "/events/:slug",
       props: route => ({
-        eventObject: router.app.$store.getters.getEventBySlug(route.params.slug),
+        eventObject: !route.params.eventObject ? router.app.$store.getters.getEventBySlug(route.params.slug) : route.params.eventObject,
       }),
     },
 
@@ -89,8 +116,8 @@ const router = new Router({
       name: "Search",
       path: "/search",
       props: route => ({
-        filter: route.query.filter,
-        location: route.query.location
+        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '' 
       })
     },
 
@@ -99,16 +126,16 @@ const router = new Router({
       name: "Services",
       path: "/services",
       props: route => ({
-        filter: route.query.filter,
-        location: route.query.location
+        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
       })
     },
     {
       component: Service,
       path: "/services/:slug",
       props: route => ({
-        serviceObject: router.app.$store.getters.getServiceBySlug(route.params.slug),
-        location: route.query.location,
+        serviceObject: !route.params.serviceObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.serviceObject,
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
       }),
     },
     {
@@ -136,6 +163,11 @@ router.beforeEach((to, from, next) => {
 
 function hasLocationQueryParameter(route) {
   return !!route.query.location;
+}
+async function getEventObject(eventSlug){
+  await api.fetchData('events', {slug: eventSlug}).then(results=>{
+    return results.data;
+  });
 }
 
 export default router;

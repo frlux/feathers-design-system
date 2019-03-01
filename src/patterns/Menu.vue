@@ -81,15 +81,13 @@ export default {
   },
 
   computed: {
-
     /**
      * The `currentLocation` will return the name of the library as its slug
      * if it's present in the url.
      */
     currentLocation() {
-      const locationSlugInUrl = this.$route.query.location;
-      const location = this.locations.find(location => location.slug === locationSlugInUrl);
-
+      this.locationSlug = this.$store.state.userLocation;
+      const location = this.locations.find(location => location.slug === this.locationSlug);
       return (location ? location.name : 'All Libraries');
     },
 
@@ -97,11 +95,20 @@ export default {
       return this.$store.state.locations;
     },
   },
-
+  data(){
+    return{
+      locationSlug: null,
+    }
+  },
   methods: {
     setLocationInQueryParameter(locationSlug) {
       this.$store.commit('setUserLocation', locationSlug);
     },
   },
+  watch:{
+    locationSlug(){
+      this.setLocationInQueryParameter(this.locationSlug);
+    }
+  }
 };
 </script>

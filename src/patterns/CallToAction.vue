@@ -8,7 +8,7 @@
               :image="image"
               type="deck">
 
-            <template slot="action">
+            <template slot="action" v-if="link">
                 <a class="button button--aqua button--large"
                              :href="link">
                     {{ action }}

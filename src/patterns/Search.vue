@@ -49,6 +49,7 @@
                            v-model="searchQuery">
 
                     <div class="input-group-append">
+                      
                         <c-button aria-label="search"
                                 class="text--uppercase text--white"
                                 :class="{
@@ -58,13 +59,15 @@
                                 }"
                                 type="submit"
                                 id="button-addon2">
+                                <router-link class="search__button" @keyup.enter="$router.push(search())" :to="search()">
                             <svg class="icon" id="icon-search" viewBox="0 0 32 32" fill="white">
                                 <title>search</title>
                                 <path d="M31.008 27.231l-7.58-6.447c-0.784-0.705-1.622-1.029-2.299-0.998 1.789-2.096 2.87-4.815 2.87-7.787 0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12c2.972 0 5.691-1.081 7.787-2.87-0.031 0.677 0.293 1.515 0.998 2.299l6.447 7.58c1.104 1.226 2.907 1.33 4.007 0.23s0.997-2.903-0.23-4.007zM12 20c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"></path>
                             </svg>
-
-                            <span class="d-none d-sm-inline">Search</span>
+                             <span class="d-none d-sm-inline">Search</span>
+                           </router-link>
                         </c-button>
+                        
                     </div>
 
                     <input name="locg" value="1" type="hidden">
@@ -92,26 +95,27 @@ export default {
 
   computed: {
     isCatalogSearch() {
-      return this.searchAction.toLowerCase() === 'catalog'
-        || this.searchAction.toLowerCase() === 'index';
+      return this.searchType.toLowerCase() === 'catalog'
+        || this.searchType.toLowerCase() === 'index';
     },
 
     isEventSearch() {
-      return this.searchAction.toLowerCase() === 'events'
-        || this.searchAction.toLowerCase() === 'events-slug';
+      return this.searchType.toLowerCase() === 'events'
+        || this.searchType.toLowerCase() === 'event';
     },
 
     isEverythingSearch() {
-      return this.searchAction === 'everything';
+      const types=["catalog", "index", "events", "event", "services","service"];
+      return !this.searchType || !types.includes(this.searchType); 
     },
 
     isServicesSearch() {
-      return this.searchAction.toLowerCase() === 'services'
-        || this.searchAction.toLowerCase() === 'events-slug';
+      return this.searchType.toLowerCase() === 'services'
+        || this.searchType.toLowerCase() === 'service';
     },
 
     locationFilter() {
-      return this.$route.query.location;
+      return this.$store.state.userLocation;
     },
   },
 
@@ -119,81 +123,95 @@ export default {
     return {
       searchFormAction: 'https://www.nccardinal.org/eg/opac/results',
       searchQuery: '',
+      searchType: this.searchAction,
     };
   },
 
   methods: {
     resetSearchAction() {
       const routeName = this.$route.name.toLowerCase();
-      this.searchAction = routeName;
+      this.searchType = routeName;
     },
 
     search() {
       if (this.isCatalogSearch) {
-        return this.searchCatalog();
+        return `${this.searchFormAction}?query=${this.searchQuery}&qtype=keyword&locg=1`;//this.searchCatalog();
       }
-
+      let route = {name: "Search", params:{} };
+      route.params.filter = this.searchQuery ? `${this.searchQuery}` : '';
+      route.params.location = this.locationFilter ? `${this.locationFilter}` : '';
       if (this.isEventSearch) {
-        return this.$router.push({
+        route.name= "Events";
+
+        /* return this.$router.push({
           path: "/events",
           query: {
             filter: `${this.searchQuery}`,
             location: this.locationFilter ? `${this.locationFilter}` : '',
           },
-        });
+        }); */
       }
 
       if (this.isEverythingSearch) {
-        return this.$router.push({
+        route.name= "Search";
+
+       /*  return this.$router.push({
           path: '/search',
           query: {
             filter: `${this.searchQuery}`,
             location: this.locationFilter ? `${this.locationFilter}` : '',
           },
-        });
+        }); */
       }
 
       if (this.isServicesSearch) {
-        return this.$router.push({
+        route.name= "Services";
+        /* return this.$router.push({
           path: "/services",
           query: {
             filter: `${this.searchQuery}`,
             location: this.locationFilter ? `${this.locationFilter}` : '',
           },
-        });
+        }); */
       }
+  return route;
+      /* return this.$router.push({
 
-      return this.$router.push({
         path: "search",
         query: {
           filter: `${this.searchQuery}`,
           location: this.locationFilter ? `${this.locationFilter}` : '',
         },
-      });
+      }); */
     },
 
     searchCatalog() {
-      location.replace(
-        `${this.searchFormAction}?query=${
-          this.searchQuery
-        }&qtype=keyword&locg=1`,
-      ); // eslint-disable-line
+      
+      // location.replace(
+      //   `${this.searchFormAction}?query=${
+      //     this.searchQuery
+      //   }&qtype=keyword&locg=1`,
+      // ); // eslint-disable-line
     },
 
     setCatalogSearch() {
-      this.$set(this, 'searchAction', 'catalog');
+      //this.$set(this, 'searchAction', 'catalog');
+      this.searchType = 'catalog';
     },
 
     setEventSearch() {
-      this.$set(this, 'searchAction', 'events');
+      //this.$set(this, 'searchAction', 'events');
+      this.searchType = 'events';
     },
 
     setEverythingSearch() {
-      this.$set(this, 'searchAction', 'everything');
+      //this.$set(this, 'searchAction', 'everything');
+      this.searchType = 'everything';
     },
 
     setServicesSearch() {
-      this.$set(this, 'searchAction', 'services');
+      //this.$set(this, 'searchAction', 'services');
+      this.searchType = 'services';
     },
   },
 
@@ -203,9 +221,10 @@ export default {
      * let's make sure it sets itself to an appropriate default, so that
      * it's as useful as possible.
      */
+    console.log(this.$route);
     this.resetSearchAction();
   },
-
+  
   props: {
     containerClass: {
       default: 'col-lg-6',
@@ -229,3 +248,12 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+ .search__button:link,
+.search__button:visited,
+.search__button:hover,
+.search__button:active{
+  color:#fff;
+  text-decoration:none;
+} 
+</style>

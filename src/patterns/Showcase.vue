@@ -43,7 +43,7 @@
 
 
         <router-link class="link"
-                    :to="collectionLink"
+                    :to="{name:'Collection', params:{slug: collectionLink, channel: heading, type: collectionType}}"
                       v-if="collectionLink">
                         {{ collectionLinkLabel }}
         </router-link>
@@ -109,6 +109,10 @@ export default {
     jumpDistance:{
       type: Number,
       default: 2,
+    },
+    collectionType:{
+      type: String,
+      default: 'featured-collection'
     }
   },
 };

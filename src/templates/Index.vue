@@ -4,8 +4,10 @@
 
     <main role="main">
 
-      <template v-for="(call, index) in callsToAction" v-if="index === 0">
-        <call-to-action :action="call.acf.action"
+      <template v-for="(call, index) in callsToAction" >
+        <call-to-action :key="call.id"
+                        v-if="index === 0"
+                        :action="call.acf.action"
                         :copy="call.acf.copy"
                         :image="call.acf.image"
                         :heading="call.acf.heading"
@@ -18,12 +20,12 @@
 
           <div class="card card--background-blue-dark mb-3 mb-xl-0 col-md-12 col-xl-4 mr-xl-3 p-4">
 
-            <event-card class="card--background-blue-alternate"
+            <event-card v-if="randomEvent"
+                        class="card--background-blue-alternate"
                         :event="randomEvent"
                         heading-class="h4 text--white text--bold mt-4"
-                        :key="randomEvent.id"
                         :truncate-excerpt="true"
-                        v-if="randomEvent "/>
+                        />
 
             <card content-container-class="p-3"
                   content-type="service"
@@ -61,8 +63,9 @@
 
           <div class="p-0">
 
-            <Showcase collection-link="/collection"
+            <Showcase collection-link="this-week"
                       :collection-items="collection"
+                      collectionType="new"
                       heading="New this week" />
 
             <card class="card--background-white text--dark"

@@ -1,26 +1,26 @@
 <template>
     <main class="background--white event" role="main">
 
-        <article v-if="eventObject">
+        <article v-if="event">
 
             <header class="col-11 col-md-10 col-lg-6 m-auto p-lg-4">
 
-                <heading class="event__title text--dark text--serif">{{ eventObject.title }}</heading>
+                <heading class="event__title text--dark text--serif" v-html="eventObject.title"></heading>
 
                 <span class="event__time text--dark">
-                    {{eventObject.start_date | moment("dddd, MMMM Do YYYY h:mm a")}} &mdash;
-                    {{eventObject.end_date | moment("dddd, MMMM Do YYYY h:mm a")}}
+                    {{event.start_date | moment("dddd, MMMM Do YYYY h:mm a")}} &mdash;
+                    {{event.end_date | moment("dddd, MMMM Do YYYY h:mm a")}}
                 </span>
 
                 <div class="heading__separator"></div>
 
-                <p class="event__excerpt" v-if="eventObject.excerpt" v-html="eventObject.excerpt"></p>
+                <p class="event__excerpt" v-if="event.excerpt" v-html="event.excerpt"></p>
 
-                <add-to-calendar :title="eventObject.title"
-                                 :location="eventObject.venue.venue"
-                                 :start="new Date(`${eventObject.start_date}`)"
-                                 :end="new Date(`${eventObject.end_date}`)"
-                                 :details="eventObject.description"
+                <add-to-calendar :title="event.title"
+                                 :location="event.venue.venue"
+                                 :start="new Date(`${event.start_date}`)"
+                                 :end="new Date(`${event.end_date}`)"
+                                 :details="event.content"
                                  inline-template>
 
                     <div class="mb-3">
@@ -63,22 +63,22 @@
 
                 <div class="col-11 col-md-10 col-lg-6 m-auto pt-4 pb-4 p-lg-4">
 
-                    <img :src="eventObject.image.url" alt="">
+                    <img :src="event.image.url" alt="">
 
                     <heading class="text--dark" level="h2">About</heading>
 
-                    <div v-html="eventObject.description"></div>
+                    <div v-html="event.content"></div>
 
                     <heading class="text--dark" level="h3">When</heading>
-                    {{eventObject.start_date | moment("dddd, MMMM Do YYYY h:mm a")}}
-                    &mdash; {{eventObject.end_date | moment("dddd, MMMM Do YYYY h:mm a")}}
+                    {{event.start_date | moment("dddd, MMMM Do YYYY h:mm a")}}
+                    &mdash; {{event.end_date | moment("dddd, MMMM Do YYYY h:mm a")}}
 
                     <heading class="text--dark" level="h3">Where</heading>
 
-                    <router-link class="d-block text--dark text--underline" :to="`/location/${eventObject.venue.slug}`">{{ eventObject.venue.venue }}</router-link>
-                    <span class="d-block">{{ eventObject.venue.address }}</span>
-                    <span class="d-block">{{ eventObject.venue.city }}, {{ eventObject.venue.state }} {{ eventObject.venue.zip }}</span>
-                    <span class="d-block">{{ eventObject.venue.phone }}</span>
+                    <router-link class="d-block text--dark text--underline" :to="`/location/${event.venue.slug}`">{{ event.venue.venue }}</router-link>
+                    <span class="d-block">{{ event.venue.address }}</span>
+                    <span class="d-block">{{ event.venue.city }}, {{ event.venue.state }} {{ event.venue.zip }}</span>
+                    <span class="d-block">{{ event.venue.phone }}</span>
 
                 </div>
             </section>
@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import * as api from "../store/api.js";
 import AddToCalendar from 'vue-add-to-calendar';
 import Vue from 'vue';
 import VueMoment from 'vue-moment';
@@ -109,10 +110,26 @@ export default {
 
   computed: {
     author() {
-      return this.$store.getters.getAuthorById(Number(this.eventObject.author));
+      return this.$store.getters.getAuthorById(Number(this.event.author));
     },
   },
-
+  data(){
+    return{
+      event: this.eventObject,
+    }
+  },  
+  mounted(){
+    console.log(this.eventObject);
+    if(this.eventObject){
+      this.event = this.eventObject;
+    } else {
+      console.log(this.$route.params.slug);
+    api.fetchData('events', {slug: this.$route.params.slug}).then(results=>{
+        this.event = results.data[0];
+        this.$store.commit('addMoreEvents', [this.event]);
+      }); 
+    }
+  },
   props: {
     eventObject: {
       type: Object,

@@ -43,7 +43,8 @@
 
                             <template v-for="post in posts">
 
-                                <card class="card--background-gray text--dark"
+                                <card :key="post.id"
+                                      class="card--background-gray text--dark"
                                       content-type="blog"
                                       :explainer="post.author.nice_name"
                                       :sub-explainer="post.date | moment('dddd, MMMM Do')"
@@ -110,7 +111,11 @@ export default {
       return this.$store.getters.getServiceBySlug(this.slug);
     }
   },
-
+  data(){
+    return{
+      items: [],
+    }
+  },
   props: {
     channelDescription: {
       type: String,

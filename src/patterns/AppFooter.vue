@@ -23,14 +23,14 @@
 
             </card>
 
-            <Search class="col" container-class="" :search-action="$route.name"/>
+            <Search class="col" container-class="" :search-action="$route.name.toLowerCase()"/>
 
         </div>
 
         <nav class="col-md d-xl-flex flex-wrap menu menu--footer p-0 p-md-3" role="navigation">
 
             <div class="col-xl-4 p-0 pl-xl-2 pr-xl-2"
-                 v-for="item in menuItems">
+                 v-for="item in menuItems" :key="item.id">
 
                 <router-link class="background--blue-alternate d-block link link--undecorated mb-3 p-4 menu__item"
                              :to="item.url">

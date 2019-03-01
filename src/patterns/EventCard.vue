@@ -1,8 +1,8 @@
 <template>
 
-    <div>
+
         <router-link class="d-block event link link--undecorated"
-                     :to="`/events/${event.slug}`">
+                     :to="{name: 'Event', params:{ slug: event.slug, eventObject: event }}">
 
             <card class="mb-3"
                   content-type="event"
@@ -19,7 +19,7 @@
 
         </router-link>
 
-    </div>
+
 
 </template>
 
@@ -56,7 +56,7 @@ export default {
      * @returns {string | null}
      */
     getExcerpt(event) {
-      const excerpt = event.excerpt ? event.excerpt : event.description;
+      const excerpt = event.excerpt ? event.excerpt : event.content;
       const excerptContainer = document.createElement('div');
 
       excerptContainer.innerHTML = excerpt;
