@@ -17,7 +17,7 @@ Vue.config.productionTip = false;
 
 const home = [
   store.dispatch("getCollection"),
-  store.dispatch('getAuthors'),
+  store.dispatch("getAuthors"),
   store.dispatch("getCallsToAction"),
   store.dispatch("getUpcomingEvents"),
   store.dispatch("getServices"),
@@ -25,7 +25,6 @@ const home = [
   store.dispatch("getLocations"),
 ];
 Promise.all(home).then(results=> {
-  console.log("loading Home?");
   new Vue({
     el: "#app",
     router,
