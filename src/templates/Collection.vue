@@ -199,7 +199,6 @@ export default {
       )
       }
       if(this.location){
-        console.log(this.location);
         items = items.filter(item =>
           item.locations && item.locations.includes(this.location)
         );
@@ -275,7 +274,6 @@ export default {
     getNew(){
       const params = {per_page: 100};
       const data = api.fetchData('collection', params).then(results =>{
-        console.log(results);
         this.addItems('collectionItems', results.data);
         return results.data;
       })

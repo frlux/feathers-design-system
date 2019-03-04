@@ -3,8 +3,8 @@
           class="form--search pb-3 pt-3 p-md-4"
           method="GET"
           role="search"
-          v-on:keydown.enter.prevent="search"
-          v-on:submit.prevent="search">
+          v-on:keydown.enter.prevent="searchIt"
+          v-on:submit.prevent="searchIt">
 
         <div class="m-auto pl-m-0 pr-m-0"
              :class="containerClass">
@@ -44,10 +44,12 @@
                            name="query"
                            type="text"
                            style="background-color: #3d77b3;border-color: #1f5894;color: white;"
-                           aria-label="Recipient's username"
+                           aria-label="Search Query"
                            aria-describedby="button-addon2"
-                           v-model.lazy="searchQuery"
-                           v-on:keyup.enter="searchIt()">
+                           v-model="searchQuery"
+                           v-on:keydown.enter="searchIt()"
+                    
+                           >
 
                     <div class="input-group-append">
                       
@@ -60,7 +62,7 @@
                                 }"
                                 type="submit"
                                 id="button-addon2">
-                                <router-link :event="'click' || searchIt" class="search__button" :to="searchRoute">
+                                <router-link class="search__button" :to="searchRoute" @click="searchIt()">
                             <svg class="icon" id="icon-search" viewBox="0 0 32 32" fill="white">
                                 <title>search</title>
                                 <path d="M31.008 27.231l-7.58-6.447c-0.784-0.705-1.622-1.029-2.299-0.998 1.789-2.096 2.87-4.815 2.87-7.787 0-6.627-5.373-12-12-12s-12 5.373-12 12 5.373 12 12 12c2.972 0 5.691-1.081 7.787-2.87-0.031 0.677 0.293 1.515 0.998 2.299l6.447 7.58c1.104 1.226 2.907 1.33 4.007 0.23s0.997-2.903-0.23-4.007zM12 20c-4.418 0-8-3.582-8-8s3.582-8 8-8 8 3.582 8 8-3.582 8-8 8z"></path>
@@ -98,6 +100,7 @@ export default {
     searchRoute(){
       return this.search();
     },
+
     isCatalogSearch() {
       return this.searchType.toLowerCase() === 'catalog'
         || this.searchType.toLowerCase() === 'index';
@@ -105,17 +108,17 @@ export default {
 
     isEventSearch() {
       return this.searchType.toLowerCase() === 'events'
-        || this.searchType.toLowerCase() === 'event';
+        || this.searchType.toLowerCase() === 'events-slug';
     },
 
     isEverythingSearch() {
-      const types=["catalog", "index", "events", "event", "services","service"];
+      const types=["catalog", "index", "events", "events-slug", "services","services-slug"];
       return !this.searchType || !types.includes(this.searchType); 
     },
 
     isServicesSearch() {
       return this.searchType.toLowerCase() === 'services'
-        || this.searchType.toLowerCase() === 'service';
+        || this.searchType.toLowerCase() === 'services-slug';
     },
 
     locationFilter() {
@@ -132,78 +135,32 @@ export default {
   },
 
   methods: {
-    resetSearchAction() {
-      const routeName = this.$route.name.toLowerCase();
-      this.searchType = routeName;
-    },
-    searchIt(){
-      this.$router.push(this.searchRoute);
-    },
-    search() {
-      console.log(this.route);
-      console.log("searching...");
+    search(){
       if (this.isCatalogSearch) {
         return `${this.searchFormAction}?query=${this.searchQuery}&qtype=keyword&locg=1`;//this.searchCatalog();
       }
       let route = {name: "Search", params:{} };
       route.params.filter = this.searchQuery ? `${this.searchQuery}` : '';
-
-      if(this.locationFilter){
-        route.params.location = `${this.locationFilter}`;
-      }
       
       if (this.isEventSearch) {
         route.name= "Events";
-
-        /* return this.$router.push({
-          path: "/events",
-          query: {
-            filter: `${this.searchQuery}`,
-            location: this.locationFilter ? `${this.locationFilter}` : '',
-          },
-        }); */
+        route.params.userLocation = this.locationFilter;
       }
 
       if (this.isEverythingSearch) {
         route.name= "Search";
-
-       /*  return this.$router.push({
-          path: '/search',
-          query: {
-            filter: `${this.searchQuery}`,
-            location: this.locationFilter ? `${this.locationFilter}` : '',
-          },
-        }); */
+        route.params.userLocation = this.locationFilter;
       }
 
       if (this.isServicesSearch) {
         route.name= "Services";
-        /* return this.$router.push({
-          path: "/services",
-          query: {
-            filter: `${this.searchQuery}`,
-            location: this.locationFilter ? `${this.locationFilter}` : '',
-          },
-        }); */
+        route.params.userLocation = this.locationFilter;
       }
   return route;
-      /* return this.$router.push({
-
-        path: "search",
-        query: {
-          filter: `${this.searchQuery}`,
-          location: this.locationFilter ? `${this.locationFilter}` : '',
-        },
-      }); */
     },
-
-    searchCatalog() {
-      
-      // location.replace(
-      //   `${this.searchFormAction}?query=${
-      //     this.searchQuery
-      //   }&qtype=keyword&locg=1`,
-      // ); // eslint-disable-line
+    resetSearchAction() {
+      const routeName = this.$route.name.toLowerCase();
+      this.searchType = routeName;
     },
 
     setCatalogSearch() {
@@ -225,6 +182,11 @@ export default {
       //this.$set(this, 'searchAction', 'services');
       this.searchType = 'services';
     },
+    searchIt(){
+      const route = this.search();
+      this.$root.$emit("inputData", this.searchQuery);
+      this.$router.push(route);      
+    }
   },
 
   mounted() {
@@ -233,7 +195,6 @@ export default {
      * let's make sure it sets itself to an appropriate default, so that
      * it's as useful as possible.
      */
-    console.log(this.$route);
     this.resetSearchAction();
   },
   
@@ -254,9 +215,10 @@ export default {
      * We want to make sure that the search is always as relevant as possible,
      * so, when the route changes, we can try to set a sane default.
      */
-    $route() {
-      this.resetSearchAction();
-    },
+    
+   /*  searchQuery(){
+      this.$root.$emit("inputData", this.searchQuery);
+    } */
   },
 };
 </script>

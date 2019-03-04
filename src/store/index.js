@@ -181,6 +181,12 @@ export default new Vuex.Store({
         contents = state[contentType].filter(
           page => page.acf && page.acf.location && page.acf.location.some(location => location.slug === locationName)
         );
+
+        if(!contents || contents.length < 1){
+          contents = state[contentType].filter(
+            page => !page.acf.location || page.acf.location.some(location => location.slug === 'headquarters')
+          );
+        }
       } else {
         contents = state[contentType];
       }
@@ -251,9 +257,14 @@ export default new Vuex.Store({
     },
 
     getServiceBySlug: state => slug => state.services.find(service => service.slug === slug),
+    getLocationBySlug: state => slug => state.locations.find(location => location.slug === slug),
   },
 
   mutations: {
+    addArticlesToState(state, articles) {
+      state.articles = articles;
+    },
+
     addAuthorsToState(state, authors) {
       state.authors = authors;
     },
@@ -266,6 +277,14 @@ export default new Vuex.Store({
       state.collection = collection;
     },
 
+    addEventsToState(state, events) {
+      state.events = events;
+    },
+
+    addEventCount(state, eventCount) {
+      state.eventCount = eventCount;
+    },
+
     addFeaturedCollectionToState(state, featuredCollections) {
       state.featuredCollections = featuredCollections;
     },
@@ -273,29 +292,18 @@ export default new Vuex.Store({
     addLocationsToState(state, locations) {
       state.locations = locations;
     },
-
-    addPagesToState(state, pages) {
-      state.pages = pages;
+    
+    addMenuItemsToState(state, menuItems) {
+      state.menuItems = menuItems;
     },
 
-    addPostsToState(state, posts) {
-      state.posts = posts;
-    },
-
-    addArticlesToState(state, articles) {
-
-      state.articles = articles;
-    },
-
-    addEventsToState(state, events) {
-      state.events = events;
-    },
-    addEventCount(state, eventCount) {
-      state.eventCount = eventCount;
-    },
-
-    addEventCount(state, eventCount) {
-      state.eventCount = eventCount;
+    addMoreContent(state, payload) {
+      for (let i=0; i < payload.content.length; i++){
+        const index = state[payload.contentType].findIndex(item => item.id === payload.content[i].id)
+        if (index === -1){ 
+          state[payload.contentType].push(payload.content[i]);
+        }
+      }
     },
 
     addMoreEvents(state, moreEvents){
@@ -307,6 +315,14 @@ export default new Vuex.Store({
       }
     },
 
+    addPagesToState(state, pages) {
+      state.pages = pages;
+    },
+
+    addPostsToState(state, posts) {
+      state.posts = posts;
+    },
+
     addResourcesToState(state, resources) {
       state.resources = resources;
     },
@@ -315,20 +331,10 @@ export default new Vuex.Store({
       state.services = services;
     },
 
-    addMoreContent(state, payload) {
-      for (let i=0; i < payload.content.length; i++){
-        const index = state[payload.contentType].findIndex(item => item.id === payload.content[i].id)
-        if (index === -1){ 
-          state[payload.contentType].push(payload.content[i]);
-        }
-      }
-    },
     setUserLocation(state, location){
       state.userLocation = location!=='all' ? location : null;
     },
     addTermsToState(state, payload){
-      console.log(payload.taxonomy);
-      console.log(payload.terms);
       if(state[payload.taxonomy].length < 1){
         state[payload.taxonomy] = payload.terms;
       } else {

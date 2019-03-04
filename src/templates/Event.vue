@@ -36,26 +36,18 @@
                     </div>
                 </add-to-calendar>
 
-                <div class="d-flex" v-if="author">
-                    <div class="col-6">
-                        <div class="align-items-center background--gray card d-flex row mb-3 person">
+                <div class="d-flex">
+                <div class="col-6 mr-1" v-for="contact in event.organizer"
+                :key="contact.id">
 
-                            <div class="person__avatar">
-                                <img class="rounded-circle" :src="author.avatar_urls['96']" alt="">
-                            </div>
-
-                            <div class="person__content" v-if="author">
-                                <p class="align-items-center mt-3">
-                                    <span class="text--dark text--bold text--underlined person__name">{{ author.name }}</span> <br>
-                                    <span class="text--small text--dark">No Position Added Yet</span>
-                                </p>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
+                        <person contentContainerClass= "d-flex row mb-3 person" 
+                                :name="contact.organizer"
+                                :title="contact.description"
+                                type="organizer"
+                                :personObject="contact">
+                                </person>
+                      </div>
+                      </div>
 
             </header>
 
@@ -75,7 +67,7 @@
 
                     <heading class="text--dark" level="h3">Where</heading>
 
-                    <router-link class="d-block text--dark text--underline" :to="`/location/${event.venue.slug}`">{{ event.venue.venue }}</router-link>
+                    <router-link class="d-block text--dark text--underline" :to="{name:'Locations-slug', params:{slug: event.venue.slug}}">{{ event.venue.venue }}</router-link>
                     <span class="d-block">{{ event.venue.address }}</span>
                     <span class="d-block">{{ event.venue.city }}, {{ event.venue.state }} {{ event.venue.zip }}</span>
                     <span class="d-block">{{ event.venue.phone }}</span>
@@ -96,6 +88,7 @@ import VueMoment from 'vue-moment';
 
 import CallToAction from '../patterns/CallToAction.vue';
 import Heading from '../elements/Heading.vue';
+import Person from '../patterns/Person.vue';
 
 Vue.use(AddToCalendar);
 Vue.use(VueMoment);
@@ -106,6 +99,7 @@ export default {
   components: {
     CallToAction,
     Heading,
+    Person
   },
 
   computed: {
@@ -119,11 +113,10 @@ export default {
     }
   },  
   mounted(){
-    console.log(this.eventObject);
+
     if(this.eventObject){
       this.event = this.eventObject;
     } else {
-      console.log(this.$route.params.slug);
     api.fetchData('events', {slug: this.$route.params.slug}).then(results=>{
         this.event = results.data[0];
         this.$store.commit('addMoreEvents', [this.event]);
@@ -139,21 +132,7 @@ export default {
 </script>
 
 <style lang="scss">
-.person {
-  display: flex;
 
-  &__avatar {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    max-width: 64px;
-    width: 25%;
-  }
-}
-
-.person__avatar img {
-  max-width: 100%;
-  vertical-align: bottom;
-}
 .event {
   font-family: $font-family-text;
 

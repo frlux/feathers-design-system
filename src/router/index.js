@@ -5,6 +5,8 @@ import Collection from '../templates/Collection.vue';
 import Event from "../templates/Event.vue";
 import Events from "../templates/Events.vue";
 import Index from "../templates/Index.vue";
+import Location from "../templates/Location.vue";
+import Locations from "../templates/Locations.vue";
 import NotFound from "../templates/NotFound.vue";
 import SearchResults from "../templates/SearchResults.vue";
 import Service from '../templates/Service.vue';
@@ -110,6 +112,26 @@ const router = new Router({
         eventObject: !route.params.eventObject ? router.app.$store.getters.getEventBySlug(route.params.slug) : route.params.eventObject,
       }),
     },
+    {
+      component: Locations,
+      meta: {
+        title: "Locations"
+      },
+      name: "Locations",
+      path: "/locations",
+      props: route => ({
+        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
+      })
+    },
+
+    {
+      component: Location,
+      name: 'Locations-slug',
+      path: "/locations/:slug",
+      props: route => ({
+        locationObject: !route.params.locationObject ? router.app.$store.getters.getLocationBySlug(route.params.slug) : route.params.locationObject,
+      }),
+    },
 
     {
       component: SearchResults,
@@ -154,7 +176,7 @@ const router = new Router({
   }
 });
 
-router.beforeEach((to, from, next) => {
+/* router.beforeEach((to, from, next) => {
   if(!hasLocationQueryParameter(to) && hasLocationQueryParameter(from)){
     next({name: to.name, query: from.query});
   } else {
@@ -169,6 +191,6 @@ async function getEventObject(eventSlug){
   await api.fetchData('events', {slug: eventSlug}).then(results=>{
     return results.data;
   });
-}
+} */
 
 export default router;

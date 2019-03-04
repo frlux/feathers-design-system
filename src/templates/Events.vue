@@ -42,7 +42,8 @@ Through partnerships in the community, we are able to bring you art and historic
                                 <input class="form-control"
                                        id="eventSidebarFilter"
                                        type="text"
-                                       v-model="filter">
+                                       v-model.lazy="q"
+                                       @inputData="updateSearch">
                             </div>
 
                             <div class="form-group">
@@ -53,7 +54,7 @@ Through partnerships in the community, we are able to bring you art and historic
 
                                 <select class="form-control"
                                         id="eventSidebarLocation"
-                                        v-model="location">
+                                        v-model="library">
 
                                     <option :key="location.id"
                                             :value="location.slug"
@@ -72,36 +73,42 @@ Through partnerships in the community, we are able to bring you art and historic
 
                     <div class="col col-lg-8">
 
-                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="filter || location">
-                            <heading class="h3 text--dark text--serif" level="h2">Search</heading>
+                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="q || library || total">
+                            <heading v-if="q || library" class="h3 text--dark text--serif" level="h2">Search</heading>
                             <p class="channel__subtitle mt-1 text--dark text--sans"
-                               v-if="filter || location">
+                               v-if="q || library">
                                 Here is everything we can find that matches your search
-                                {{ filter ? 'for' : '' }} <mark class="mark">{{ filter }}</mark>
-                                <template v-if="location">happening at <router-link class="link" :to="`location/${location.slug}`">{{ locationDetails.name }}</router-link></template>.
+                                {{ q ? 'for' : '' }} <mark class="mark">{{ q }}</mark>
+                                <template v-if="library && locationDetails">happening at <router-link class="link" :to="{name: 'Locations-slug', params:{slug: locationDetails.slug, locationObject: locationDetails}}">{{ locationDetails.name }}</router-link></template>.
                             </p>
+                            
 
                             <p class="channel__subtitle text--dark text--large" v-if="selectedDate">
                                 Here are all the events that match your search for "{{ selectedDate }}".
                             </p>
+                            <div v-if="total > 0" v-html="total==1 ? '1 event found.' : total + ' events found.'" class="events__total text--dark text--sans m-2">
+                        </div>
                         </div>
 
-                        <template v-for="event in filteredEvents">
+                        <template v-for="event in filteredEvents[page-1]">
 
-                            <event-card class="card--background-gray"
-                                        :event="event" />
+                            <event-card v-if="event"
+                                        class="card--background-gray"
+                                        :event="event"
+                                        :key="event.id"
+                                        :class="{ current: event.start_date_details && event.start_date_details.year && `${event.start_date_details.year}-${event.start_date_details.month}-${event.start_date_details.day}` === selectedDate}"/>
 
                         </template>
 
-                        <template v-if="events.length === 0">
+                        <template v-if="total === 0">
                             <p>Sorry, we couldn't find any events.</p>
                         </template>
-                        <a class="button button--large button--pink"
-                        v-if="events.length < eventCount"
-                          @click="getMoreEvents();">
-                            Load More... 
-                        </a>
-
+                        <pagination
+                        v-if="total > 0"
+                        :key="total"
+                        :total="Math.ceil(total/perPage)"
+                        v-model="page"></pagination>
+                        
                     </div>
 
                 </div>
@@ -115,6 +122,8 @@ Through partnerships in the community, we are able to bring you art and historic
 import flatpickr from 'flatpickr';
 import EventCard from '../patterns/EventCard.vue';
 import * as api from '../store/api.js';
+import Pagination from '../elements/Pagination.vue';
+import { chunk } from 'lodash';
 
 window.axios = require('axios');
 
@@ -123,21 +132,19 @@ export default {
 
   components: {
     EventCard,
+    Pagination
   },
 
   computed: {
-    events() {
-      return this.$store.getters.getEvents(this.selectedDate, this.location);
-    },
 
     eventCount() {
       return this.$store.getters.getEventCount();
     },
 
     locationDetails() {
-      return this.location
+      return this.library
         ? this.$store.state.locations.find(
-            location => location.slug === this.location
+            location => location.slug === this.library
           )
         : null;
     },
@@ -147,49 +154,147 @@ export default {
     },
 
     filteredEvents() {
-      if (!this.filter) {
-        return this.events;
-      }
-
-      return this.events.filter(event =>
+      //Filter events by selected Date
+      let events = !this.selectedDate ? this.eventsContainer : this.eventsContainer.filter(
+          event =>
+            `${event.start_date_details.year}-${
+              event.start_date_details.month
+            }-${event.start_date_details.day}` >= this.selectedDate
+        );
+      //Filter Events by library
+       events = !this.library || this.library == 'all' ? events : events.filter(
+          event => event.acf.location && event.acf.location.some(location => location.slug === this.library)
+        );
+      // Filter events by Query String
+     /*  events = !this.filter ? events : events.filter(event =>
         event.title.toLowerCase().includes(this.filter.toLowerCase())
-      );
+      ); */
+      let value = this.q ? this.q.toLowerCase() : null;
+      events = !value ? events : events.filter(event => 
+                  Object.keys(event).some(key => event[key] != null && 
+                  event[key].toString().toLowerCase().includes(value) || Object.keys(event[key]).some(k => event[key][k] !== null &&
+                  event[key][k].toString().toLowerCase().includes(value) )
+                  ));
+
+      this.total = events.length;
+
+      return chunk(events, this.perPage);
     }
   },
 
   data() {
     return {
       selectedDate: null,
+      library: this.location,
+      eventsContainer: [],
+      total: 0,
+      page: 1,
+      q: this.filter,
+      perPage: 5,
       eventsUrl: 'https://fontana.librarians.design/wp-json/tribe/events/v1/events?per_page=20&page=',
-      eventsData: {
-        per_page:20,
+      eventsApi: {
+        per_page:100,
         page: 1,
       },
+      filterV: null,
     };
   },
 
   methods: {
     clearSelectedDate() {
+      const now = new Date();
+      this.calendar.clear();
+      this.calendar.jumpToDate(now);
       this.selectedDate = null;
-      this.filter = null;
-      this.location = null;
+      this.q = null;
+      this.library = null;
+      this.page = 1;
     },
 
-    getMoreEvents() {
-      api.fetchData('events', {page: this.eventsData.page, per_page: this.eventsData.per_page})
+  getMoreEvents() {
+      while(Math.ceil(this.$store.state.eventCount/this.eventsApi.per_page) >= this.eventsApi.page){
+        this.fetchEvents();
+        this.eventsApi.page++;
+      }
+    },
+
+    fetchEvents(){
+      console.log("fetching...");
+      
+      const params = {page: this.eventsApi.page, per_page: this.eventsApi.per_page};
+
+      api.fetchData('events', params)
           .then(response =>{
-            this.$store.commit('addMoreEvents', response.data);
-            this.eventsData.page++;
+            if(this.$store.state != response.headers['x-wp-total']){
+              this.$store.commit('addEventCount',response.headers['x-wp-total']);
+            }
+            this.addEvents(response.data);
           }).catch(error=> console.log(error));
     },
-  },
+    addEvents(data){
+      if(!this.eventsContainer || this.eventsContainer.length == 0){
+        this.eventsContainer = data;
+      } else{
+        for (let i=0; i < data.length; i++){
+          const index = this.eventsContainer.findIndex(item => item.id === data[i].id)
+          if (index === -1){ 
+            this.eventsContainer.push(data[i]);
+          }
+        }
+      }
 
+      if(this.eventsContainer.length > 0){
+          this.eventsContainer.sort(function(a,b){
+              let date1 = new Date(a.start_date);
+              let date2 = new Date(b.start_date);
+              return date1.getTime() - date2.getTime()});
+        }
+
+    },
+    updateSearch(value){
+      console.log("EMIT");
+      this.q = value[0];
+    }
+  },
+  events:{
+    inputData: function(value){
+      this.q = value;
+    }
+
+  },
+    watch:{
+      q: function(newValue, oldValue){
+        this.page=1;
+    },
+      library(){
+        this.page=1;
+      },
+      selectedDate(){
+        this.page=1;
+      },
+      '$route.params.filter': {
+        handler: function(filter) {
+           console.log(this.$route.params.filter);
+           this.q=this.$route.params.filter;
+        },
+        deep: true,
+        immediate: true
+      }
+    },
   mounted() {
-    flatpickr("#test", {
+    this.calendar = flatpickr("#test", {
       inline: true
     });
+    this.getMoreEvents();
+    this.q=this.filter;
+    this.$root.$on('inputData', data=>{
+      console.log(data);
+      this.q=data;
+    });
   },
-
+  beforeMount(){
+    this.eventsContainer = this.$store.state.events;
+  },
   props: {
     filter: {
       type: String,
@@ -203,6 +308,9 @@ export default {
 </script>
 
 <style lang="scss">
+.events__total{
+  text-align:right;
+}
 .flatpickr-calendar {
   opacity: 0;
   display: none;
