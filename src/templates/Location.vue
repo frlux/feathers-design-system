@@ -123,7 +123,11 @@
             <!-- BEGIN MAIN CONTENT -->
             <div class="col col-lg-8">
               <!--BEGIN CHANNEL CONTENT -->
-
+              <Showcase v-if="locationCollection"
+                          :collection-items="locationCollection"
+                          :heading="`Newest at ${library.name}`"
+                          collectionType="new"
+                          collectionLink="this-month"/>
               <div v-if="locationEvents && locationEvents.length > 0"
                     class="card--background-gray py-2 mb-3 location-events">
                     <h3 class="h3 px-3">Upcoming Related Events</h3>
@@ -141,6 +145,7 @@
                   </router-link>
 
               </div>
+              
 
               
 
@@ -178,16 +183,13 @@
 
                   </card>
                 </template><!-- end articles card -->
-               <Showcase class="mt-4" v-if="locationCollection.length > 0"
-                          :collection-items="locationCollection"
-                          :heading="`New at ${library.name}`" />
+               
               <!-- END CHANNEL CONTENT -->
 
             </div><!--close main content col-8 -->
           </div><!--close flex div -->
          
         </div><!-- close col-10 div -->
-
       </section>
 
     </template>
@@ -196,6 +198,7 @@
 </template>
 
 <script>
+import * as api from '../store/api.js';
 import CallToAction from '../patterns/CallToAction.vue';
 import Card from '../patterns/Card.vue';
 import CollectionItem from '../patterns/CollectionItem.vue';
@@ -218,19 +221,19 @@ export default {
   computed: {
     locationCallsToAction() {
       return this.$store.getters.getContentByService(
-          'callsToAction', '',
-          this.library.slug,
-        );
+        'callsToAction', '',
+        this.library.slug,
+      );
     },
     call(){
       let cta = this.locationCallsToAction;
       return (cta && cta.length>0) ? cta[0] : null;
     },
     locationCollection() {
-       return this.$store.getters.getContentByService(
-          'collection', '',
-          this.library.slug,
-        );
+      return this.$store.getters.getContentByService(
+        'collection', '',
+        this.library.slug,
+      );
     },
     locationPages() {
        return this.$store.getters.getContentByService(
@@ -254,7 +257,14 @@ export default {
   data() {
     return {
       library: this.locationObject,
-      articles:[],
+      count:{
+        articles: 0,
+        callsToAction: 0,
+        pages:0,
+        collection:0,
+        events:0,
+      },
+      articles: [],
       callsToAction:[],
       pages:[],
       collection:[],
@@ -302,7 +312,32 @@ export default {
       return hours.closed 
                 ? `<span class='location__hours__day__name'>${day}</span> <span class='location__hours__day__hours--closed'>Closed</span></div>`
                 : `<span class='location__hours__day__name' itemprop="dayOfWeek" href="http://schema.org/${day}">${day}</span> <span class='location__hours__day__hours'><span itemprop="opens" content="${moment(hours.open, format).format("HH:mm:ss")}">${hours.open}</span>- <span itemprop="closes" content="${moment(hours.close, format).format("HH:mm:ss")}">${hours.close}</span></span></div>`;
+    },
+    fetchContent(query){
+      api.fetchData(query.contentType, query.params)
+      .then( data=>{
+        this.count[query.contentType] = data.headers['x-wp-total'];
+        
+        if(query.commit){
+          let payload = {'content': data.data, 'contentType': query.contentType};
+          this.$store.commit("addMoreContent", payload);
+        }
+        this.addContent(data.data, query.contentType);
+      });
+    },
+    addContent(data, type){
+      if(!this[type] || this[type].length == 0){
+        this[type] = data;
+      } else{
+        for (let i=0; i < data.length; i++){
+          const index = this[type].findIndex(item => item.id === data[i].id)
+          if (index === -1){ 
+            this[type].push(data[i]);
+          }
+        }
+      }
     }
+    
   },
   mounted(){
     if(this.locationObject){
@@ -310,7 +345,19 @@ export default {
     } else {
       this.library = this.$store.getters.getLocationBySlug(this.$route.params.slug)
     }
-
+    const types =[
+      'collection',
+      'callsToAction',
+      'events',
+      'articles',
+      'pages',
+    ];
+    types.forEach((type)=>{
+      let params = type =='collection' ?
+        {contentType: type, params: {locations: this.locationObject.id, per_page: 10, new: 'this-month'}, commit: true}
+        : {contentType: type, params: {locations: this.locationObject.id, per_page: 5}, commit: true}
+      this.fetchContent(params); 
+    });
   },
   props: {
     locationObject: {
