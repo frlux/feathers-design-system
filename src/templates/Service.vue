@@ -43,7 +43,7 @@
                         <div class="col col-lg-8">
 
                             <Showcase v-if="collection"
-                                      :collection-items="collection"
+                                      :collection-items="collection.slice(1,10)"
                                       heading="Related Materials" />
 
                             <template v-for="event in events">
