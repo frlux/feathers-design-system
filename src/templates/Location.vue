@@ -109,7 +109,8 @@
                           :copy="call.acf.copy"
                           :image="call.acf.image"
                           :heading="call.acf.heading"
-                          :link="call.acf.link"></call-to-action>
+                          :link="call.acf.link"
+                          class="mt-3"></call-to-action>
       </template>
       </div>
             
