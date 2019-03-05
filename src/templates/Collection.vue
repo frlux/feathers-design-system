@@ -35,7 +35,7 @@
 
 
                     <div class="col-md-4">
-                        Sidebar
+                  
                         <div class="mt-3" style="width: 307.875px">
                             <div class="form-group">
                                 <label class="form-label text--bold text--sans text--dark" for="collectionSidebarFilter">
@@ -107,6 +107,7 @@
                     </div>
 
                     <div class="col col-lg-8">
+                      <p>{{ counts }}</p>
 
 
 
@@ -134,7 +135,7 @@
 
                             </template>
 
-                        <template v-for="collectionItem in collection[currentPage-1]">
+                        <template v-for="collectionItem in collectionItems[currentPage-1]">
                          <collection-item class="card--background-blue-dark"
                            :item="collectionItem"
                            heading-level="h3"
@@ -144,8 +145,8 @@
                            </template>
 
                            <pagination
-                        v-if="count > 0"
-                        :total="Math.ceil(count/5)"
+                        v-if="total > 0"
+                        :total="Math.ceil(total/5)"
                         v-model="currentPage"></pagination>
 
                     </div>
@@ -186,8 +187,8 @@ export default {
        */
     },
 
-    collection() {
-      let items = this.collectionItems;
+    collectionItems() {
+      let items = this.collection;
       if(this.selectedGenre.length > 0){this.selectedGenre.forEach(val =>
         items = items.filter(item => item.genres && item.genres.includes(val)
         )
@@ -212,7 +213,7 @@ export default {
                   item.acf[key][k].toString().toLowerCase().includes(value) )
                   ));
       }
-      this.count = items.length;
+      this.total = items.length;
       return chunk(items, 5);
        /**
        * NEED to get by featured collection
@@ -249,13 +250,16 @@ export default {
   },
   data(){
     return{
-      collectionItems: [],
+      collection: [],
       filter: null,
       location: '',
-      count: 0,
+      total: 0,
       currentPage: 1,
       selectedGenre:[],
-      selectedAudience:[]
+      selectedAudience:[],
+      counts:{
+        collection: 0,
+      }
     }
   },
   beforeMount(){
@@ -271,12 +275,23 @@ export default {
 
   },
   methods:{
-    getNew(){
-      const params = {per_page: 100};
-      const data = api.fetchData('collection', params).then(results =>{
-        this.addItems('collectionItems', results.data);
-        return results.data;
-      })
+    async getNew(){
+      const params = {per_page: 100, new: this.slug};
+      let count = await this.fetchContent('collection', params);
+      /**
+       * 
+       * NEED TO GET COUNT
+       * TROUBLESHOOT
+       */
+      console.log(count);
+    },
+    async fetchContent(type, params){
+       api.fetchData(type, params)
+          .then(response =>{
+            const total = response.headers['x-wp-total'];
+            this.addItems(type, response.data);
+            return total;
+          }).catch(error=> console.log(error));
     },
     addItems(store, items){
       for (let i=0; i < items.length; i++){
@@ -319,6 +334,17 @@ export default {
 
     term:{
       type: Object
+    }
+  },
+  watch:{
+    selectedGenre(){
+      this.currentPage=1;
+    },
+    selectedAudience(){
+      this.currentPage=1;
+    },
+    filter(){
+      this.currentPage=1;
     }
   }
 };
