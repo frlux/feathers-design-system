@@ -8,7 +8,8 @@
                           :copy="call.acf.copy"
                           :image="call.acf.image"
                           :heading="call.acf.heading"
-                          :link="call.acf.link"></call-to-action>
+                          :link="call.acf.link"
+                          class="call-to-action--large"></call-to-action>
       </template>
 
       <header class="background--white d-flex p-4">
@@ -100,9 +101,9 @@
 
 
            </div>
-
+  <div class="location__callsToAction d-flex flex-column" style="">
       <template v-for="(call, index) in locationCallsToAction" >
-          <call-to-action v-if="index>0"
+          <call-to-action v-if="index===1"
                           :key="call.id"
                           :action="call.acf.action"
                           :copy="call.acf.copy"
@@ -110,6 +111,7 @@
                           :heading="call.acf.heading"
                           :link="call.acf.link"></call-to-action>
       </template>
+      </div>
             
             </div> <!-- END SIDEBAR -->
             <!-- BEGIN MAIN CONTENT -->

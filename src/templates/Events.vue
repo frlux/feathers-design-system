@@ -43,7 +43,7 @@ Through partnerships in the community, we are able to bring you art and historic
                                        id="eventSidebarFilter"
                                        type="text"
                                        v-model.lazy="q"
-                                       @inputData="updateSearch">
+                                       >
                             </div>
 
                             <div class="form-group">
@@ -196,7 +196,6 @@ export default {
         per_page:100,
         page: 1,
       },
-      filterV: null,
     };
   },
 
@@ -251,16 +250,6 @@ export default {
         }
 
     },
-    updateSearch(value){
-      console.log("EMIT");
-      this.q = value[0];
-    }
-  },
-  events:{
-    inputData: function(value){
-      this.q = value;
-    }
-
   },
     watch:{
       q: function(newValue, oldValue){
@@ -272,14 +261,14 @@ export default {
       selectedDate(){
         this.page=1;
       },
-      '$route.params.filter': {
+     /*  '$route.params.filter': {
         handler: function(filter) {
            console.log(this.$route.params.filter);
            this.q=this.$route.params.filter;
         },
         deep: true,
         immediate: true
-      }
+      } */
     },
   mounted() {
     this.calendar = flatpickr("#test", {

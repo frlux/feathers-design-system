@@ -159,7 +159,7 @@ export default {
   return route;
     },
     resetSearchAction() {
-      const routeName = this.$route.name.toLowerCase();
+      const routeName = this.$route.name ? this.$route.name.toLowerCase() : 'everything';
       this.searchType = routeName;
     },
 
@@ -196,6 +196,7 @@ export default {
      * it's as useful as possible.
      */
     this.resetSearchAction();
+    
   },
   
   props: {
@@ -215,6 +216,9 @@ export default {
      * We want to make sure that the search is always as relevant as possible,
      * so, when the route changes, we can try to set a sane default.
      */
+    $route(){
+     this.resetSearchAction();
+    },
     
    /*  searchQuery(){
       this.$root.$emit("inputData", this.searchQuery);
