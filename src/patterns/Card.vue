@@ -17,14 +17,14 @@
 
                 <div class="align-items-center card__badge d-flex justify-content-between">
 
-                    <div class="align-self-start card__badge__label text--bold text--extra-small text--uppercase">
-                        {{ badgeLabel ? badgeLabel : contentType }}
+                    <div class="align-self-start card__badge__label text--bold text--extra-small text--uppercase" v-html="badgeLabel ? badgeLabel : contentType">
+                        
                     </div>
 
-                    <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">
-                        {{ explainer }} <br>
+                    <div class="card__badge__explainer text--extra-small text--right" v-if="explainer" v-html="explainer">
+                        <br>
 
-                        <div class="card__badge__sub-explainer" v-if="subExplainer">{{ subExplainer }}</div>
+                        <div class="card__badge__sub-explainer" v-if="subExplainer" v-html="subExplainer"></div>
                     </div>
 
                 </div>
@@ -38,8 +38,7 @@
 
              <heading :class="[subheadingClass ? subheadingClass : 'card__subheading mt-2']"
                       :level="subheadingLevel"
-                      v-if="subheading">
-                 {{ subheading }}
+                      v-if="subheading" v-html="subheading">
              </heading>
 
             <div class="card__heading__separator" v-if="isDeck"></div>
