@@ -89,6 +89,9 @@ export default {
   methods: {
     showcaseCreators(item) {
       const { creators } = item.acf;
+      if(creators == false){
+        return '';
+      }
       const { name: creatorName } = creators.find(creator => creator.name);
       const hasMoreThanOneCreator = creators.length > 1;
 
