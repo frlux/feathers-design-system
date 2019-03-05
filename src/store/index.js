@@ -141,7 +141,7 @@ export default new Vuex.Store({
 
       async getServices({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('services')
+          const authors = api.fetchData('services',{per_page: 100})
         .then( data=>{
           commit('addServicesToState', data.data);
           resolve();
