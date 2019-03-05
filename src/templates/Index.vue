@@ -11,7 +11,8 @@
                         :copy="call.acf.copy"
                         :image="call.acf.image"
                         :heading="call.acf.heading"
-                        :link="call.acf.link"></call-to-action>
+                        :link="call.acf.link"
+                        class="call-to-action--large"></call-to-action>
       </template>
 
       <section class="background--blue-alternate library__section pb-3 pl-md-2 pb-md-4 pt-md-4 pr-md-2">

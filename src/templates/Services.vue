@@ -25,7 +25,7 @@
 
         </header>
 
-        <section class="d-md-flex p-4" v-if="!filter">
+        <section class="d-md-flex p-4" v-if="!q">
 
             <div class="col-md-8">
 
@@ -58,16 +58,17 @@
 
             </div>
 
-            <div class="card background--gray p-4 mb-3">
+            <template v-if="call">
 
-                <call-to-action action="I don't really fit yet"
-                                class="background--blue-alternate p-3"
-                                copy="Data tells a powerful story --
-                      about your content, who reads it, and what's possible"
-                                image="https://source.unsplash.com/random"
-                                heading="Service C2A"></call-to-action>
+          <call-to-action :action="call.acf.action"
+                          :copy="call.acf.copy"
+                          :image="call.acf.image"
+                          :heading="call.acf.heading"
+                          :link="call.acf.link"
+                          ></call-to-action>
 
-            </div>
+
+            </template>
 
         </section>
 
@@ -88,21 +89,21 @@
                                 <input class="form-control"
                                        id="serviceSidebarFilter"
                                        type="text"
-                                       v-model="filter">
+                                       v-model="q">
                             </div>
 
                             <button class="button button--blue-alternate"
-                                    v-on:click="filter = null">Clear Filter</button>
+                                    v-on:click="q = null">Clear Filter</button>
                         </div>
 
                     </div>
 
                     <div class="col col-lg-8">
 
-                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="filter">
+                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="q">
                             <heading class="h3 text--dark text--serif" level="h2">Search</heading>
-                            <p class="channel__subtitle mt-1 text--dark text--sans" v-if="filter">
-                                Here is everything we can find that matches your search for <mark class="mark">{{ filter }}</mark>.
+                            <p class="channel__subtitle mt-1 text--dark text--sans" v-if="q">
+                                Here is everything we can find that matches your search for <mark class="mark">{{ q }}</mark>.
                             </p>
                         </div>
 
@@ -152,6 +153,10 @@ export default {
   },
 
   computed: {
+    call(){
+      const ctas = this.$store.state.callsToAction.filter(cta => cta.services && cta.services.length > 0);
+      return ctas[0];
+    },
     featuredServices() {
       const servicesWithDescriptions = this.services.filter(
         service => service.description !== ""
@@ -160,18 +165,29 @@ export default {
     },
 
     filteredServices() {
-      if (!this.filter) {
-        return this.services;
-      }
-
-      return this.services.filter(service =>
-        service.name.toLowerCase().includes(this.filter)
-      );
+      let value = this.q ? this.q.toLowerCase() : null;
+      return !value ? this.services : this.services.filter(service => 
+                  Object.keys(service).some(key => service[key] != null && 
+                  service[key].toString().toLowerCase().includes(value) || Object.keys(service[key]).some(k => service[key][k] !== null &&
+                  service[key][k].toString().toLowerCase().includes(value) )
+                  ));
     },
 
     services() {
       return this.$store.state.services;
     }
+  },
+  data(){
+    return{
+      q: this.filter,
+    }
+  },
+  mounted(){
+    this.$root.$on('inputData', data=>{
+      console.log(data);
+      this.q=data;
+    });
+
   },
 
   props: {

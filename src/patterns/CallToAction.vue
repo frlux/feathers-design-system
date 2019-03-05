@@ -2,7 +2,7 @@
     <component class="call-to-action" :is="element">
 
         <card :button-label="action"
-              class="align-items-center card--background-blue-base col-sm-10 d-md-flex flex-row-reverse justify-content-end m-md-auto pl-0"
+              class="align-items-stretch card--background-blue-base"
               :copy="copy"
               :heading="heading"
               :image="image"
@@ -17,7 +17,7 @@
 
         </card>
 
-        <div class="background-image-test d-none d-sm-block"
+        <div class="card__background d-none d-sm-block"
              :style="`background-image: url(${image});`"></div>
 
     </component>

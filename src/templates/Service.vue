@@ -3,8 +3,10 @@
 
         <template v-if="serviceObject">
 
-            <template v-for="(call, index) in callsToAction" v-if="index === 0">
-                <call-to-action :action="call.acf.action"
+            <template v-for="(call, index) in callsToAction" >
+                <call-to-action v-if="index === 0"
+                                :key="call.id"
+                                :action="call.acf.action"
                                 :copy="call.acf.copy"
                                 :image="call.acf.image"
                                 :heading="call.acf.heading"
@@ -83,7 +85,8 @@
                                       :explainer="getAuthor(article.author)"
                                       :sub-explainer="article.date | moment('dddd, MMMM Do')"
                                       :heading="article.title.rendered"
-                                      v-if="article">
+                                      v-if="article"
+                                      :key="article.id">
 
                                     <div slot="copy">
                                         <div v-html="article.excerpt.rendered"></div>
@@ -124,12 +127,14 @@
 </template>
 
 <script>
+import * as api from '../store/api.js';
 import CallToAction from '../patterns/CallToAction.vue';
 import Card from '../patterns/Card.vue';
 import CollectionItem from '../patterns/CollectionItem.vue';
 import EventCard from '../patterns/EventCard.vue';
 import Heading from '../elements/Heading.vue';
 import Showcase from '../patterns/Showcase.vue';
+import Pagination from '../elements/Pagination.vue';
 
 export default {
   name: 'Service',
@@ -141,6 +146,7 @@ export default {
     EventCard,
     Heading,
     Showcase,
+    Pagination
   },
 
   computed: {
@@ -148,13 +154,13 @@ export default {
       const serviceCTA = this.$store.getters.getContentByService(
         'callsToAction',
         this.serviceObject.slug,
-        this.location,
+        this.location
       );
       if (serviceCTA.length > 0) {
         return serviceCTA;
       }
-      const serviceQuery = { urlParams: `?services=${this.serviceObject.id}`, contentType: 'callsToAction' };
-      return this.$store.dispatch(`getMoreContent`, serviceQuery);
+      this.getContent('callsToAction', {services: this.serviceObject.id});
+      return this.content.length==0? null : this.content.filter(item => item.type && item.type === 'actions');
     },
 
     collection() {
@@ -164,11 +170,11 @@ export default {
         this.location,
       );
 
-      if (serviceCollections.length > 0) {
+      if (serviceCollections.length > 4 && this.active !== "collection") {
         return serviceCollections;
       }
-      const serviceQuery = { urlParams: `&services=${this.serviceObject.id}`, contentType: 'collection' };
-      return this.$store.dispatch('getMoreContent', serviceQuery);
+      this.getContent('collection', {services: this.serviceObject.id});
+      return this.content.length==0 ? null : this.content.filter(item => item.type && item.type === 'collection-item');
     },
 
     articles() {
@@ -178,7 +184,7 @@ export default {
         this.location,
       );
 
-      if (serviceArticles.length > 0) {
+      if (serviceArticles.length > 0 && this.active !== "articles") {
         return serviceArticles;
       }
 
@@ -217,12 +223,86 @@ export default {
       return this.$store.dispatch('getMoreContent', serviceQuery);
     },
   },
-
+  data(){
+    return{
+      content: [],
+      count:{
+        callsToAction: 1,
+        events: 1,
+        pages: 1,
+        posts: 1,
+        articles: 1,
+        collection: 1,
+        resources: 1,
+      },
+      page: 1,
+      active: 'channel'
+    }
+  },
   methods: {
     getAuthor(authorId) {
       const author = this.$store.getters.getAuthorById(Number(authorId));
       return author.name;
     },
+    async getContent(type, args=null){
+      let apiPage = 1;
+      
+      while(Math.ceil(this.count[type]/100) >= apiPage){
+      let params = {page: apiPage, per_page: 100};
+      if(args){
+        console.log(args);
+        params = {...params, ...args};
+      }
+      console.log(params);
+      this.count[type] = await this.fetchContent(type, params);
+      apiPage++;
+      }
+
+    },
+    async fetchContent(type,params){
+      api.fetchData(type, params)
+          .then(response =>{
+            const total = response.headers['x-wp-total'];
+            this.addContent(response.data);
+            console.log(response);
+            return total;
+          }).catch(error=> console.log(error));
+
+    },
+    addContent(data){
+      for (let i=0; i < data.length; i++){
+          const index = this.content.findIndex(item => item.id === data[i].id)
+          if (index === -1){ 
+            this.content.push(data[i]);
+          }
+        }
+    }
+  },
+  mount(){
+    this.content = {...this.$store.getters.getContentByService(
+        'callsToAction',
+        this.serviceObject.slug
+      ), ...this.$store.getters.getContentByService(
+        'collection',
+        this.serviceObject.slug
+      ), ...this.$store.getters.getContentByService(
+        'events',
+        this.serviceObject.slug
+      ), ...this.$store.getters.getContentByService(
+        'featuredCollections',
+        this.serviceObject.slug
+      ), ...this.$store.getters.getContentByService(
+        'resources',
+        this.serviceObject.slug
+      ), ...this.$store.getters.getContentByService(
+        'articles',
+        this.serviceObject.slug
+      ), ...this.$store.getters.getContentByService(
+        'pages',
+        this.serviceObject.slug
+      )};
+      console.log("MOUNT");
+      console.log(this.content);
   },
 
   props: {
