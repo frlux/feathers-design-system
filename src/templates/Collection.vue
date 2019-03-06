@@ -1,5 +1,5 @@
 <template>
-    <main class="channel" role="main">
+    <main class="channel" role="main" :key="$route.params.slug">
         <template v-for="(call, index) in callsToAction" >
             <call-to-action v-if="index === 0"
                             :key="call.id"
@@ -34,7 +34,7 @@
                 <div class="d-md-flex">
 
 
-                    <div class="col-md-4">
+                    <div class="col-md-4" v-if="browse">
                   
                         <div class="mt-3" style="width: 307.875px">
                             <div class="form-group">
@@ -106,10 +106,7 @@
                         </div>
                     </div>
 
-                    <div class="col col-lg-8">
-                      <p>{{ counts }}</p>
-
-
+                    <div class="col col-lg-8" v-if="browse">
 
                             <template v-for="post in posts">
 
@@ -143,6 +140,13 @@
                            subheading-level="h4"
                             :key="collectionItem.id"/>
                            </template>
+                           <p>{{loaded}} - {{$route.params.slug}}</p>
+                           <template v-if="counts.collection == 0 && loaded">
+
+                            <p>Sorry, we couldn't find any collection items. <router-link class="button button--aqua" :to="{name: 'Collection-type', params:{type: 'new'}}">
+                                            Check out the newest items instead.
+                                        </router-link></p>
+                        </template>
 
                            <pagination
                         v-if="total > 0"
@@ -150,6 +154,62 @@
                         v-model="currentPage"></pagination>
 
                     </div>
+                    <!-- DISCOVER -->
+                    <div v-if="!browse">
+                      <template>
+                                <heading class="text--dark text--serif" level="h1">
+                                  Genres
+                    </heading>
+                    <div class="d-flex flex-wrap justify-content-between">
+                                <card v-for="genre in genres"
+                                      @click="browse=true && selectedGenre.push(genre.id)"
+                                      class="card--background-blue-dark text--white ml-1 mb-2 flex-grow-1 flex-shrink-1"
+                                      :key="genre.id"
+                                      content-type="collection"
+                                      :heading="genre.name"
+                                      v-if="!genre.parent">
+
+                                        
+                                    
+                                    <div slot="copy">
+                                      
+                                        <img v-if="genre.acf && genre.acf.sample_cover" class="collection__sample__cover" :src="genre.acf.sample_cover.url">
+                                        <div v-html="genre.description"></div>
+                                        <button class="button button--aqua">
+                                            More Like This
+                                        </button>
+                                        <div class="d-flex flex-wrap justify-content-between">
+                                         <card v-for="g in genres"
+                                      @click="browse=true && selectedGenre.push(g.id)"
+                                      class="card--background-gray text--dark ml-1 mb-2 flex-grow-1 flex-shrink-1"
+                                      :key="g.id"
+                                      content-type="collection"
+                                      :heading="g.name"
+                                      v-if="g.parent===genre.id">
+
+                                    <div slot="copy">
+                                        <img v-if="g.acf && g.acf.sample_cover" class="collection__sample__cover" :src="g.acf.sample_cover.url">
+                                        <div v-html="g.description"></div>
+                                    </div>
+
+                                    <template slot="action">
+                                        <button class="button button--aqua">
+                                            More Like This
+                                        </button>
+                                    </template>
+
+                                </card>
+                                </div>
+                                    </div>
+
+                                    
+
+                                </card>
+                      </div>
+                      </template>
+
+                    </div>
+                    <!-- END DISCOVER -->
 
                 </div>
 
@@ -189,6 +249,7 @@ export default {
 
     collectionItems() {
       let items = this.collection;
+
       if(this.selectedGenre.length > 0){this.selectedGenre.forEach(val =>
         items = items.filter(item => item.genres && item.genres.includes(val)
         )
@@ -252,14 +313,16 @@ export default {
     return{
       collection: [],
       filter: null,
-      location: '',
+      location: this.library ? this.library : '',
       total: 0,
       currentPage: 1,
       selectedGenre:[],
       selectedAudience:[],
       counts:{
         collection: 0,
-      }
+      },
+      loaded: false,
+      browse: true,
     }
   },
   beforeMount(){
@@ -272,47 +335,64 @@ export default {
     if(this.$store.state.featuredCollections.length < 1){
       this.$store.dispatch("getFeaturedCollections");
     }
+    if(!this.network || this.network == 'new'){
+        this.browse=false;
+        this.getNew();
+      }
+      if(this.network && this.network !== 'new' && this.slug !== 'any' && this.term){
+        this.getCollectionByTerm();
+      }
 
   },
   methods:{
-    async getNew(){
-      const params = {per_page: 100, new: this.slug};
-      let count = await this.fetchContent('collection', params);
-      /**
-       * 
-       * NEED TO GET COUNT
-       * TROUBLESHOOT
-       */
-      console.log(count);
+   getNew(bulk=null){
+    this.fetchContent('collection',{per_page:100});
     },
-    async fetchContent(type, params){
-       api.fetchData(type, params)
-          .then(response =>{
-            const total = response.headers['x-wp-total'];
-            this.addItems(type, response.data);
-            return total;
-          }).catch(error=> console.log(error));
+    getCollectionByTerm(){
+      switch(this.network){
+        case 'genres': this.fetchContent('collection', {per_page:100, genres: this.term.id});
+        // case 'featured-collection': this.fetchContent('collection',{per_page:100, page: 1, 'featured-collection': });
+      }
     },
-    addItems(store, items){
+    getSample(term){
+      console.log(term);
+      var found = this.collection.find(function(item) {
+          return item[term.taxonomy] && item[term.taxonomy].includes(term.id);
+        });
+  
+      return found && found.featured_image ? found.featured_image : '';
+
+    },
+    fetchContent(type, params){
+      api.fetchData(type, params).then(response =>{
+            console.log(response);
+            this.counts[type] = response.headers['x-wp-total'];
+            if(params.page){
+              params.page++;
+            }
+            this.addItems(type, response.data, params);
+            this.loaded=true;
+          }).catch(error=> console.log(error)); 
+    },
+    addItems(store, items, params=null){
       for (let i=0; i < items.length; i++){
         const index = this[store].findIndex(item => item.id === items[i].id)
         if (index === -1){ 
           this[store].push(items[i]);
         }
       }
-
+      if(params && params.page && params.new){
+        while(Math.ceil(this.counts[store]/100) >= params.page){
+          this.fetchContent('collection', params);
+        }
+      }
     },
     clearFilters() {
-      this.selectedGenre = null;
+      this.selectedGenre = [];
       this.filter = null;
       this.location = '';
-      this.selectedAudience = null;
+      this.selectedAudience = [];
     },
-  },
-  mounted(){
-    if(this.network == 'new'){
-        this.getNew();
-      }
   },
   props: {
     collectionDescription: {
@@ -325,6 +405,7 @@ export default {
 
     network: {
       type: String,
+      default: 'new'
     },
 
     slug: {
@@ -334,6 +415,9 @@ export default {
 
     term:{
       type: Object
+    },
+    library:{
+      type: String,
     }
   },
   watch:{
@@ -345,6 +429,9 @@ export default {
     },
     filter(){
       this.currentPage=1;
+    },
+    $route(){
+      console.log(this.$route);
     }
   }
 };
@@ -393,5 +480,9 @@ export default {
   border: none;
   box-shadow: none;
   margin: 40px 0;
+}
+.collection__sample__cover{
+  max-width:125px;
+  max-height:150px;
 }
 </style>

@@ -49,7 +49,7 @@ const router = new Router({
       path: '/collection',
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
+        library: route.params.userLocation ? route.params.userLocation : '',
         slug: 'any',
       }),
     },
@@ -58,11 +58,11 @@ const router = new Router({
       meta: {
         title: 'Collections',
       },
-      name: 'Colelction-type',
+      name: 'Collection-type',
       path: '/collection/:type',
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
+        library: route.params.userLocation ? route.params.userLocation : '',
         slug: 'any',
         network: route.params.type,
       }),
@@ -73,7 +73,7 @@ const router = new Router({
       path: '/collection/:type/:slug',
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
+        library: route.params.userLocation ? route.params.userLocation : '',
         slug: route.params.slug,
         network: route.params.type,
       }),

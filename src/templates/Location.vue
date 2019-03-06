@@ -127,7 +127,7 @@
                           :collection-items="locationCollection"
                           :heading="`Newest at ${library.name}`"
                           collectionType="new"
-                          collectionLink="this-month"/>
+                          :location="library.slug"/>
               <div v-if="locationEvents && locationEvents.length > 0"
                     class="card--background-gray py-2 mb-3 location-events">
                     <h3 class="h3 px-3">Upcoming Related Events</h3>

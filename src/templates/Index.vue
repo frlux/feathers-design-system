@@ -64,8 +64,7 @@
 
           <div class="p-0">
 
-            <Showcase collection-link="this-week"
-                      :collection-items="collection"
+            <Showcase :collection-items="collection"
                       collectionType="new"
                       heading="New this week" />
 
