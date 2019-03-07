@@ -11,7 +11,7 @@
 
         <div class="person__content">
             <p class="align-items-center mt-3">
-                <span class="text--dark text--bold text--underlined person__name">{{ name }}</span> <br>
+                <span class="text--dark text--bold text--underlined person__name">{{ nice_name }}</span> <br>
                 <span class="text--small text--dark" v-if="title" v-html="title"></span>
             </p>
         </div>
@@ -45,11 +45,29 @@ export default {
           const slug = this.personObject.post_name ? this.personObject.post_name : this.personObject.slug;
           const profile = this.fetchPerson(`https://fontana.librarians.design/wp-json/tribe/events/v1/organizers/by-slug/${slug}`);
           image = profile && profile.image ? [url => profile.image.url, w => profile.image.width, h => profile.image.height ] : [] ; break;
+        case 'blog': return this.personObject.avatar_URL;
         }
       }
      
       return  this.getImage(image);
-    }
+    },
+    nice_name(){
+      if(this.name){
+        return this.name;
+      }
+      if(this.personObject){
+        return this.type==='organizer'
+                ? this.personObject.organizer || this.personObject.post_title
+                : this.type==='blog' && this.personObject.first_name && this.personObject.last_name 
+                ? this.personObject.first_name + " " + this.personObject.last_name
+                : this.type==='blog' && this.personObject.name
+                ? this.personObject.name
+                : this.type==='blog'
+                ? this.personObject.nice_name
+                : this.personObject.name || '';
+      }
+      return ''
+    },
   },
   data(){
     return{
@@ -88,7 +106,6 @@ export default {
     },
     name: {
       type: String,
-      required: true
     },
     personObject:{
       type: Object
@@ -100,6 +117,9 @@ export default {
     type:{
       type: String,
     },
+  },
+  mounted(){
+    
   }
 };
 </script>
