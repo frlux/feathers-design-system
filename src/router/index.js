@@ -145,7 +145,7 @@ const router = new Router({
     {
       component: Channel,
       name: 'Channel',
-      path: "/:type/:slug",
+      path: "/:type",
       props: route => ({
         slug: route.params.slug,
         network: route.params.type,
