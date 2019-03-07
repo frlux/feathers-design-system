@@ -190,6 +190,13 @@ export default new Vuex.Store({
       } else {
         contents = state[contentType];
       }
+
+      if(contentType === 'callsToAction'){
+        contents.sort(
+          (a,b) => (a.acf.priority > b.acf.priority) ? 1
+                    : ((b.acf.priority > a.acf.priority) ? -1 
+                    :  0));
+      }
       
       if (serviceName && serviceName !== 'any') {
         contents.forEach(function(content){
@@ -201,6 +208,7 @@ export default new Vuex.Store({
           page => page.acf && page.acf.services && page.acf.services.some(service => service.slug === serviceName)
         );
       } 
+      
 
       return serviceName && serviceName !== 'any' ? contentsFilteredByService : contents;
     },

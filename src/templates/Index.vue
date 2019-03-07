@@ -90,12 +90,17 @@
           </div>
 
           <div class="ml-2 p-0">
-            <call-to-action action="Call to Action"
-                            copy="Data tells a powerful story --
-                      about your content, who reads it, and what's possible"
-                            image="https://source.unsplash.com/random"
-                            heading="Watch the eclipse with us"></call-to-action>
+            <template v-for="(call, index) in callsToAction" >
+              <call-to-action :key="call.id"
+                              v-if="index === 1"
+                              :action="call.acf.action"
+                              :copy="call.acf.copy"
+                              :image="call.acf.image"
+                              :heading="call.acf.heading"
+                              :link="call.acf.link"></call-to-action>
+            </template>
           </div>
+          
 
 
         </div>
