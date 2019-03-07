@@ -1,6 +1,6 @@
 <template>
 
-<component class="person background--gray p-1" :is="element" :class="contentContainerClass">
+<component class="person background--gray p-1" :is="element" :class="[contentContainerClass, type==='blog'? 'person--blogger' :'']">
     <div class="align-items-center d-flex card person">
       <div class="person__avatar" v-if="avatar">
         <img :src="avatar" :class="{'person__avatar-rectangle' : rectangle}">
@@ -70,15 +70,19 @@ export default {
     },
     description(){
       if(this.title){
+        
         return this.title;
       }
+      console.log(this.type);
        if(this.personObject){
         return this.type==='organizer'
                 ? this.personObject.description || this.personObject.post_content
-                : this.type==='blog' 
-                ? `<a href='https://fontanalib.wordpress.com/author/${this.personObject.login}/Read more from this blogger on Wordpress.com</a>`
+                : this.type==='blog'
+                ? `Blogger <a href='https://fontanalib.wordpress.com/author/${this.personObject.login}/'>Read more at Wordpress.com</a>`
                 : this.personObject.content || '';
       }
+      return null;
+      
     }
   },
   data(){
@@ -136,6 +140,9 @@ export default {
 };
 </script>
 <style lang="scss">
+.person{
+  position:relative;
+}
 .person__avatar{
   flex: 0 0 100%;
     margin-left: 1rem;
@@ -154,5 +161,16 @@ export default {
   min-width:64px;
   min-height:64px;
   margin:auto;
+}
+.person--blogger a{
+  display:block;
+  margin-top:.5em;
+  text-decoration:none;
+  color:$color_teal;
+
+}
+.person--blogger a:hover{
+  font-weight:bold;
+
 }
 </style> 
