@@ -80,7 +80,7 @@
               </div>
 
               <template slot="action">
-                <router-link class="button button--aqua" :to="`/posts/${post.slug}`">
+                <router-link class="button button--aqua" :to="{name: 'Posts-slug', params:{slug: post.slug, pageObject: post}}">
                   Info
                 </router-link>
               </template>

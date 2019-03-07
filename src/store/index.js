@@ -266,6 +266,19 @@ export default new Vuex.Store({
 
     getServiceBySlug: state => slug => state.services.find(service => service.slug === slug),
     getLocationBySlug: state => slug => state.locations.find(location => location.slug === slug),
+    getContentBySlug: state => (slug, type=null, all=null) => {
+      console.log('getContentBySlug');
+      
+      let content = !type ? [
+        ...state.articles,
+        ...state.pages,
+        ...state.posts,
+      ] : state[type];
+    
+      content = content.filter(item => item.slug === slug);
+  
+      return !all ? content[0] : content;
+    },
   },
 
   mutations: {

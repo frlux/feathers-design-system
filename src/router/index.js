@@ -7,6 +7,7 @@ import Events from "../templates/Events.vue";
 import Index from "../templates/Index.vue";
 import Location from "../templates/Location.vue";
 import Locations from "../templates/Locations.vue";
+import Page from "../templates/Page.vue";
 import NotFound from "../templates/NotFound.vue";
 import SearchResults from "../templates/SearchResults.vue";
 import Service from '../templates/Service.vue';
@@ -130,6 +131,15 @@ const router = new Router({
       path: "/locations/:slug",
       props: route => ({
         locationObject: !route.params.locationObject ? router.app.$store.getters.getLocationBySlug(route.params.slug) : route.params.locationObject,
+      }),
+    },
+    {
+      component: Page,
+      name: 'Posts-slug',
+      path: "/posts/:slug",
+      props: route => ({
+        pageObject: !route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, 'posts') : route.params.pageObject,
+        moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
       }),
     },
 
