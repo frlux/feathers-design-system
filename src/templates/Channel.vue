@@ -1,7 +1,9 @@
 <template>
     <main class="channel" role="main">
-        <template v-for="(call, index) in callsToAction" v-if="index === 0">
-            <call-to-action :action="call.acf.action"
+        <template v-for="(call, index) in callsToAction">
+            <call-to-action v-if="index === 0"
+                            :key="index"
+                            :action="call.acf.action"
                             :copy="call.acf.copy"
                             :image="call.acf.image"
                             :heading="call.acf.heading"
@@ -122,19 +124,14 @@ export default {
     },
 
     channelTitle: {
-      required: true,
       type: String,
+      default: "Shelf Life in the Mountains"
     },
 
     network: {
       type: String,
+      default:'blog'
     },
-
-    slug: {
-      default: "any",
-      required: true,
-      type: String
-    }
   }
 };
 </script>

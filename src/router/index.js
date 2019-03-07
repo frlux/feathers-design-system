@@ -142,6 +142,15 @@ const router = new Router({
         moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
       }),
     },
+    {
+      component: Channel,
+      name: 'Channel',
+      path: "/:type/:slug",
+      props: route => ({
+        slug: route.params.slug,
+        network: route.params.type,
+      }),
+    },
 
     {
       component: SearchResults,

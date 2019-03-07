@@ -1,6 +1,6 @@
 <template>
 
-<component class="person background--gray" :is="element" :class="contentContainerClass">
+<component class="person background--gray p-1" :is="element" :class="contentContainerClass">
     <div class="align-items-center d-flex card person">
       <div class="person__avatar" v-if="avatar">
         <img :src="avatar" :class="{'person__avatar-rectangle' : rectangle}">
@@ -12,7 +12,7 @@
         <div class="person__content">
             <p class="align-items-center mt-3">
                 <span class="text--dark text--bold text--underlined person__name">{{ nice_name }}</span> <br>
-                <span class="text--small text--dark" v-if="title" v-html="title"></span>
+                <span class="text--small text--dark" v-if="description" v-html="description"></span>
             </p>
         </div>
     </div>
@@ -68,6 +68,18 @@ export default {
       }
       return ''
     },
+    description(){
+      if(this.title){
+        return this.title;
+      }
+       if(this.personObject){
+        return this.type==='organizer'
+                ? this.personObject.description || this.personObject.post_content
+                : this.type==='blog' 
+                ? `<a href='https://fontanalib.wordpress.com/author/${this.personObject.login}/Read more from this blogger on Wordpress.com</a>`
+                : this.personObject.content || '';
+      }
+    }
   },
   data(){
     return{
