@@ -134,21 +134,35 @@ const router = new Router({
       }),
     },
     {
-      component: Page,
-      name: 'Posts-slug',
-      path: "/posts/:slug",
+      component: Channel,
+      name: 'Channel-posts',
+      path: "/posts",
       props: route => ({
-        pageObject: !route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, 'posts') : route.params.pageObject,
-        moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
+        network: 'posts',
       }),
     },
     {
       component: Channel,
-      name: 'Channel',
-      path: "/:type",
+      name: 'Channel-blog',
+      path: "/blog",
       props: route => ({
-        slug: route.params.slug,
-        network: route.params.type,
+        network: 'blog',
+      }),
+    },
+    {
+      component: Channel,
+      name: 'Channel-pages',
+      path: "/pages",
+      props: route => ({
+        network: 'pages',
+      }),
+    },
+    {
+      component: Channel,
+      name: 'Channel-articles',
+      path: "/articles",
+      props: route => ({
+        network: 'articles',
       }),
     },
 
@@ -178,6 +192,15 @@ const router = new Router({
       props: route => ({
         serviceObject: !route.params.serviceObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.serviceObject,
         location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
+      }),
+    },
+    {
+      component: Page,
+      name: 'Channel-slug',
+      path: "/:type/:slug",
+      props: route => ({
+        pageObject: !route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, route.params.type) : route.params.pageObject,
+        moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
       }),
     },
     {

@@ -173,23 +173,36 @@ export default new Vuex.Store({
 
       return actionsByService;
     },
-    getContentByService: state => (contentType, serviceName = null, locationName = null) => {
+    getContentByService: state => (contentType = null, serviceName = null, locationName = null) => {
+      const c = contentType ? state[contentType] : [
+        ...state.callsToAction,
+        ...state.resources,
+        ...state.events,
+        ...state.pages,
+        ...state.posts,
+        ...state.articles,
+        ...state.collection,
+      ];
+      
       let contents;
       let contentsFilteredByService = [];
 
+  
       if (locationName && locationName !== 'all') {
-        contents = state[contentType].filter(
+        contents = c.filter(
           page => page.acf && page.acf.location && page.acf.location.some(location => location.slug === locationName)
         );
 
         if(!contents || contents.length < 1){
-          contents = state[contentType].filter(
+          contents = c.filter(
             page => !page.acf.location || page.acf.location.some(location => location.slug === 'headquarters')
           );
         }
       } else {
-        contents = state[contentType];
+        contents = c;
       }
+      console.log('location');
+      console.log(contents);
 
       if(contentType === 'callsToAction'){
         contents.sort(
@@ -199,17 +212,13 @@ export default new Vuex.Store({
       }
       
       if (serviceName && serviceName !== 'any') {
-        contents.forEach(function(content){
-          if (content.acf.services != null && content.acf.services !== false){ 
-          contentsFilteredByService.push(content);
-          }
-        });
         contentsFilteredByService = contentsFilteredByService.filter(
           page => page.acf && page.acf.services && page.acf.services.some(service => service.slug === serviceName)
         );
       } 
       
-
+      console.log('service');
+      console.log(contentsFilteredByService);
       return serviceName && serviceName !== 'any' ? contentsFilteredByService : contents;
     },
 
@@ -267,15 +276,18 @@ export default new Vuex.Store({
     getServiceBySlug: state => slug => state.services.find(service => service.slug === slug),
     getLocationBySlug: state => slug => state.locations.find(location => location.slug === slug),
     getContentBySlug: state => (slug, type=null, all=null) => {
-      console.log('getContentBySlug');
       
       let content = !type ? [
         ...state.articles,
         ...state.pages,
         ...state.posts,
-      ] : state[type];
+      ] : type=='blog' ? state.posts : state[type];
+      if(!content || content.length < 1){
+        return null;
+      }
     
-      content = content.filter(item => item.slug === slug);
+      content = content.filter(item => item.slug && item.slug === slug);
+      console.log(content);
   
       return !all ? content[0] : content;
     },

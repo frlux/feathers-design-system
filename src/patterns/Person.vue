@@ -167,10 +167,8 @@ export default {
   margin-top:.5em;
   text-decoration:none;
   color:$color_teal;
-
 }
 .person--blogger a:hover{
   font-weight:bold;
-
 }
 </style> 

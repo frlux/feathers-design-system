@@ -37,84 +37,51 @@
                 <div class="col-lg-10 m-lg-auto">
 
                     <div class="d-md-flex">
-
-                        <div class="co col-md-6 col-lg-4"></div>
-
+                        <!-- BEGIN SIDEBAR -->
+                        <div class="co col-md-6 col-lg-4">
+                          <!-- begin load more content buttons -->
+                          <!-- <div v-if="active=='channel'">
+                            <a class="button button button--pink"
+                                v-if="total.pages > pages.length || pages.length > 10"
+                                @click="getMoreContent('pages');">
+                                See More Information
+                            </a>
+                            <a class="button button button--pink"
+                                v-if="total.articles > articles.length || articles.length > 10"
+                                @click="getMoreContent('articles');">
+                                See More Articles
+                            </a>
+                            <a class="button button button--pink"
+                                v-if="total.collection > collection.length || collection.length > 10"
+                                @click="getMoreContent('collection');">
+                                See More Collection Items
+                            </a>
+                            <a class="button button button--pink"
+                                v-if="total.events > events.length || events.length > 10"
+                                @click="getMoreContent('events');">
+                                See More Events
+                            </a>
+                          </div>
+                          <div v-if="active !=='channel'">
+                            <a class="button button button--aqua"
+                                @click="backToChannel();">
+                                Back to {{ serviceObject.name }} Channel
+                            </a>
+                          </div>  --><!--end load more content buttons -->
+                          <!--end sidebar content-->
+                        </div><!-- END SIDEBAR -->
+                        
+                        <!-- BEGIN MAIN CONTENT -->
                         <div class="col col-lg-8">
 
-                            <Showcase v-if="collection"
+                            <!-- <Showcase v-if="collection"
                                       :collection-items="collection.slice(1,10)"
-                                      heading="Related Materials" />
+                                      heading="Related Materials" /> -->
+                            <content-stream :contents="channel"
+                                          type="mixed" />
+                            
 
-                            <template v-for="event in events">
-
-                                <event-card class="card--background-gray"
-                                            :event="event"
-                                            :key="event.id"
-                                            v-if="event" />
-
-                            </template>
-
-                            <template v-for="page in pages">
-
-                                <card class="card--background-white text--dark"
-                                      :content-type="blog"
-                                      :heading="page.title.rendered"
-                                      :key="page.id"
-                                      v-if="page">
-
-                                    <div slot="copy">
-                                        <div v-html="page.excerpt.rendered"></div>
-                                    </div>
-
-                                    <template slot="action">
-                                        <router-link class="button button--aqua"
-                                                     :to="`${page.slug}`">
-                                            Info
-                                        </router-link>
-                                    </template>
-
-                                </card>
-
-                            </template>
-
-                            <template v-for="article in articles">
-
-                                <card class="card--background-white text--dark"
-                                      :content-type="blog"
-                                      :explainer="getAuthor(article.author)"
-                                      :sub-explainer="article.date | moment('dddd, MMMM Do')"
-                                      :heading="article.title.rendered"
-                                      v-if="article"
-                                      :key="article.id">
-
-                                    <div slot="copy">
-                                        <div v-html="article.excerpt.rendered"></div>
-                                    </div>
-
-                                    <template slot="action">
-                                        <router-link class="button button--aqua"
-                                                     :to="`/articles/${article.slug}`">
-                                            Info
-                                        </router-link>
-                                    </template>
-
-                                </card>
-                            </template>
-
-                            <template v-for="item in collection">
-
-                                <collection-item class="card--background-blue-dark col-md-6 col-xl-8 mb-xl-0"
-                                                 :item="item"
-                                                 heading-level="h3"
-                                                 :key="item.id"
-                                                 subheading-class="mt-1 text--white"
-                                                 subheading-level="h4"
-                                                 variant="feature"
-                                                 v-if="item" />
-                            </template>
-
-                        </div>
+                        </div><!-- END MAIN CONTENT COLUMN -->
                     </div>
 
                 </div>
@@ -131,6 +98,7 @@ import * as api from '../store/api.js';
 import CallToAction from '../patterns/CallToAction.vue';
 import Card from '../patterns/Card.vue';
 import CollectionItem from '../patterns/CollectionItem.vue';
+import ContentStream from "../patterns/ContentStream.vue";
 import EventCard from '../patterns/EventCard.vue';
 import Heading from '../elements/Heading.vue';
 import Showcase from '../patterns/Showcase.vue';
@@ -143,6 +111,7 @@ export default {
     CallToAction,
     Card,
     CollectionItem,
+    ContentStream,
     EventCard,
     Heading,
     Showcase,
@@ -150,6 +119,9 @@ export default {
   },
 
   computed: {
+    channel(){
+      return this.$store.getters.getContentByService(null, this.serviceObject, this.location);
+    },
     callsToAction() {
       const serviceCTA = this.$store.getters.getContentByService(
         'callsToAction',
@@ -163,7 +135,7 @@ export default {
       return this.content.length==0? null : this.content.filter(item => item.type && item.type === 'actions');
     },
 
-    collection() {
+    /*collection() {
       const serviceCollections = this.$store.getters.getContentByService(
         'collection',
         this.serviceObject.slug,
@@ -221,7 +193,7 @@ export default {
       const serviceQuery = { urlParams: `?services=${this.serviceObject.id}`, contentType: 'pages' };
 
       return this.$store.dispatch('getMoreContent', serviceQuery);
-    },
+    }, */
   },
   data(){
     return{

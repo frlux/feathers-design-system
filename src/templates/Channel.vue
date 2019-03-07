@@ -42,8 +42,10 @@
                     <div class="col col-lg-8">
 
                         <template v-if="network === 'blog'">
+                          <content-stream :contents="posts"
+                                          type="blog" />
 
-                            <template v-for="post in posts">
+                            <!-- <template v-for="post in posts">
 
                                 <card :key="post.id"
                                       class="card--background-gray text--dark"
@@ -65,7 +67,7 @@
 
                                 </card>
 
-                            </template>
+                            </template> -->
 
                         </template>
 
@@ -82,6 +84,7 @@
 import CallToAction from "../patterns/CallToAction.vue";
 import Card from '../patterns/Card.vue';
 import Heading from "../elements/Heading.vue";
+import ContentStream from "../patterns/ContentStream.vue";
 
 export default {
   name: "Channel",
@@ -90,6 +93,7 @@ export default {
     CallToAction,
     Card,
     Heading,
+    ContentStream
   },
 
   computed: {
