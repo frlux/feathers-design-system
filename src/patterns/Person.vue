@@ -45,7 +45,8 @@ export default {
           const slug = this.personObject.post_name ? this.personObject.post_name : this.personObject.slug;
           const profile = this.fetchPerson(`https://fontana.librarians.design/wp-json/tribe/events/v1/organizers/by-slug/${slug}`);
           image = profile && profile.image ? [url => profile.image.url, w => profile.image.width, h => profile.image.height ] : [] ; break;
-        case 'blog': return this.personObject.avatar_URL;
+        case 'blog': return this.personObject.avatar_URL; break;
+        default: return this.personObject.avatar_urls[96]; break;
         }
       }
      
@@ -79,7 +80,8 @@ export default {
                 ? this.personObject.description || this.personObject.post_content
                 : this.type==='blog'
                 ? `Blogger <a href='https://fontanalib.wordpress.com/author/${this.personObject.login}/'>Read more at Wordpress.com</a>`
-                : this.personObject.content || '';
+                : this.personObject.content ? this.personObject.content
+                : this.personObject.description ? this.personObject.description : '';
       }
       return null;
       

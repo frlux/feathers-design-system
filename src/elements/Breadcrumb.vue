@@ -25,37 +25,26 @@ export default {
   },
   methods:{
     getItemsFromRoute(){
-      console.log(this.route);
       let items = [];
-      if(this.route && this.route.name){
+      console.log(this.route);
+    
+
         const current = this.route.params.pageObject ?
             {text: this.route.params.pageObject.title.rendered || this.route.params.pageObject.title,
              active: true}
+            : this.title ? {text: this.title, active: true} 
             : { text: this.route.params.slug, active: true};
 
-        if(this.route.name == 'Channel-slug'){
-          const parent = {text: this.route.params.type.charAt(0).toUpperCase() + this.route.params.type.slice(1),
-                          to: {name: 'Channel-'+this.route.params.type}}
+        
+          const parent = {text: this.route.meta.parent[0].toUpperCase() + this.route.meta.parent.substring(1).toLowerCase(), to: {name: this.route.meta.parent}};
+
           items.push(parent, current);
-          console.log(items);
           return items;
-        }
-      }
-     items = [
-          {
-            text: 'Blog',
-            to: { name: 'Channel-blog' }
-          },
-          {
-            text: 'GGG',
-            href: 'https://fontanalib.wordpress.com',
-            active: true
-          }
-        ];
-      return items;
+        
     }
   
   },
+
   mounted(){
     
   },
@@ -70,6 +59,9 @@ export default {
     },
     items:{
       type: Array
+    },
+    title:{
+      type: String,
     }
   }
 }

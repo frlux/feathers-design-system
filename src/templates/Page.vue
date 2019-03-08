@@ -1,6 +1,6 @@
 <template>
     <main class="background--white event" role="main">
-      <breadcrumb :route="$route"/>
+      <breadcrumb v-if="page" :route="$route" :title="page.title && page.title.rendered ? page.title.rendered : page.title"/>
         <article v-if="page">
           <header class="col-11 col-md-10 col-lg-6 m-auto p-lg-4">
               <a v-if="type==='blog'"
@@ -12,14 +12,15 @@
 
             
                 
-                <heading class="event__title text--dark text--serif" v-if="page.title.rendered" v-html="page.title.rendered"></heading>
+                <heading class="event__title text--dark text--serif" v-if="page.title && page.title.rendered" v-html="page.title.rendered"></heading>
                 <heading class="event__title text--dark text--serif" v-else-if="page.title" v-html="page.title"></heading>
 
                 <em class="event__time text--dark" v-if="type ==='blog'">
                     Posted: {{page.date | moment("dddd, MMMM Do YYYY")}}
                 </em>
                 <div class="heading__separator"></div>
-                <p class="event__excerpt" v-if="page.excerpt" v-html="page.excerpt"></p>
+                <p class="event__excerpt" v-if="page.excerpt && page.excerpt.rendered" v-html="page.excerpt.rendered"></p>
+                <p class="event__excerpt" v-else-if="page.excerpt" v-html="page.excerpt"></p>
                 <div class="mb-3 clearfix" v-if="type === 'blog'">
                   <a :href="page.URL" class="float-left">
                   <c-button aria-label="read on wordpress.com"
@@ -58,7 +59,7 @@
 
                 <div class="col-11 col-md-10 col-lg-6 m-auto pt-4 pb-4 p-lg-4">
 
-                    <div v-if="page.content.rendered" v-html="page.content.rendered"></div>
+                    <div v-if="page.content && page.content.rendered" v-html="page.content.rendered"></div>
                     <div v-else-if="page.content" v-html="page.content"></div>
 
                 </div>
@@ -100,7 +101,9 @@ export default {
       if(this.type==='blog'){
         return this.page.author;
       }else if(!isNaN(parseFloat(this.page.author)) && isFinite(this.page.author)){
-        return this.$store.getters.getAuthorByID(this.page.author);
+        let wpAuthor =this.$store.getters.getAuthorById(this.page.author);
+        console.log(wpAuthor);
+        return wpAuthor;
       }
     }
 
@@ -108,23 +111,68 @@ export default {
   data(){
     return{
       count: 0,
-      page: null
+      page: null,
+      related:[],
     }
   },
   methods:{
-    getPage(slug, type){
+     getPage(slug, type){
+      console.log(this.pageObject);
       if(this.pageObject && (this.pageObject.slug || this.pageObject.id)){
+        console.log("RETURN")
         return this.pageObject;
       } 
-      return this.$store.getters.getContentBySlug(slug, type);
+      /* let page = this.$store.getters.getContentBySlug(slug, type);
+      if(page){
+        return page;
+      } */
+
+      let page = this.fetchPage(type).then(page=>{
+        let t = page.type=='page' ? 'pages' : page.site_ID && page.site_ID=='11573626' ? 'posts' : 'articles';
+      
+      this.$store.commit('addMoreContent', {contentType: t, content:[page]});
+      });
+      
+
+      return page;
+ 
+    },
+    async fetchPage(type){
+      let post;
+      await api.fetchData('articles', {slug: this.$route.params.slug}).then(results=>{
+        if(type=='articles'){
+          post = results.data[0];
+        }
+        this.related = [...this.related, ...results.data];
+      })
+     await api.fetchData('posts', {slug: this.$route.params.slug}).then(results=>{
+        if(type=='articles' || (type=='articles' && !post)){
+          post = results.data[0];
+        }
+        this.related = [...this.related, ...results.data];
+      })
+      await api.fetchData('pages', {slug: this.$route.params.slug}).then(results=>{
+        if(!post){
+          post = results.data[0];
+        }
+        this.related = [...this.related, results.data];
+      })
+      
+      if(!post){
+        post=this.related[0];
+      }
+      console.log("POSTS");
+      console.log(this.related);
+      return post;
     }
   },
   mounted(){
-    this.page = this.getPage(this.$route.params.slug, this.$route.params.type);
+    this.page = this.getPage(this.$route.params.slug, this.$route.name);
+    console.log(this.page);
   },
   watch:{
     pageObject(){
-      this.page = getPage();
+      this.page = this.getPage();
     }
 
   },

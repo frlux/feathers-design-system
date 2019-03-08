@@ -77,7 +77,7 @@
                             <!-- <Showcase v-if="collection"
                                       :collection-items="collection.slice(1,10)"
                                       heading="Related Materials" /> -->
-                            <content-stream :contents="channel"
+                            <content-stream :contents="content"
                                           type="mixed" />
                             
 
@@ -119,81 +119,19 @@ export default {
   },
 
   computed: {
-    channel(){
-      return this.$store.getters.getContentByService(null, this.serviceObject, this.location);
-    },
     callsToAction() {
-      const serviceCTA = this.$store.getters.getContentByService(
-        'callsToAction',
-        this.serviceObject.slug,
-        this.location
-      );
+      /* const serviceCTA = this.content.filter(item => item.type && item.type === 'actions');
+
       if (serviceCTA.length > 0) {
         return serviceCTA;
       }
-      this.getContent('callsToAction', {services: this.serviceObject.id});
-      return this.content.length==0? null : this.content.filter(item => item.type && item.type === 'actions');
+      this.fetchContent('callsToAction', {services: this.serviceObject.id});*/
+      let ctas = this.content.filter(item => item.type && item.type === 'actions')
+      const payload = {contentType: 'callsToAction', content: ctas};
+      this.$store.commit('addMoreContent', payload); 
+      
+      return this.content.length==0? null : ctas && ctas.length > 0 ? ctas : this.$store.getters.getContentByService('callsToAction', 'any', this.location) ;
     },
-
-    /*collection() {
-      const serviceCollections = this.$store.getters.getContentByService(
-        'collection',
-        this.serviceObject.slug,
-        this.location,
-      );
-
-      if (serviceCollections.length > 4 && this.active !== "collection") {
-        return serviceCollections;
-      }
-      this.getContent('collection', {services: this.serviceObject.id});
-      return this.content.length==0 ? null : this.content.filter(item => item.type && item.type === 'collection-item');
-    },
-
-    articles() {
-      const serviceArticles = this.$store.getters.getContentByService(
-        'articles',
-        this.serviceObject.slug,
-        this.location,
-      );
-
-      if (serviceArticles.length > 0 && this.active !== "articles") {
-        return serviceArticles;
-      }
-
-      const serviceQuery = { urlParams: `&services=${this.serviceObject.id}`, contentType: 'articles' };
-      return this.$store.dispatch('getMoreContent', serviceQuery);
-    },
-
-    events() {
-      const serviceEvents = this.$store.getters.getContentByService(
-        'events',
-        this.serviceObject.slug,
-        this.location
-      );
-
-      if (serviceEvents.length > 0) {
-        return serviceEvents;
-      }
-
-      const serviceQuery = { urlParams: `?services=${this.serviceObject.id}`, contentType: 'events' };
-      return this.$store.dispatch('getMoreContent', serviceQuery);
-    },
-
-    pages() {
-      const servicePages = this.$store.getters.getContentByService(
-        'pages',
-        this.serviceObject.slug,
-        this.location
-      );
-
-      if (servicePages.length > 0) {
-        return servicePages;
-      }
-
-      const serviceQuery = { urlParams: `?services=${this.serviceObject.id}`, contentType: 'pages' };
-
-      return this.$store.dispatch('getMoreContent', serviceQuery);
-    }, */
   },
   data(){
     return{
@@ -208,7 +146,9 @@ export default {
         resources: 1,
       },
       page: 1,
-      active: 'channel'
+      active: 'channel',
+      events:[],
+      actions:[],
     }
   },
   methods: {
@@ -216,65 +156,57 @@ export default {
       const author = this.$store.getters.getAuthorById(Number(authorId));
       return author.name;
     },
-    async getContent(type, args=null){
-      let apiPage = 1;
-      
-      while(Math.ceil(this.count[type]/100) >= apiPage){
-      let params = {page: apiPage, per_page: 100};
-      if(args){
-        console.log(args);
-        params = {...params, ...args};
-      }
-      console.log(params);
-      this.count[type] = await this.fetchContent(type, params);
-      apiPage++;
-      }
-
+    checkContent(store, min, num, name){
+      const content = this.content.filter(item => item.type && item.type === name);
+      this.fetchContent(store, {services: this.serviceObject.id, per_page: num});
     },
-    async fetchContent(type,params){
-      api.fetchData(type, params)
+  async getContent(type, args=null){
+      this.serviceObject._links['wp:post_type'].forEach(link=>{
+        let name = link.href.match(/(?:\/([a-z|-]*?)\?)/);
+        name=name[1]=='calls-to-action' ? 'callsToAction' : name[1];
+
+        this.fetchContent(name, link.href);
+      })
+    }, 
+    async fetchContent(type, link){
+      console.log('fetching...');
+      api.fetchLink(link)
           .then(response =>{
-            const total = response.headers['x-wp-total'];
-            this.addContent(response.data);
-            console.log(response);
-            return total;
+            this.count[type] = response.headers['x-wp-total'];
+            this.addContent(response.data, type);
           }).catch(error=> console.log(error));
-
     },
-    addContent(data){
-      for (let i=0; i < data.length; i++){
-          const index = this.content.findIndex(item => item.id === data[i].id)
+    addContent(items,type){
+      console.log(type);
+      if(type == 'callsToAction' || type == 'events'){
+        for (let i=0; i < items.length; i++){
+        const index = this[type].findIndex(item => item.id === items[i].id)
           if (index === -1){ 
-            this.content.push(data[i]);
+            this[type].push(items[i]);
           }
+        }
+      } else{
+        for (let i=0; i < items.length; i++){
+          const index = this.content.findIndex(item => item.id === items[i].id)
+          if (index === -1){ 
+            this.content.push(items[i]);
+          }
+        }
+      }
+      if(this.content.length > 0){
+          this.content.sort(function(a,b){
+              let date1 = new Date(a.date);
+              let date2 = new Date(b.date);
+              return date1.getTime() - date2.getTime()});
         }
     }
   },
-  mount(){
-    this.content = {...this.$store.getters.getContentByService(
-        'callsToAction',
-        this.serviceObject.slug
-      ), ...this.$store.getters.getContentByService(
-        'collection',
-        this.serviceObject.slug
-      ), ...this.$store.getters.getContentByService(
-        'events',
-        this.serviceObject.slug
-      ), ...this.$store.getters.getContentByService(
-        'featuredCollections',
-        this.serviceObject.slug
-      ), ...this.$store.getters.getContentByService(
-        'resources',
-        this.serviceObject.slug
-      ), ...this.$store.getters.getContentByService(
-        'articles',
-        this.serviceObject.slug
-      ), ...this.$store.getters.getContentByService(
-        'pages',
-        this.serviceObject.slug
-      )};
-      console.log("MOUNT");
-      console.log(this.content);
+  
+  mounted(){
+    //let content = api.followLinks(this.serviceObject);
+    this.getContent();
+    console.log(this.content);
+
   },
 
   props: {

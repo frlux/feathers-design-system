@@ -174,7 +174,7 @@ export default new Vuex.Store({
       return actionsByService;
     },
     getContentByService: state => (contentType = null, serviceName = null, locationName = null) => {
-      const c = contentType ? state[contentType] : [
+     /*  const c = contentType ? state[contentType] : [
         ...state.callsToAction,
         ...state.resources,
         ...state.events,
@@ -182,8 +182,8 @@ export default new Vuex.Store({
         ...state.posts,
         ...state.articles,
         ...state.collection,
-      ];
-      
+      ]; */
+      const c = state[contentType];
       let contents;
       let contentsFilteredByService = [];
 
@@ -201,8 +201,7 @@ export default new Vuex.Store({
       } else {
         contents = c;
       }
-      console.log('location');
-      console.log(contents);
+      
 
       if(contentType === 'callsToAction'){
         contents.sort(
@@ -217,8 +216,6 @@ export default new Vuex.Store({
         );
       } 
       
-      console.log('service');
-      console.log(contentsFilteredByService);
       return serviceName && serviceName !== 'any' ? contentsFilteredByService : contents;
     },
 
@@ -331,6 +328,7 @@ export default new Vuex.Store({
     },
 
     addMoreContent(state, payload) {
+      console.log("ADDING...");
       for (let i=0; i < payload.content.length; i++){
         const index = state[payload.contentType].findIndex(item => item.id === payload.content[i].id)
         if (index === -1){ 

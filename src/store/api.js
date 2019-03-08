@@ -25,3 +25,10 @@ export const fetchData = (type, param = []) => {
   }
 }
 
+export const fetchLink = (link) => {
+  try {
+    return axios.get(link)
+  } catch (error) {
+    console.error(error)
+  }
+}
