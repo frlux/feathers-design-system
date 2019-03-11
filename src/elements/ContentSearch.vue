@@ -13,11 +13,12 @@
                 id="filter"
                 type="text"
                 :value="filter"
-                @input="$emit('querycontent', $event.target.value)"
+                @keydown.enter="$emit('querycontent', $event.target.value)"
+                @blur="$emit('querycontent', $event.target.value)"
                 >
       </div>
 
-      <div class="form-group"  v-if="locationFilter">
+      <div class="form-group"  v-if="searchFilter">
         <label class="form-label text--bold text--sans text--dark"
                 for="eventSidebarLocation">
         Filter {{contentName}}s by location

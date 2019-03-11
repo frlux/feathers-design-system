@@ -140,7 +140,7 @@
                               </div>
 
                   <router-link class="link pl-3 pb-3"
-                    :to="{name: `Events`, params:{userLocation: library.slug}}">
+                    :to="{name: `events`, params:{userLocation: library.slug}}">
                         View more events at {{ library.name }}
                   </router-link>
 

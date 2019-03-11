@@ -184,9 +184,14 @@ export default {
       return paginators
     },
   },
+  data(){
+    return{
+      signalled: false,
+    }
+  },
   methods: {
     nextPage () {
-      this.setPage(this.currentPage + 1)
+      this.setPage(this.currentPage + 1);
     },
     prevPage () {
       this.setPage(this.currentPage - 1)
@@ -194,7 +199,11 @@ export default {
     setPage (targetPage) {
       if (targetPage <= this.lastPage && targetPage >= this.firstPage) {
         this.$emit('input', targetPage)
-      }
+        if(targetPage > 1 && !this.signalled){
+          this.$root.$emit('loadmore');
+          this.signalled = true;
+        }
+      } 
     },
   },
 }

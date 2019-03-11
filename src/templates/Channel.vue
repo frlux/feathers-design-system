@@ -36,48 +36,30 @@
 
 
                     <div class="col-md-4">
-                       <div class="mt-3" style="width: 307.875px">
-                            <div class="form-group">
-                                <label class="form-label text--bold text--sans text--dark" for="channelSidebarFilter">
-                                    Filter events by title
-                                </label>
-
-                                <input class="form-control"
-                                       id="channelSidebarFilter"
-                                       type="text"
-                                       v-model.lazy="q"
-                                       >
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label text--bold text--sans text--dark"
-                                       for="channelSidebarLocation">
-                                    Filter events by location
-                                </label>
-
-                                <select class="form-control"
-                                        id="channelSidebarLocation"
-                                        v-model="library">
-
-                                    <option :key="location.id"
-                                            :value="location.slug"
-                                            v-for="location in locations">
-                                        {{ location.name }}
-                                    </option>
-
-                                </select>
-                            </div>
-
-                            <button class="button button--blue-alternate"
-                                    v-on:click="clearFilter">Clear Filter</button>
-                        </div>
+                      <content-search :date-filter="true"
+                          :selected-date="selectedDate" @selectdate="selectedDate = $event"
+                          :filter="filter" @querycontent="filter=$event"
+                          :library="library" @filterlibrary="library = $event"
+                          @clearcontentfilter="clearFilter()"
+                          />
                     </div>
 
                     <div class="col col-lg-8">
 
                         <template v-if="network === 'blog' || network === 'pages' || network === 'articles'">
-                          <content-stream :contents="content"
-                                          :type="network" />
+                          <content-stream v-if="!loadmore && !filter && !library && !selectedDate"
+                                          :contents="content"
+                                          :type="network"
+                                          :filter="filter"
+                                          :selected-date="selectedDate"
+                                          :location="library"/>
+                          <content-stream v-else
+                                          :type="network"
+                                          :filter="filter"
+                                          :selected-date="selectedDate"
+                                          :location="library"
+                                          :api-type="network=='blog'? 'posts': network"
+                                          />
 
                         </template>
 
@@ -95,6 +77,8 @@ import CallToAction from "../patterns/CallToAction.vue";
 import Card from '../patterns/Card.vue';
 import Heading from "../elements/Heading.vue";
 import ContentStream from "../patterns/ContentStream.vue";
+import ContentSearch from '../elements/ContentSearch.vue';
+import FilterResults from '../elements/FilterResults.vue';
 
 export default {
   name: "Channel",
@@ -103,7 +87,9 @@ export default {
     CallToAction,
     Card,
     Heading,
-    ContentStream
+    ContentStream,
+    ContentSearch,
+    FilterResults
   },
 
   computed: {
@@ -132,17 +118,25 @@ export default {
       return this.network==='blog' ? this.$store.state.posts : this.$store.state[this.network];
     }
   },
+  created(){
+    this.$root.$on('loadmore', data=>{
+      this.loadmore=true;
+    });
+  },
   data(){
     return{
       items: [],
+      filter: null,
+      library: null,
+      selectedDate: null,
+      loadmore: null,
     }
   },
   methods:{
     clearFilter() {
-      const now = new Date();
-      this.q = null;
+      this.selectedDate = null;
+      this.filter = null;
       this.library = null;
-      this.$root.$emit('resetpage');
     },
 
   },

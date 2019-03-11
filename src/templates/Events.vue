@@ -40,28 +40,21 @@ Through partnerships in the community, we are able to bring you art and historic
                     </div>
 
                     <div class="col col-lg-8">
+                      
                         <filter-results :total="total"
                                         :selectedDate="selectedDate"
                                         :filter="q"
                                         :location="library"
                                         contentName="event"/>
 
-                        <template v-for="event in filteredEvents[page-1]">
-
-                            <event-card v-if="event"
-                                        class="card--background-gray"
-                                        :event="event"
-                                        :key="event.id"
-                                        :class="{ current: event.start_date_details && event.start_date_details.year && `${event.start_date_details.year}-${event.start_date_details.month}-${event.start_date_details.day}` === selectedDate}"/>
-
-                        </template>
-
+                        <content-stream :contents="eventsContainer"
+                                        type="events"
+                                        @totalresults="total=$event"
+                                        :filter="q"
+                                        :selected-date="selectedDate"
+                                        :location="library"/>
                         
-                        <pagination
-                        v-if="total > 0"
-                        :key="total"
-                        :total="Math.ceil(total/perPage)"
-                        v-model="page"></pagination>
+            
                         
                     </div>
 
@@ -73,59 +66,24 @@ Through partnerships in the community, we are able to bring you art and historic
 </template>
 
 <script>
-import flatpickr from 'flatpickr';
-import EventCard from '../patterns/EventCard.vue';
 import * as api from '../store/api.js';
-import Pagination from '../elements/Pagination.vue';
-import { chunk } from 'lodash';
+import ContentStream from "../patterns/ContentStream.vue";
 import ContentSearch from '../elements/ContentSearch.vue';
 import FilterResults from '../elements/FilterResults.vue';
-
-window.axios = require('axios');
 
 export default {
   name: 'Events',
 
   components: {
     ContentSearch,
-    EventCard,
-    Pagination,
-    FilterResults
+    ContentStream,
+    FilterResults,
   },
 
   computed: {
-
     eventCount() {
       return this.$store.state.counts.events;
     },
-
-    filteredEvents() {
-      //Filter events by selected Date
-      let events = !this.selectedDate ? this.eventsContainer : this.eventsContainer.filter(
-          event =>
-            `${event.start_date_details.year}-${
-              event.start_date_details.month
-            }-${event.start_date_details.day}` >= this.selectedDate
-        );
-      //Filter Events by library
-       events = !this.library || this.library == 'all' ? events : events.filter(
-          event => event.acf.location && event.acf.location.some(location => location.slug === this.library)
-        );
-      // Filter events by Query String
-     /*  events = !this.filter ? events : events.filter(event =>
-        event.title.toLowerCase().includes(this.filter.toLowerCase())
-      ); */
-      let value = this.q ? this.q.toLowerCase() : null;
-      events = !value ? events : events.filter(event => 
-                  Object.keys(event).some(key => event[key] != null && 
-                  event[key].toString().toLowerCase().includes(value) || Object.keys(event[key]).some(k => event[key][k] !== null &&
-                  event[key][k].toString().toLowerCase().includes(value) )
-                  ));
-
-      this.total = events.length;
-
-      return chunk(events, this.perPage);
-    }
   },
 
   data() {
@@ -160,8 +118,6 @@ export default {
     },
 
     fetchEvents(){
-      console.log("fetching...");
-      
       const params = {page: this.eventsApi.page, per_page: this.eventsApi.per_page};
 
       api.fetchData('events', params)
