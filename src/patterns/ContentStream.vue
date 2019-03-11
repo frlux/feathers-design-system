@@ -20,7 +20,7 @@
         </div>
 
         <template slot="action">
-          <router-link class="button" :class="type =='pages' || item.type=='page' ? 'button--aqua' : 'button--orange'" :to="{name: item.page=='page'? 'pages-slug' : 'articles-slug', params:{pageObject: item, slug: item.slug, type: item.type + 's'}}">More</router-link>
+          <router-link class="button" :class="type =='pages' || item.type=='page' ? 'button--aqua' : 'button--orange'" :to="{name: item.page=='page'? 'pages-slug' : 'articles-slug', params:{pageObject: item, slug: item.slug}}">More</router-link>
         </template>
 
       </card><!-- end pages card -->
@@ -48,7 +48,7 @@
         </div>
 
         <template slot="action">
-          <router-link class="button button--aqua" :to="{name: 'blog-slug', params:{type: 'blog', slug: item.slug, pageObject: item}}">
+          <router-link class="button button--aqua" :to="{name: 'blog-slug', params:{slug: item.slug, pageObject: item}}">
             Info
           </router-link>
         </template>
@@ -67,7 +67,7 @@
         </div>
 
         <template slot="action">
-          <router-link class="button button--teal" :to="{name:item.type+'-slug', params:{pageObject: item, slug: item.slug, type: item.type}}">More</router-link>
+          <router-link class="button button--teal" :to="{name:item.type+'-slug', params:{pageObject: item, slug: item.slug}}">More</router-link>
         </template>
 
       </card><!-- end pages card -->

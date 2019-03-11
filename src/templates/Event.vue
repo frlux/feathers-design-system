@@ -1,11 +1,13 @@
 <template>
     <main class="background--white event" role="main">
+    <breadcrumb :title="event.title"/>
+
 
         <article v-if="event">
 
             <header class="col-11 col-md-10 col-lg-6 m-auto p-lg-4">
 
-                <heading class="event__title text--dark text--serif" v-html="eventObject.title"></heading>
+                <heading class="event__title text--dark text--serif" v-html="event.title"></heading>
 
                 <span class="event__time text--dark">
                     {{event.start_date | moment("dddd, MMMM Do YYYY h:mm a")}} &mdash;
@@ -67,7 +69,7 @@
 
                     <heading class="text--dark" level="h3">Where</heading>
 
-                    <router-link class="d-block text--dark text--underline" :to="{name:'Locations-slug', params:{slug: event.venue.slug}}">{{ event.venue.venue }}</router-link>
+                    <router-link class="d-block text--dark text--underline" :to="{name:'locations-slug', params:{slug: event.venue.slug}}">{{ event.venue.venue }}</router-link>
                     <span class="d-block">{{ event.venue.address }}</span>
                     <span class="d-block">{{ event.venue.city }}, {{ event.venue.state }} {{ event.venue.zip }}</span>
                     <span class="d-block">{{ event.venue.phone }}</span>
@@ -83,6 +85,7 @@
 <script>
 import * as api from "../store/api.js";
 import AddToCalendar from 'vue-add-to-calendar';
+import Breadcrumb from "../elements/Breadcrumb.vue";
 import Vue from 'vue';
 import VueMoment from 'vue-moment';
 
@@ -97,6 +100,7 @@ export default {
   name: 'Event',
 
   components: {
+    Breadcrumb,
     CallToAction,
     Heading,
     Person
@@ -109,13 +113,13 @@ export default {
   },
   data(){
     return{
-      event: this.eventObject,
+      event: this.pageObject,
     }
   },  
   mounted(){
 
-    if(this.eventObject){
-      this.event = this.eventObject;
+    if(this.pageObject){
+      this.event = this.pageObject;
     } else {
     api.fetchData('events', {slug: this.$route.params.slug}).then(results=>{
         this.event = results.data[0];
@@ -124,7 +128,7 @@ export default {
     }
   },
   props: {
-    eventObject: {
+    pageObject: {
       type: Object,
     },
   },

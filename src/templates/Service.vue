@@ -1,7 +1,9 @@
 <template>
     <main class="service" role="main">
+      <breadcrumb :title="pageObject.name"/>
 
-        <template v-if="serviceObject">
+
+        <template v-if="pageObject">
 
             <template v-for="(call, index) in callsToAction" >
                 <call-to-action v-if="index === 0"
@@ -20,10 +22,10 @@
                     <div class="col-md-8">
 
                         <heading class="channel__title text--dark text--serif"
-                                 level="h1" v-html="serviceObject.name">
+                                 level="h1" v-html="pageObject.name">
                         </heading>
 
-                        <p class="channel__description" v-html="serviceObject.description">
+                        <p class="channel__description" v-html="pageObject.description">
                         </p>
 
                     </div>
@@ -65,7 +67,7 @@
                           <div v-if="active !=='channel'">
                             <a class="button button button--aqua"
                                 @click="backToChannel();">
-                                Back to {{ serviceObject.name }} Channel
+                                Back to {{ pageObject.name }} Channel
                             </a>
                           </div>  --><!--end load more content buttons -->
                           <!--end sidebar content-->
@@ -95,6 +97,7 @@
 
 <script>
 import * as api from '../store/api.js';
+import Breadcrumb from "../elements/Breadcrumb.vue";
 import CallToAction from '../patterns/CallToAction.vue';
 import Card from '../patterns/Card.vue';
 import CollectionItem from '../patterns/CollectionItem.vue';
@@ -108,6 +111,7 @@ export default {
   name: 'Service',
 
   components: {
+    Breadcrumb,
     CallToAction,
     Card,
     CollectionItem,
@@ -125,7 +129,7 @@ export default {
       if (serviceCTA.length > 0) {
         return serviceCTA;
       }
-      this.fetchContent('callsToAction', {services: this.serviceObject.id});*/
+      this.fetchContent('callsToAction', {services: this.pageObject.id});*/
       let ctas = this.content.filter(item => item.type && item.type === 'actions')
       const payload = {contentType: 'callsToAction', content: ctas};
       this.$store.commit('addMoreContent', payload); 
@@ -158,10 +162,10 @@ export default {
     },
     checkContent(store, min, num, name){
       const content = this.content.filter(item => item.type && item.type === name);
-      this.fetchContent(store, {services: this.serviceObject.id, per_page: num});
+      this.fetchContent(store, {services: this.pageObject.id, per_page: num});
     },
   async getContent(type, args=null){
-      this.serviceObject._links['wp:post_type'].forEach(link=>{
+      this.pageObject._links['wp:post_type'].forEach(link=>{
         let name = link.href.match(/(?:\/([a-z|-]*?)\?)/);
         name=name[1]=='calls-to-action' ? 'callsToAction' : name[1];
 
@@ -203,14 +207,14 @@ export default {
   },
   
   mounted(){
-    //let content = api.followLinks(this.serviceObject);
+    //let content = api.followLinks(this.pageObject);
     this.getContent();
     console.log(this.content);
 
   },
 
   props: {
-    serviceObject: {
+    pageObject: {
       type: Object,
     },
   },

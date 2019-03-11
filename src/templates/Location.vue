@@ -1,7 +1,7 @@
 <template>
   <main class="location" role="main" itemscope itemtype="http://schema.org/Library">
 
-    <template v-if="locationObject">
+    <template v-if="pageObject">
       <div id="locationTop"></div>
       <template v-if="call" >
           <call-to-action :action="call.acf.action"
@@ -71,7 +71,7 @@
                       </div>
 
                       <router-link v-if="library.slug !== 'headquarters'" itemprop="branchOf" class="link mt-4"
-                    :to="'/locations/headquarters'">
+                    :to="{name:'locations-slug', params:{slug: library.slug, pageObject: library}}">
                         Member of Fontana Regional Library
                   </router-link>
                       
@@ -160,7 +160,7 @@
                     </div>
 
                     <template slot="action">
-                      <router-link class="button button--aqua" :to="`/${page.slug}`">More</router-link>
+                      <router-link class="button button--aqua" :to="{name:'pages-slug', params:{slug: page.slug, pageObject: page}}">More</router-link>
                     </template>
 
                   </card>
@@ -178,7 +178,7 @@
                     </div>
 
                     <template slot="action">
-                      <router-link class="button button--orange" :to="`/articles/${article.slug}`">More</router-link>
+                      <router-link class="button button--orange" :to="{name:'articles-slug', params:{slug: article.slug, pageObject: article}}">More</router-link>
                     </template>
 
                   </card>
@@ -256,7 +256,7 @@ export default {
   },
   data() {
     return {
-      library: this.locationObject,
+      library: this.pageObject,
       count:{
         articles: 0,
         callsToAction: 0,
@@ -269,11 +269,12 @@ export default {
       pages:[],
       collection:[],
       events:[],
+      content:[],
     };
   },
  watch:{
-   locationObject(){
-     this.library = this.locationObject;
+   pageObject(){
+     this.library = this.pageObject;
    }
  },
   methods: {
@@ -340,8 +341,8 @@ export default {
     
   },
   mounted(){
-    if(this.locationObject){
-      this.library = this.locationObject;
+    if(this.pageObject){
+      this.library = this.pageObject;
     } else {
       this.library = this.$store.getters.getLocationBySlug(this.$route.params.slug)
     }
@@ -354,13 +355,13 @@ export default {
     ];
     types.forEach((type)=>{
       let params = type =='collection' ?
-        {contentType: type, params: {locations: this.locationObject.id, per_page: 10, new: 'this-month'}, commit: true}
-        : {contentType: type, params: {locations: this.locationObject.id, per_page: 5}, commit: true}
+        {contentType: type, params: {locations: this.pageObject.id, per_page: 10, new: 'this-month'}, commit: true}
+        : {contentType: type, params: {locations: this.pageObject.id, per_page: 5}, commit: true}
       this.fetchContent(params); 
     });
   },
   props: {
-    locationObject: {
+    pageObject: {
       type: Object,
     }
   },

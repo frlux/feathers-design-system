@@ -25,7 +25,7 @@ const router = new Router({
       meta: {
         title: 'Blog',
       },
-      name: 'Blog',
+      name: 'blog',
       path: '/blog',
       props: route => ({
         channelTitle: 'Shelf Life in the Mountains',
@@ -46,7 +46,7 @@ const router = new Router({
       meta: {
         title: 'Collections',
       },
-      name: 'Collection',
+      name: 'collection',
       path: '/collection',
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
@@ -59,7 +59,7 @@ const router = new Router({
       meta: {
         title: 'Collections',
       },
-      name: 'Collection-type',
+      name: 'collection-type',
       path: '/collection/:type',
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
@@ -85,7 +85,7 @@ const router = new Router({
       meta: {
         title: "Home"
       },
-      name: "Index",
+      name: "index",
       path: "/",
       props: route => ({
         location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
@@ -95,9 +95,9 @@ const router = new Router({
     {
       component: Events,
       meta: {
-        title: "Events"
+        title: "Events",
       },
-      name: "Events",
+      name: "events",
       path: "/events",
       props: route => ({
         filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
@@ -107,10 +107,13 @@ const router = new Router({
 
     {
       component: Event,
-      name: 'Events-slug',
+      name: 'events-slug',
       path: "/events/:slug",
+      meta:{
+        parent: {name:"events", text:"Events"}, type: {store: 'events', wp: 'event'},
+      },
       props: route => ({
-        eventObject: !route.params.eventObject ? router.app.$store.getters.getEventBySlug(route.params.slug) : route.params.eventObject,
+        pageObject: !route.params.pageObject ? router.app.$store.getters.getEventBySlug(route.params.slug) : route.params.pageObject,
       }),
     },
     {
@@ -118,7 +121,7 @@ const router = new Router({
       meta: {
         title: "Locations"
       },
-      name: "Locations",
+      name: "locations",
       path: "/locations",
       props: route => ({
         filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
@@ -127,18 +130,13 @@ const router = new Router({
 
     {
       component: Location,
-      name: 'Locations-slug',
+      meta:{
+        parent: {name:"locations", text:"Locations"}, type: {store: 'locations'},
+      },
+      name: 'locations-slug',
       path: "/locations/:slug",
       props: route => ({
-        locationObject: !route.params.locationObject ? router.app.$store.getters.getLocationBySlug(route.params.slug) : route.params.locationObject,
-      }),
-    },
-    {
-      component: Channel,
-      name: 'blog',
-      path: "/blog",
-      props: route => ({
-        network: 'blog',
+        pageObject: !route.params.pageObject ? router.app.$store.getters.getLocationBySlug(route.params.slug) : route.params.pageObject,
       }),
     },
     {
@@ -160,7 +158,7 @@ const router = new Router({
 
     {
       component: SearchResults,
-      name: "Search",
+      name: "search",
       path: "/search",
       props: route => ({
         filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
@@ -170,7 +168,7 @@ const router = new Router({
 
     {
       component: Services,
-      name: "Services",
+      name: "services",
       path: "/services",
       props: route => ({
         filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
@@ -179,16 +177,16 @@ const router = new Router({
     },
     {
       component: Service,
-      name:"Services-slug",
+      name:"services-slug",
       path: "/services/:slug",
-      meta: {parent: "Services"},
+      meta: {parent: {name: "services", text: "Services"}},
       props: route => ({
-        serviceObject: !route.params.serviceObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.serviceObject,
+        pageObject: !route.params.pageObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.pageObject,
         location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
       }),
     },
     {
-      component: Service,
+      component: Services,
       name: "resources",
       path: "/resources",
       props: route => ({
@@ -200,9 +198,9 @@ const router = new Router({
       component: Service,
       name:"resources-slug",
       path: "/resources/:slug",
-      meta: {parent: "Resources"},
+      meta: {parent: {name: 'resources', text:"Resources"}},
       props: route => ({
-        serviceObject: !route.params.serviceObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.serviceObject,
+        pageObject: !route.params.pageObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.pageObject,
         location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
       }),
     },
@@ -210,7 +208,7 @@ const router = new Router({
       component: Page,
       name: 'pages-slug',
       path: "/pages/:slug",
-      meta: {parent: "pages", type: {store: 'pages', wp: 'page'}},
+      meta: {parent: {name:"pages", text:"Information"}, type: {store: 'pages', wp: 'page'}, breadcrumb:true},
       props: route => ({
         pageObject: !route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, 'pages') : route.params.pageObject,
         moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
@@ -220,7 +218,7 @@ const router = new Router({
       component: Page,
       name: 'articles-slug',
       path: "/articles/:slug",
-      meta: {parent: "articles", type: {store: 'articles', wp: 'post'}},
+      meta: {parent: {name: "articles", text: 'Articles'}, type: {store: 'articles', wp: 'post'}, breadcrumb:true},
       props: route => ({
         pageObject: route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, 'articles') : route.params.pageObject,
         moreContent: route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent
@@ -230,7 +228,7 @@ const router = new Router({
       component: Page,
       name: 'blog-slug',
       path: "/blog/:slug",
-      meta: {parent: "blog", type: {store: 'posts', wp: 'post'}},
+      meta: {parent: {name:"blog", text:"Shelf Life in the Mountains"}, type: {store: 'posts', wp: 'post'}, breadcrumb:true},
       props: route => ({
         pageObject: !route.params.pageObject ? getContentBySlug(route.params.slug, 'posts') : route.params.pageObject,
         moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
@@ -272,7 +270,7 @@ function getContentBySlug(slug, type){
 function hasLocationQueryParameter(route) {
   return !!route.query.location;
 }
-async function getEventObject(eventSlug){
+async function getpageObject(eventSlug){
   await api.fetchData('events', {slug: eventSlug}).then(results=>{
     return results.data;
   });

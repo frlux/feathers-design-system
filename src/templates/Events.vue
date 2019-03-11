@@ -79,7 +79,7 @@ Through partnerships in the community, we are able to bring you art and historic
                                v-if="q || library">
                                 Here is everything we can find that matches your search
                                 {{ q ? 'for' : '' }} <mark class="mark">{{ q }}</mark>
-                                <template v-if="library && locationDetails">happening at <router-link class="link" :to="{name: 'Locations-slug', params:{slug: locationDetails.slug, locationObject: locationDetails}}">{{ locationDetails.name }}</router-link></template>.
+                                <template v-if="library && locationDetails">happening at <router-link class="link" :to="{name: 'locations-slug', params:{slug: locationDetails.slug, pageObject: locationDetails}}">{{ locationDetails.name }}</router-link></template>.
                             </p>
                             
 

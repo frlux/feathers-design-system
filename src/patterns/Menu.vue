@@ -17,7 +17,7 @@
 
         </a>
 
-        <router-link to="/events" href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white">
+        <router-link :to="{name: 'events'}" href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white">
 
             <span class="menu__item__icon">
                 <svg id="icon-calendar" fill="white" height="20" viewBox="0 0 32 32">
@@ -32,7 +32,7 @@
 
         <router-link class="align-items-center align-self-center d-none d-lg-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white"
                      href="#"
-                     to="/services" >
+                     :to="{name: 'services'}" >
 
             <span class="menu__item__label">Services</span>
 

@@ -139,21 +139,21 @@ export default {
       if (this.isCatalogSearch) {
         return `${this.searchFormAction}?query=${this.searchQuery}&qtype=keyword&locg=1`;//this.searchCatalog();
       }
-      let route = {name: "Search", params:{} };
+      let route = {name: "search", params:{} };
       route.params.filter = this.searchQuery ? `${this.searchQuery}` : '';
       
       if (this.isEventSearch) {
-        route.name= "Events";
+        route.name= "events";
         route.params.userLocation = this.locationFilter;
       }
 
       if (this.isEverythingSearch) {
-        route.name= "Search";
+        route.name= "search";
         route.params.userLocation = this.locationFilter;
       }
 
       if (this.isServicesSearch) {
-        route.name= "Services";
+        route.name= "services";
         route.params.userLocation = this.locationFilter;
       }
   return route;

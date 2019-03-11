@@ -8,7 +8,7 @@
                   heading="Jackson County Public Library"
                   subheading="Fontana Regional Library"
                   subheading-class="h4 mt-0 text--white"
-                  v-if="location">
+                  v-if="pageObject">
 
                 <template slot="copy">
                     828-586-2016
@@ -72,7 +72,7 @@ export default {
     /**
      * A `location` object from which to derive hours and contact information.
      */
-    location: {
+    pageObject: {
       type: Object,
     },
   },

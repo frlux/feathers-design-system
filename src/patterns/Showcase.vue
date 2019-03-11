@@ -43,12 +43,12 @@
 
 
         <router-link class="link"
-                    :to="{name:'Collection-type-slug', params:{channel: heading, type: collectionType, userLocation: location}}"
+                    :to="{name:'collection-type-slug', params:{channel: heading, type: collectionType, userLocation: location}}"
                       v-if="collectionLink && collectionType">
                         {{ collectionLinkLabel }}
         </router-link>
         <router-link class="link"
-                    :to="{name:'Collection-type', params:{slug: collectionLink, channel: heading, type: collectionType, userLocation: location}}"
+                    :to="{name:'collection-type', params:{slug: collectionLink, channel: heading, type: collectionType, userLocation: location}}"
                       v-else-if="!collectionLink && collectionType">
                         {{ collectionLinkLabel }}
         </router-link>

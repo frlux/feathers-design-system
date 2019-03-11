@@ -36,7 +36,7 @@
 
               <template slot="action">
 
-                <router-link class="button button--orange" :to="`/services/${randomServiceItem.slug}`">
+                <router-link class="button button--orange" :to="{name: 'services-slug', params:{slug: randomServiceItem.slug, pageObject: randomServiceItem}}">
                   {{ randomServiceItem.acf.button_text ? randomServiceItem.acf.button_text : 'Explore'}}
                 </router-link>
 

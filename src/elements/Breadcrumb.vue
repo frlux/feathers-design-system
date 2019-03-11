@@ -18,27 +18,35 @@ export default {
       if(this.items && this.items.length>0){
         return this.items;
       }
-      if(this.route){
-        return this.getItemsFromRoute();
-      }
+      
+      return this.getItemsFromRoute();
+    
     }
   },
   methods:{
     getItemsFromRoute(){
       let items = [];
-      console.log(this.route);
+      console.log(this.$route);
     
 
-        const current = this.route.params.pageObject ?
-            {text: this.route.params.pageObject.title.rendered || this.route.params.pageObject.title,
+        const current = this.$route.params.object ?
+            {text: this.$route.params.object.title.rendered || this.$route.params.object.title,
              active: true}
+            : this.title ? {text: this.title, active: true}
             : this.title ? {text: this.title, active: true} 
-            : { text: this.route.params.slug, active: true};
+            : {text: this.$route.params.slug, active: true};
 
-        
-          const parent = {text: this.route.meta.parent[0].toUpperCase() + this.route.meta.parent.substring(1).toLowerCase(), to: {name: this.route.meta.parent}};
+        if(this.$route.meta && this.$route.meta.grandParent){
+          const grandParent = {text: this.$route.meta.grandParent[0].toUpperCase() + this.$route.meta.grandParent.substring(1).toLowerCase(), to: {name: this.$route.meta.grandParent}};
+          items.push(grandParent);
+        }
 
-          items.push(parent, current);
+        if(this.$route.meta && this.$route.meta.parent){
+          const parent = {text: this.$route.meta.parent.text, to: {name: this.$route.meta.parent.name}};
+          items.push(parent);
+        }
+
+          items.push(current);
           return items;
         
     }
@@ -54,9 +62,6 @@ export default {
     }
   },
   props:{
-    route:{
-      type: Object
-    },
     items:{
       type: Array
     },

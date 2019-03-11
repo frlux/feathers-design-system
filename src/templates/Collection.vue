@@ -123,7 +123,7 @@
                                     </div>
 
                                     <template slot="action">
-                                        <router-link class="button button--aqua" :to="`/posts/${post.slug}`">
+                                        <router-link class="button button--aqua" :to="{name: 'blog-slug', params:{slug: post.slug, pageObject: post}}">
                                             Info
                                         </router-link>
                                     </template>
@@ -143,7 +143,7 @@
                            <p>{{loaded}} - {{$route.params.slug}}</p>
                            <template v-if="counts.collection == 0 && loaded">
 
-                            <p>Sorry, we couldn't find any collection items. <router-link class="button button--aqua" :to="{name: 'Collection-type', params:{type: 'new'}}">
+                            <p>Sorry, we couldn't find any collection items. <router-link class="button button--aqua" :to="{name: 'collection-type', params:{type: 'new'}}">
                                             Check out the newest items instead.
                                         </router-link></p>
                         </template>
@@ -162,12 +162,12 @@
                     </heading>
                     <div class="d-flex flex-wrap justify-content-between">
                                 <card v-for="genre in genres"
-                                      @click="browse=true && selectedGenre.push(genre.id)"
                                       class="card--background-blue-dark text--white ml-1 mb-2 flex-grow-1 flex-shrink-1"
                                       :key="genre.id"
                                       content-type="collection"
                                       :heading="genre.name"
-                                      v-if="!genre.parent">
+                                      v-if="!genre.parent"
+                                      @click.native="browse=true && selectedGenre.push(genre.id)">
 
                                         
                                     
@@ -175,17 +175,17 @@
                                       
                                         <img v-if="genre.acf && genre.acf.sample_cover" class="collection__sample__cover" :src="genre.acf.sample_cover.url">
                                         <div v-html="genre.description"></div>
-                                        <button class="button button--aqua">
+                                        <button class="button button--aqua" >
                                             More Like This
                                         </button>
                                         <div class="d-flex flex-wrap justify-content-between">
                                          <card v-for="g in genres"
-                                      @click="browse=true && selectedGenre.push(g.id)"
                                       class="card--background-gray text--dark ml-1 mb-2 flex-grow-1 flex-shrink-1"
                                       :key="g.id"
                                       content-type="collection"
                                       :heading="g.name"
-                                      v-if="g.parent===genre.id">
+                                      v-if="g.parent===genre.id"
+                                      @click.native="browse=true && selectedGenre.push(genre.id)">
 
                                     <div slot="copy">
                                         <img v-if="g.acf && g.acf.sample_cover" class="collection__sample__cover" :src="g.acf.sample_cover.url">
@@ -193,7 +193,7 @@
                                     </div>
 
                                     <template slot="action">
-                                        <button class="button button--aqua">
+                                        <button class="button button--aqua" >
                                             More Like This
                                         </button>
                                     </template>
