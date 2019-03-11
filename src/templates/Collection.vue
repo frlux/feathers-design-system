@@ -326,15 +326,6 @@ export default {
     }
   },
   beforeMount(){
-    if(this.$store.state.audience.length < 1){
-      this.$store.dispatch("getGenres");
-    }
-    if(this.$store.state.genres.length < 1){
-      this.$store.dispatch("getAudiences");
-    }
-    if(this.$store.state.featuredCollections.length < 1){
-      this.$store.dispatch("getFeaturedCollections");
-    }
     if(!this.network || this.network == 'new'){
         this.browse=false;
         this.getNew();
@@ -342,7 +333,6 @@ export default {
       if(this.network && this.network !== 'new' && this.slug !== 'any' && this.term){
         this.getCollectionByTerm();
       }
-
   },
   methods:{
    getNew(bulk=null){

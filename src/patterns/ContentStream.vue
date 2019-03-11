@@ -4,30 +4,31 @@
     <template v-for="item in content[page-1]">
       <!-- events card -->
       <event-card v-if="type=='events' || item.type=='event'"
-                  class="card--background-gray"
+                  class="card--background-gray my-2"
                   :event="item"
                   :key="item.id"/><!-- end events card -->
 
       <!-- pages card -->
       <card v-else-if="(type == 'pages' || type=='articles') || ((item.type=='post' || item.type=='page') && !item.site_ID)"
-            :badge-label="type =='pages' ? 'Information' : 'Article'"
+            :badge-label="type =='pages' || item.type=='page' ? 'Information' : 'Article'"
             :heading="item.title.rendered"
-            :class="type =='pages' ? 'card--background-white text--dark' : 'card--background-gray'"
+            :class="type =='pages' || item.type=='page' ? 'card--background-white text--dark border' : 'card--background-gray'"
             content-type="blog"
-            :key="item.id">
+            :key="item.id"
+            class="my-2">
         <div slot="copy">
           {{ getExcerpt(item.content.rendered) }}
         </div>
 
         <template slot="action">
-          <router-link class="button" :class="type =='pages' || item.type=='page' ? 'button--aqua' : 'button--orange'" :to="{name: item.page=='page'? 'pages-slug' : 'articles-slug', params:{pageObject: item, slug: item.slug}}">More</router-link>
+          <router-link class="button" :class="type =='pages' || item.type=='page' ? 'button--aqua' : 'button--orange'" :to="{name: item.type=='page' ? 'pages-slug' : 'articles-slug', params:{pageObject: item, slug: item.slug}}">More</router-link>
         </template>
 
       </card><!-- end pages card -->
 
     <!--collection card-->
     <collection-item v-else-if="type == 'collection' || item.type=='collection-item'"
-                    class="card--background-blue-dark"
+                    class="card--background-blue-dark my-2"
                     :item="item"
                     heading-level="h3"
                     :key="item.id"
@@ -37,7 +38,7 @@
     <!-- blog template-->
       <card v-else-if="type=='blog' || item.type=='post'"
             :key="item.id"
-            class="card--background-white text--dark border my-1"
+            class="card--background-white text--dark border my-2"
             content-type="blog"
             :explainer="item.author.nice_name"
             :sub-explainer="item.date | moment('dddd, MMMM Do')"
@@ -56,11 +57,11 @@
       </card><!-- end blog card -->
       <!-- pages card -->
       <card v-else
-            :explainer="item.type.toUpperCase()"
-            badge-label=" "
+            :badge-label="item.type=='resources' ? 'Resource' : ' '"
+            :sub-explainer="item.type.toUpperCase()"
             :heading="item.title.rendered || item.title"
-            class='card--background-blue-alternate text--white my-2'
-            content-type="blog"
+            class='card--background-blue-dark text--white my-2'
+            content-type="resource"
             :key="item.id">
         <div slot="copy">
           {{ getExcerpt(item.content && item.content.rendered? item.content.rendered: item.content? item.content: item.description ? item.description : item.acf.description) }}
@@ -76,7 +77,8 @@
     <pagination v-if="total > 0"
                 :key="total"
                 :total="Math.ceil(total/perPage)"
-                v-model="page">
+                v-model="page"
+                v-on:resetpage="page=1">
     </pagination>
   </section>
   
@@ -120,6 +122,11 @@ export default {
       return this.apiTotal;
     },
 
+  },
+  created(){
+    this.$root.$on('resetpage', () => {
+    	this.page=1;
+    })
   },
   data() {
     return {

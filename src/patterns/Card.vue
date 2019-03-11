@@ -101,7 +101,7 @@ export default {
 
     contentType: {
       type: String,
-      validator: value => value.match(/(event|blog|collection|service)/)
+      validator: value => value.match(/(event|blog|collection|service|resource)/)
     },
 
     element: {

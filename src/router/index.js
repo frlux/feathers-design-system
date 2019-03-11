@@ -72,6 +72,19 @@ const router = new Router({
       component: Collection,
       name: 'Collection-type-slug',
       path: '/collection/:type/:slug',
+      beforeEnter(to, from, next){
+        if(router.app.$store.audience.length < 1 && router.app.$store.genres.length < 1 && router.app.$store.state.featuredCollections.length < 1){
+          next();
+        } 
+        const terms = [
+          router.app.$store.dispatch("getFeaturedCollections"),
+          router.app.$store.dispatch("getAudiences"),
+          router.app.$store.dispatch("getGenres")
+        ]
+        Promise.all(terms).then(
+          next()
+        )
+      },
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
         library: route.params.userLocation ? route.params.userLocation : '',
@@ -143,16 +156,38 @@ const router = new Router({
       component: Channel,
       name: 'pages',
       path: "/pages",
+      beforeEnter(to, from, next){
+        if(!router.app.$store.state.pages || router.app.$store.state.pages.length < 10){
+          router.app.$store.dispatch("getPages").then(next())
+        } else{
+          next();
+        }
+      },
       props: route => ({
         network: 'pages',
+        channelTitle: 'Library Information',
+        channelDescription: `
+          Find Information about general library services, how-to's and more.
+        `,
       }),
     },
     {
       component: Channel,
       name: 'articles',
       path: "/articles",
+      beforeEnter(to, from, next){
+        if(!router.app.$store.state.articles || router.app.$store.state.pages.articles < 10){
+          router.app.$store.dispatch("getArticles").then(next())
+        } else{
+          next();
+        }
+      },
       props: route => ({
         network: 'articles',
+        channelTitle: 'Library News and Updates',
+        channelDescription: `
+          Find updates and news about Library activities, services, and more.
+        `,
       }),
     },
 

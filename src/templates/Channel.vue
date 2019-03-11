@@ -36,38 +36,48 @@
 
 
                     <div class="col-md-4">
-                        Sidebar
+                       <div class="mt-3" style="width: 307.875px">
+                            <div class="form-group">
+                                <label class="form-label text--bold text--sans text--dark" for="channelSidebarFilter">
+                                    Filter events by title
+                                </label>
+
+                                <input class="form-control"
+                                       id="channelSidebarFilter"
+                                       type="text"
+                                       v-model.lazy="q"
+                                       >
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label text--bold text--sans text--dark"
+                                       for="channelSidebarLocation">
+                                    Filter events by location
+                                </label>
+
+                                <select class="form-control"
+                                        id="channelSidebarLocation"
+                                        v-model="library">
+
+                                    <option :key="location.id"
+                                            :value="location.slug"
+                                            v-for="location in locations">
+                                        {{ location.name }}
+                                    </option>
+
+                                </select>
+                            </div>
+
+                            <button class="button button--blue-alternate"
+                                    v-on:click="clearFilter">Clear Filter</button>
+                        </div>
                     </div>
 
                     <div class="col col-lg-8">
 
-                        <template v-if="network === 'blog'">
-                          <content-stream :contents="posts"
-                                          type="blog" />
-
-                            <!-- <template v-for="post in posts">
-
-                                <card :key="post.id"
-                                      class="card--background-gray text--dark"
-                                      content-type="blog"
-                                      :explainer="post.author.nice_name"
-                                      :sub-explainer="post.date | moment('dddd, MMMM Do')"
-                                      :heading="post.title"
-                                      v-if="post">
-
-                                    <div slot="copy">
-                                        <div v-html="post.excerpt"></div>
-                                    </div>
-
-                                    <template slot="action">
-                                        <router-link class="button button--aqua" :to="`/posts/${post.slug}`">
-                                            Info
-                                        </router-link>
-                                    </template>
-
-                                </card>
-
-                            </template> -->
+                        <template v-if="network === 'blog' || network === 'pages' || network === 'articles'">
+                          <content-stream :contents="content"
+                                          :type="network" />
 
                         </template>
 
@@ -104,23 +114,37 @@ export default {
     collection() {
       return this.$store.getters.getContentByService("collection", this.slug);
     },
-
+    locations(){
+      return this.$store.state.locations;
+    },
     pages() {
       return this.$store.getters.getContentByService("pages", this.slug);
     },
-
+    
     posts() {
       return this.$store.state.posts;
     },
 
     service() {
       return this.$store.getters.getServiceBySlug(this.slug);
+    },
+    content(){
+      return this.network==='blog' ? this.$store.state.posts : this.$store.state[this.network];
     }
   },
   data(){
     return{
       items: [],
     }
+  },
+  methods:{
+    clearFilter() {
+      const now = new Date();
+      this.q = null;
+      this.library = null;
+      this.$root.$emit('resetpage');
+    },
+
   },
   props: {
     channelDescription: {
@@ -136,7 +160,7 @@ export default {
       type: String,
       default:'blog'
     },
-  }
+  },
 };
 </script>
 

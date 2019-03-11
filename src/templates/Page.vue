@@ -98,11 +98,13 @@ export default {
       return this.page.type || null;
     },
     author(){
+      if(this.page.type === 'page'){
+        return null;
+      }
       if(this.type==='blog'){
         return this.page.author;
-      }else if(!isNaN(parseFloat(this.page.author)) && isFinite(this.page.author)){
+      } else if(!isNaN(parseFloat(this.page.author)) && isFinite(this.page.author)){
         let wpAuthor =this.$store.getters.getAuthorById(this.page.author);
-        console.log(wpAuthor);
         return wpAuthor;
       }
     }
