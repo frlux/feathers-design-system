@@ -39,8 +39,12 @@ Through partnerships in the community, we are able to bring you art and historic
                     </div>
 
                     <div class="col col-lg-8">
-
-                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="q || library || total">
+                        <filter-results :total="total"
+                                        :selectedDate="selectedDate"
+                                        :filter="q"
+                                        :location="library"
+                                        contentName="event"/>
+                        <!-- <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="q || library || total">
                             <heading v-if="q || library" class="h3 text--dark text--serif" level="h2">Search</heading>
                             <p class="channel__subtitle mt-1 text--dark text--sans"
                                v-if="q || library">
@@ -55,7 +59,7 @@ Through partnerships in the community, we are able to bring you art and historic
                             </p>
                             <div v-if="total > 0" v-html="total==1 ? '1 event found.' : total + ' events found.'" class="events__total text--dark text--sans m-2">
                         </div>
-                        </div>
+                        </div> -->
 
                         <template v-for="event in filteredEvents[page-1]">
 
@@ -67,9 +71,7 @@ Through partnerships in the community, we are able to bring you art and historic
 
                         </template>
 
-                        <template v-if="total === 0">
-                            <p>Sorry, we couldn't find any events.</p>
-                        </template>
+                        
                         <pagination
                         v-if="total > 0"
                         :key="total"
@@ -92,6 +94,7 @@ import * as api from '../store/api.js';
 import Pagination from '../elements/Pagination.vue';
 import { chunk } from 'lodash';
 import ContentSearch from '../elements/ContentSearch.vue';
+import FilterResults from '../elements/FilterResults.vue';
 
 window.axios = require('axios');
 
@@ -101,21 +104,14 @@ export default {
   components: {
     ContentSearch,
     EventCard,
-    Pagination
+    Pagination,
+    FilterResults
   },
 
   computed: {
 
     eventCount() {
       return this.$store.state.counts.events;
-    },
-
-    locationDetails() {
-      return this.library
-        ? this.$store.state.locations.find(
-            location => location.slug === this.library
-          )
-        : null;
     },
 
     filteredEvents() {
@@ -248,9 +244,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss">
-.events__total{
-  text-align:right;
-}
-</style>
