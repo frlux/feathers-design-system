@@ -3,9 +3,9 @@
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><router-link to="/">Home</router-link></li>
       <li v-for="item in trail" :key="item.text" class="breadcrumb-item" :class="item.active ? 'active' : ''">
-        <router-link v-if="item.to && !item.active" :to="item.to">{{ item.text }}</router-link>
-        <a v-else-if="!item.active && item.href" :href="item.href" >{{ item.text }}</a>
-        <span v-else>{{item.text}}</span>
+        <router-link v-if="item.to && !item.active" :to="item.to" v-html="item.text"></router-link>
+        <a v-else-if="!item.active && item.href" :href="item.href" ></a>
+        <span v-else v-html="item.text"></span>
       </li>
     </ol>
   </nav>
