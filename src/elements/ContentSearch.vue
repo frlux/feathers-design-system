@@ -6,7 +6,7 @@
     <div class="mt-3" style="width: 307.875px">
       <div class="form-group">
         <label class="form-label text--bold text--sans text--dark" for="filter">
-        Filter events by title
+        Search {{contentName}}s
         </label>
 
         <input class="form-control"
@@ -20,7 +20,7 @@
       <div class="form-group">
         <label class="form-label text--bold text--sans text--dark"
                 for="eventSidebarLocation">
-        Filter events by location
+        Filter {{contentName}}s by location
         </label>
 
         <select class="form-control"
@@ -97,6 +97,10 @@ export default {
       type: String,
       default: "div",
     },
+    contentName:{
+      type: String,
+      default: 'result'
+    }
   },
 };
 </script>

@@ -34,7 +34,8 @@ Through partnerships in the community, we are able to bring you art and historic
                           :selected-date="selectedDate" @selectdate="selectedDate = $event"
                           :filter="q" @querycontent="q=$event"
                           :library="library" @filterlibrary="library = $event"
-                          @clearcontentfilter="clearFilter()"/>
+                          @clearcontentfilter="clearFilter()"
+                          contentName="event"/>
 
                     </div>
 
@@ -44,22 +45,6 @@ Through partnerships in the community, we are able to bring you art and historic
                                         :filter="q"
                                         :location="library"
                                         contentName="event"/>
-                        <!-- <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="q || library || total">
-                            <heading v-if="q || library" class="h3 text--dark text--serif" level="h2">Search</heading>
-                            <p class="channel__subtitle mt-1 text--dark text--sans"
-                               v-if="q || library">
-                                Here is everything we can find that matches your search
-                                {{ q ? 'for' : '' }} <mark class="mark">{{ q }}</mark>
-                                <template v-if="library && locationDetails">happening at <router-link class="link" :to="{name: 'locations-slug', params:{slug: locationDetails.slug, pageObject: locationDetails}}">{{ locationDetails.name }}</router-link></template>.
-                            </p>
-                            
-
-                            <p class="channel__subtitle text--dark text--large" v-if="selectedDate">
-                                Here are all the events that match your search for "{{ selectedDate }}".
-                            </p>
-                            <div v-if="total > 0" v-html="total==1 ? '1 event found.' : total + ' events found.'" class="events__total text--dark text--sans m-2">
-                        </div>
-                        </div> -->
 
                         <template v-for="event in filteredEvents[page-1]">
 
