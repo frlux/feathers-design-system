@@ -80,32 +80,17 @@
 
                     <div class="col col-md-6 col-lg-4">
 
-                        <div class="mt-3" style="width: 307.875px">
-                            <div class="form-group">
-                                <label class="form-label text--bold text--sans text--dark" for="serviceSidebarFilter">
-                                    Filter services by title
-                                </label>
-
-                                <input class="form-control"
-                                       id="serviceSidebarFilter"
-                                       type="text"
-                                       v-model="q">
-                            </div>
-
-                            <button class="button button--blue-alternate"
-                                    v-on:click="q = null">Clear Filter</button>
-                        </div>
+                        <content-search :location-filter="false"
+                          :filter="q" @querycontent="q=$event"
+                          @clearcontentfilter="clearFilter()"
+                          contentName="service"/>
 
                     </div>
 
                     <div class="col col-lg-8">
-
-                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="q">
-                            <heading class="h3 text--dark text--serif" level="h2">Search</heading>
-                            <p class="channel__subtitle mt-1 text--dark text--sans" v-if="q">
-                                Here is everything we can find that matches your search for <mark class="mark">{{ q }}</mark>.
-                            </p>
-                        </div>
+                        <filter-results :total="filteredServices.length"
+                                        :filter="q"
+                                        contentName="service"/>
 
                         <template v-for="service in filteredServices">
 
@@ -141,7 +126,9 @@
 <script>
 import CallToAction from "../patterns/CallToAction.vue";
 import Card from "../patterns/Card.vue";
+import ContentSearch from '../elements/ContentSearch.vue';
 import Heading from "../elements/Heading.vue";
+import FilterResults from '../elements/FilterResults.vue';
 
 export default {
   name: "Services",
@@ -149,7 +136,9 @@ export default {
   components: {
     CallToAction,
     Card,
-    Heading
+    ContentSearch,
+    Heading,
+    FilterResults
   },
 
   computed: {
@@ -181,6 +170,13 @@ export default {
     return{
       q: this.filter,
     }
+  },
+  methods:{
+    clearFilter() {
+      this.q = null;
+      this.page = 1;
+    },
+
   },
   mounted(){
     this.$root.$on('inputData', data=>{

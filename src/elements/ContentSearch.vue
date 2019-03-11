@@ -1,10 +1,10 @@
 <template>
   <component :is="wrapper" class="input">
-    <input class="d-none" id="test" type="text" :value="selectedDate"
+    <input v-if="dateFilter" class="d-none" id="test" type="text" :value="selectedDate"
           @input="$emit('selectdate', $event.target.value)"/>
 
     <div class="mt-3" style="width: 307.875px">
-      <div class="form-group">
+      <div class="form-group" v-if="searchFilter">
         <label class="form-label text--bold text--sans text--dark" for="filter">
         Search {{contentName}}s
         </label>
@@ -17,7 +17,7 @@
                 >
       </div>
 
-      <div class="form-group">
+      <div class="form-group"  v-if="locationFilter">
         <label class="form-label text--bold text--sans text--dark"
                 for="eventSidebarLocation">
         Filter {{contentName}}s by location
