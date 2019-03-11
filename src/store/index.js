@@ -19,10 +19,16 @@ export default new Vuex.Store({
     articles: [],
     resources: [],
     services: [],
-    eventCount: 0,
     userLocation: null,
     audience: [],
-    genres: []
+    genres: [],
+    counts: {
+      events: 0,
+      pages: 0,
+      posts: 0,
+      articles: 0,
+      resources: 0,
+    },
   },
 
   actions: {
@@ -80,7 +86,6 @@ export default new Vuex.Store({
       return new Promise(resolve => {
         const authors = api.fetchData('genres', {per_page: 50})
       .then( data=>{
-        
         resolve();
         commit('addTermsToState', {taxonomy: 'genres', terms: data.data});
       });
@@ -101,6 +106,7 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('pages')
         .then( data=>{
+          commit("addCount", {type: 'pages', count: data.headers['x-wp-total']});
           commit('addPagesToState', data.data);
           resolve();
         });
@@ -111,7 +117,9 @@ export default new Vuex.Store({
       async getPosts({ commit }) {
         return new Promise(resolve => {
           const authors = api.fetchData('posts')
-        .then( data=>{          
+        .then( data=>{
+          console.log(data);  
+          commit("addCount",{type: 'posts', count: data.data.found});        
           commit('addPostsToState', data.data.posts);
           resolve();
         });
@@ -122,6 +130,7 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('articles')
         .then( data=>{
+          commit("addCount", {type: 'articles', count: data.headers['x-wp-total']});
           commit('addArticlesToState', data.data);
           resolve();
         });
@@ -132,6 +141,7 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('resources')
         .then( data=>{
+          commit("addCount", {type: 'resources', count: data.headers['x-wp-total']});
           commit('addResourcesToState', data.data);
           resolve();
         });
@@ -154,7 +164,7 @@ export default new Vuex.Store({
         return new Promise(resolve => {
           const authors = api.fetchData('events')
         .then( data=>{
-          commit("addEventCount",data.headers['x-wp-total']);
+          commit("addCount", {type: 'events', count: data.headers['x-wp-total']});
           commit('addEventsToState', data.data);
           resolve();
         });
@@ -247,10 +257,6 @@ export default new Vuex.Store({
       return state.events.find(event => event.slug === slug);
     },
 
-    getEventCount: state => () => {
-      return Number(state.eventCount);
-    },
-
     /**
      * We can use `getRandomContentItem(services)` -- for example -- to return
      * a random service.
@@ -311,8 +317,8 @@ export default new Vuex.Store({
       state.events = events;
     },
 
-    addEventCount(state, eventCount) {
-      state.eventCount = eventCount;
+    addCount(state, count) {
+      state.counts[count.type]=count.count;
     },
 
     addFeaturedCollectionToState(state, featuredCollections) {
