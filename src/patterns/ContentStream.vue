@@ -259,6 +259,22 @@ export default {
        content = !library || library == 'all' ? content : content.filter(
           item => item.acf && item.acf.location && item.acf.location.some(location => location.slug === library)
         );
+      //Filter by terms
+      for (const [taxonomy, value] of Object.entries(this.termFilter)){
+        //value.forEach(val=> content = content.filter(item=>item[taxonomy] && item[taxonomy].includes(val)))
+        //value.some(val => content = content.filter(item=>item[taxonomy] && item[taxonomy].includes(val)))
+        //content = content.filter(item => item[taxonomy] && item[taxonomy].some(term => value.includes(term)))
+        if(value && value.length > 0){
+        content = content.filter(item => item[taxonomy] && item[taxonomy].some(val =>value.includes(val)))
+        }
+
+      }
+      /* Object.keys(this.termFilter).forEach(taxonomy=>{ this.termFilter[taxonomy].forEach(val =>
+          content = content.filter(item=>item[taxonomy] && item[taxonomy].includes(val)
+          )
+          )} */
+      //);
+
       // Filter events by Query String
       let value = filter ? filter.toLowerCase() : null;
       content = !value ? content : content.filter(item => 
@@ -282,6 +298,16 @@ export default {
         ? `${excerptContainer.textContent.substring(0, 200)} ...`
         : excerptContainer.textContent;
     },
+  },
+  watch:{
+    page(){
+      this.$router.push({query:{page:this.page}});
+    }
+  },
+  beforeMount(){
+    if(this.$route.query.page > 1){
+      this.page=this.$route.query.page;
+    }
   },
   props: {
     contents: {
@@ -309,6 +335,9 @@ export default {
     },
     location:{
       type: String,
+    },
+    termFilter:{
+      type: Object
     }
   },
 };

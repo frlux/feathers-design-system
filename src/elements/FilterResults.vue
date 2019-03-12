@@ -1,12 +1,18 @@
 <template>
 <component :is="wrapper">
-  <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="filter || location || total">
-    <heading v-if="filter || location" class="h3 text--dark text--serif" level="h2">Search</heading>
+  <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="filter || location || total || (tags && tags.length > 0)">
+    <heading v-if="filter || location || (tags && tags.length > 0)" class="h3 text--dark text--serif" level="h2">Search</heading>
     <p class="channel__subtitle mt-1 text--dark text--sans"
-      v-if="filter || location">
+      v-if="filter || location || (tags && tags.length > 0)">
       Here is everything we can find that matches your search
       {{ filter ? 'for' : '' }} <mark class="mark">{{ filter }}</mark>
-      <template v-if="location && locationDetails"> <span v-if="contentName === 'event'">happening</span> at <router-link class="link" :to="{name: 'locations-slug', params:{slug: locationDetails.slug, pageObject: locationDetails}}">{{ locationDetails.name }}</router-link></template>.
+      <template v-if="location && locationDetails">
+        <span v-if="contentName === 'event'">happening</span> at <router-link class="link" :to="{name: 'locations-slug', params:{slug: locationDetails.slug, pageObject: locationDetails}}">{{ locationDetails.name }}</router-link>
+      </template> {{ tags && tags.length > 0 ? 'tagged:' : '.' }}
+      <template v-for="tag in tags">
+        <span :key="tag.id" class="badge filter-results__tag" :class="tag.taxonomy=='audience' ? 'badge-primary' : tag.taxonomy=='genres' ? 'badge-info' : 'badge-secondary'" v-html="tag.name"></span> 
+        </template>
+      
     </p>
 
 
@@ -31,6 +37,23 @@ export default {
           )
         : null;
     },
+    tags(){
+      let terms = [];
+      for (const [taxonomy, value] of Object.entries(this.terms)){
+        value.forEach(val => {
+          const t = this.getTerm(val, taxonomy);
+          terms.push(t);
+      })
+      }
+      console.log(terms);
+      return terms;
+    }
+  },
+  methods:{
+    getTerm(tid, tax){
+      return this.$store.getters.getTerm(tid, tax);
+    }
+
   },
   props: {
     selectedDate: {
@@ -52,12 +75,20 @@ export default {
     contentName:{
       type: String,
       default: 'result'
+    },
+    terms:{
+      type: Object
     }
   },
 }
 </script>
 <style lang="scss">
+@import "~bootstrap/scss/_badge";
 .results_total{
   text-align:right;
 }
+.filter-results__tag{
+  margin: 0 2px;
+}
+
 </style>

@@ -38,6 +38,32 @@
         </select>
       </div>
 
+        
+      <div class="form-group" v-for="(chosen, taxonomy) in selected" :key="taxonomy">
+        <label class="form-label text--bold text--sans text--dark">
+        {{taxonomies[taxonomy].label}}
+        </label>
+        <ul class="text--sans taglist" v-if='terms[taxonomy]'>
+        <template v-for="parent in terms[taxonomy]">
+        <li :key="parent.id"
+            class="taglist__parent"
+            :class="{'selected' : selected[taxonomy].includes(parent.id)}"
+            ><a href="javascript:void(null);" @click="selectTerms(taxonomy, parent)" v-html="parent.name"></a>
+            <ul v-if="parent.children && parent.children.length>0" class="taglist__children">
+              <li v-for="child in parent.children" :key="child.id"
+                  class="taglist__child"
+                  :class="{'selected' : selected[taxonomy].includes(child.parent) || selected[taxonomy].includes(child.id) }"
+                  ><a href="javascript:void(null);" @click="selectTerms(taxonomy, child)"  v-html="child.name"></a></li>
+
+            </ul>
+            </li>
+        </template>
+      </ul> 
+      </div>
+
+
+
+
       <button class="button button--blue-alternate"
       v-on:click="clearFilter">Clear Filter</button>
     </div>
@@ -47,14 +73,31 @@
 import flatpickr from 'flatpickr';
 
 export default {
-  name: 'Events',
+  name: 'ContentSearch',
 
   computed: {
     locations() {
       return this.$store.state.locations;
     },
+    terms(){
+      Object.keys(this.selected).forEach(tax => {
+        if(!this.termlist[tax] || this.termlist[tax].length<0){
+          this.termlist[tax] = this.taxonomies[tax]['hierarchical'] === true ? this.getChildren(tax):this.$store.state[tax] 
+        }
+      }); 
+      
+      return this.termlist
+    }
   },
-
+  data(){
+    return{
+      taxonomies: {
+        genres: {hierarchical: true, store: 'genres', label: 'Filter by Genre'}, 
+        audience: {hierarchical: false, store: 'audience', label: 'Filter by Audience'}
+      },
+      termlist:[],
+    }
+  },
   methods: {
     clearFilter() {
       this.$emit('clearcontentfilter');
@@ -63,14 +106,48 @@ export default {
     backToOne(){
       this.$root.$emit('resetpage');
     },
-  },
+    selectTerms(tax, term){
 
+      let select = {taxonomy: tax, terms:[]};
+      if(this.selected[tax].includes(term.id) && (!term.children || term.children.length==0) ){
+        select.terms = this.selected[tax].filter(val => val != term.id)
+      } else if (this.selected[tax].includes(term.id)){
+        select.terms = this.selected[tax].filter(val => val != term.id && term.children.every(child=> child.id != val))
+      } else {
+        select.terms = this.selected[tax];
+        select.terms.push(term.id);
+        if(term.children){
+          term.children.forEach(child => select.terms.push(child.id))
+        }
+      }
+      this.$emit('selectedterms', select);
+    },
+    getTerms(){
+       let terms = [];
+       Object.keys(this.selected).forEach(tax => {
+        terms[tax] = this.taxonomies[tax].hierarchical === true ? this.getChildren(tax): this.$store.state[tax] })
+        return terms;
+    },
+    getChildren(tax){
+      let parents = this.$store.state[tax].filter(term => !term.parent || term.parent== 0);
+      parents.forEach(
+        parent=>parent.children=this.$store.state[tax].filter(child => child.parent && child.parent==parent.id)
+        )
+        return parents;
+    },
+    isSelected(tax, id){
+      return this.selected[tax].includes(id);
+    }
+  },
+  beforeMount(){
+    this.getTerms();
+  },
   mounted() {
     if(this.dateFilter === true){
       this.calendar = flatpickr("#test", {
         inline: true
       });
-    }
+    }    
   },
   props: {
     selectedDate: {
@@ -101,11 +178,35 @@ export default {
     contentName:{
       type: String,
       default: 'result'
+    },
+    selected:{
+      type: Object
     }
   },
 };
 </script>
 <style lang="scss">
+.clearfix {
+  &::after {
+    display: block;
+    content: "";
+    clear: both;
+  }
+}
+.selected{
+  background-color:red;
+}
+.taglist,
+.taglist__children{
+  list-style-type: none;
+  padding:0;
+}
+.taglist>li{
+  margin:5px 0;
+}
+.taglist__children{
+  margin-left:1em;
+}
 .flatpickr-calendar {
   opacity: 0;
   display: none;

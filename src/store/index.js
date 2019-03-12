@@ -294,6 +294,16 @@ export default new Vuex.Store({
   
       return !all ? content[0] : content;
     },
+    getTerm: state => (tid, taxonomy=null) => {
+      let terms = taxonomy ? state[taxonomy] : [
+        ...state.genres,
+        ...state.audience,
+        ...state.featuredCollections,
+        ...state.services
+      ];
+
+      return terms.find(term => term.id == tid)
+    }
   },
 
   mutations: {

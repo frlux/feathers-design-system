@@ -16,13 +16,16 @@ Vue.use(Meta);
 Vue.config.productionTip = false;
 
 const home = [
+  store.dispatch("getLocations"),
+  store.dispatch("getGenres"),
+  store.dispatch("getAudiences"),
+  store.dispatch("getFeaturedCollections"),
   store.dispatch("getCollection"),
   store.dispatch("getAuthors"),
   store.dispatch("getCallsToAction"),
   store.dispatch("getUpcomingEvents"),
   store.dispatch("getServices"),
   store.dispatch("getPosts"),
-  store.dispatch("getLocations"),
 ];
 Promise.all(home).then(results=> {
   new Vue({

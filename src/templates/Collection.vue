@@ -34,182 +34,35 @@
                 <div class="d-md-flex">
 
 
-                    <div class="col-md-4" v-if="browse">
+                    <div class="col-md-4">
+                      <content-search :filter="filter" @querycontent="filter=$event; page=1"
+                          :library="location" @filterlibrary="location = $event"
+                          @clearcontentfilter="clearFilter()"
+                          contentName="collection item"
+                          :selected="selected" @selectedterms="addSelected($event)"/>
                   
-                        <div class="mt-3" style="width: 307.875px">
-                            <div class="form-group">
-                                <label class="form-label text--bold text--sans text--dark" for="collectionSidebarFilter">
-                                    Search this Collection
-                                </label>
-
-                                <input class="form-control"
-                                       id="collectionSidebarFilter"
-                                       type="text"
-                                       v-model="filter">
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label text--bold text--sans text--dark"
-                                       for="collectionSidebarGenre">
-                                    Filter items by Genre
-                                </label>
-
-                                <div class="form-control"
-                                        id="collectionSidebarGenre">
-                                    <div v-for="genre in genres" :key="genre.id">
-                                      <input type="checkbox" :id="genre.slug" :value="genre.id" v-model="selectedGenre">
-                                      <label v-html="genre.name"></label>
-                                    </div>
-                                </div>
-
-          
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label text--bold text--sans text--dark"
-                                       for="collectionSidebarAudience">
-                                    Filter items by Audience
-                                </label>
-
-                                <div class="form-control"
-                                        id="collectionSidebarAudience">
-                                    <div v-for="audience in audiences" :key="audience.id">
-                                      <input type="checkbox" :id="audience.slug" :value="audience.id" v-model="selectedAudience">
-                                      <label v-html="audience.name"></label>
-                                    </div>
-                                </div>
-
-          
-                            </div>
-
-
-                            <div class="form-group">
-                                <label class="form-label text--bold text--sans text--dark"
-                                       for="collectionSidebarLocation">
-                                    Filter items by location
-                                </label>
-
-                                <select class="form-control"
-                                        id="collectionSidebarLocation"
-                                        v-model="location">
-                                    <option value="">Any Library</option>
-                                    <option :key="loc.id"
-                                            :value="loc.id"
-                                            v-for="loc in locations">
-                                        {{ loc.name }}
-                                    </option>
-
-                                </select>
-                            </div>
-
-                            <button class="button button--blue-alternate"
-                                    v-on:click="clearFilters">Clear Filter</button>
-                        </div>
+                        
                     </div>
 
-                    <div class="col col-lg-8" v-if="browse">
+                    <div class="col col-lg-8">
+                      <filter-results :total="total"
+                                      :filter="filter"
+                                      :location="location"
+                                      :terms="selected"
+                                      contentName="collection item"/>
 
-                            <template v-for="post in posts">
+                        <content-stream v-if="collection && collection.length>0"
+                                        :contents="collection"
+                                        type="collection"
+                                        @totalresults="total=$event"
+                                        :filter="filter"
+                                        :location="location"
+                                        :term-filter='selected'/>
 
-                                <card class="card--background-gray text--dark"
-                                      :key="post.slug"
-                                      content-type="blog"
-                                      :explainer="post.author.nice_name"
-                                      :sub-explainer="post.date | moment('dddd, MMMM Do')"
-                                      :heading="post.title"
-                                      v-if="post">
-
-                                    <div slot="copy">
-                                        <div v-html="post.excerpt"></div>
-                                    </div>
-
-                                    <template slot="action">
-                                        <router-link class="button button--aqua" :to="{name: 'blog-slug', params:{slug: post.slug, pageObject: post}}">
-                                            Info
-                                        </router-link>
-                                    </template>
-
-                                </card>
-
-                            </template>
-
-                        <template v-for="collectionItem in collectionItems[currentPage-1]">
-                         <collection-item class="card--background-blue-dark"
-                           :item="collectionItem"
-                           heading-level="h3"
-                           subheading-class="mt-1 text--white"
-                           subheading-level="h4"
-                            :key="collectionItem.id"/>
-                           </template>
-                           <p>{{loaded}} - {{$route.params.slug}}</p>
-                           <template v-if="counts.collection == 0 && loaded">
-
-                            <p>Sorry, we couldn't find any collection items. <router-link class="button button--aqua" :to="{name: 'collection-type', params:{type: 'new'}}">
-                                            Check out the newest items instead.
-                                        </router-link></p>
-                        </template>
-
-                           <pagination
-                        v-if="total > 0"
-                        :total="Math.ceil(total/5)"
-                        v-model="currentPage"></pagination>
+                        
 
                     </div>
-                    <!-- DISCOVER -->
-                    <div v-if="!browse">
-                      <template>
-                                <heading class="text--dark text--serif" level="h1">
-                                  Genres
-                    </heading>
-                    <div class="d-flex flex-wrap justify-content-between">
-                                <card v-for="genre in genres"
-                                      class="card--background-blue-dark text--white ml-1 mb-2 flex-grow-1 flex-shrink-1"
-                                      :key="genre.id"
-                                      content-type="collection"
-                                      :heading="genre.name"
-                                      v-if="!genre.parent"
-                                      @click.native="browse=true && selectedGenre.push(genre.id)">
-
-                                        
-                                    
-                                    <div slot="copy">
-                                      
-                                        <img v-if="genre.acf && genre.acf.sample_cover" class="collection__sample__cover" :src="genre.acf.sample_cover.url">
-                                        <div v-html="genre.description"></div>
-                                        <button class="button button--aqua" >
-                                            More Like This
-                                        </button>
-                                        <div class="d-flex flex-wrap justify-content-between">
-                                         <card v-for="g in genres"
-                                      class="card--background-gray text--dark ml-1 mb-2 flex-grow-1 flex-shrink-1"
-                                      :key="g.id"
-                                      content-type="collection"
-                                      :heading="g.name"
-                                      v-if="g.parent===genre.id"
-                                      @click.native="browse=true && selectedGenre.push(genre.id)">
-
-                                    <div slot="copy">
-                                        <img v-if="g.acf && g.acf.sample_cover" class="collection__sample__cover" :src="g.acf.sample_cover.url">
-                                        <div v-html="g.description"></div>
-                                    </div>
-
-                                    <template slot="action">
-                                        <button class="button button--aqua" >
-                                            More Like This
-                                        </button>
-                                    </template>
-
-                                </card>
-                                </div>
-                                    </div>
-
-                                    
-
-                                </card>
-                      </div>
-                      </template>
-
-                    </div>
-                    <!-- END DISCOVER -->
+              
 
                 </div>
 
@@ -220,22 +73,22 @@
 
 <script>
 import CallToAction from "../patterns/CallToAction.vue";
-import Card from '../patterns/Card.vue';
+import ContentSearch from '../elements/ContentSearch.vue';
+import ContentStream from "../patterns/ContentStream.vue";
 import Heading from "../elements/Heading.vue";
-import CollectionItem from '../patterns/CollectionItem.vue';
-import Pagination from '../elements/Pagination.vue';
 import * as api from '../store/api.js';
 import {chunk} from "lodash";
+import FilterResults from '../elements/FilterResults.vue';
 
 export default {
   name: 'Collection',
 
   components: {
     CallToAction,
-    Card,
+    ContentSearch,
+    ContentStream,
     Heading,
-    CollectionItem,
-    Pagination
+    FilterResults,
   },
 
   computed: {
@@ -246,68 +99,6 @@ export default {
        * NEED to get by featured collection
        */
     },
-
-    collectionItems() {
-      let items = this.collection;
-
-      if(this.selectedGenre.length > 0){this.selectedGenre.forEach(val =>
-        items = items.filter(item => item.genres && item.genres.includes(val)
-        )
-      )
-      }
-      if(this.selectedAudience.length > 0){this.selectedAudience.forEach(val =>
-        items = items.filter(item => item.audience && item.audience.includes(val)
-        )
-      )
-      }
-      if(this.location){
-        items = items.filter(item =>
-          item.locations && item.locations.includes(this.location)
-        );
-      }
-      if(this.filter){
-        const value = this.filter.toLowerCase();
-        items = items.filter(item => 
-                  Object.keys(item.acf).some(key => item.acf[key] != null && 
-                  item.acf[key].toString().toLowerCase()
-                  .includes(value) || Object.keys(item.acf[key]).some(k => item.acf[key][k] !== null &&
-                  item.acf[key][k].toString().toLowerCase().includes(value) )
-                  ));
-      }
-      this.total = items.length;
-      return chunk(items, 5);
-       /**
-       * NEED to get by featured collection
-       */
-    },
-
-    pages() {
-      //return this.$store.getters.getContentByService("pages", this.slug);
-      /**
-       * NEED to get by featured collection
-       */
-    },
-
-    posts() {
-      // return this.$store.state.posts;
-      /**
-       * maybe add an ACF for featured-collection terms to add a link/slug/id for
-       * related blog posts... then we'll fetch those items and return.
-       */
-    },
-    locations(){
-      return this.$store.state.locations;
-    },
-
-    service() {
-      return this.slug !== 'any' ? this.$store.getters.getServiceBySlug(this.slug) : null;
-    },
-    genres(){
-      return this.$store.state.genres;
-    },
-    audiences(){
-      return this.$store.state.audience;
-    }
   },
   data(){
     return{
@@ -315,9 +106,11 @@ export default {
       filter: null,
       location: this.library ? this.library : '',
       total: 0,
-      currentPage: 1,
-      selectedGenre:[],
-      selectedAudience:[],
+      page: 1,
+      selected:{
+        genres:[],
+        audience:[]
+      },
       counts:{
         collection: 0,
       },
@@ -325,7 +118,7 @@ export default {
       browse: true,
     }
   },
-  beforeMount(){
+  mounted(){
     if(!this.network || this.network == 'new'){
         this.browse=false;
         this.getNew();
@@ -333,8 +126,20 @@ export default {
       if(this.network && this.network !== 'new' && this.slug !== 'any' && this.term){
         this.getCollectionByTerm();
       }
+      this.$root.$on('inputData', data=>{
+      this.q=data;
+    });
+    this.$root.$on('resetPage', data=>{
+      this.page=1;
+    });
+  },
+  beforeMount(){
+    this.collection = this.$store.state.collection;
   },
   methods:{
+    addSelected(selected){
+      this.selected[selected.taxonomy] = selected.terms;
+    },
    getNew(bulk=null){
     this.fetchContent('collection',{per_page:100});
     },
@@ -344,18 +149,9 @@ export default {
         // case 'featured-collection': this.fetchContent('collection',{per_page:100, page: 1, 'featured-collection': });
       }
     },
-    getSample(term){
-      console.log(term);
-      var found = this.collection.find(function(item) {
-          return item[term.taxonomy] && item[term.taxonomy].includes(term.id);
-        });
-  
-      return found && found.featured_image ? found.featured_image : '';
 
-    },
     fetchContent(type, params){
       api.fetchData(type, params).then(response =>{
-            console.log(response);
             this.counts[type] = response.headers['x-wp-total'];
             if(params.page){
               params.page++;
@@ -377,11 +173,11 @@ export default {
         }
       }
     },
-    clearFilters() {
-      this.selectedGenre = [];
+    clearFilter() {
+      this.selected.genres = [];
       this.filter = null;
       this.location = '';
-      this.selectedAudience = [];
+      this.selected.audience = [];
     },
   },
   props: {
@@ -410,15 +206,29 @@ export default {
       type: String,
     }
   },
+  beforeMount(){
+    if(this.$route.query.search ){
+      this.filter=this.$route.query.search;
+    }
+    if(this.$route.query.level ){
+      /**
+       * GET THE TERM NAME FROM URL - into ID
+       */
+      //this.selected=this.$route.query.search;
+    }
+  },
   watch:{
-    selectedGenre(){
-      this.currentPage=1;
+    selected(){
+      this.$root.$emit('resetpage')
     },
     selectedAudience(){
-      this.currentPage=1;
+      this.$root.$emit('resetpage')
     },
     filter(){
-      this.currentPage=1;
+      this.$root.$emit('resetpage')
+    },
+    location(){
+      this.$root.$emit('resetpage')
     },
     $route(){
       console.log(this.$route);

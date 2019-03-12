@@ -12,6 +12,7 @@ import NotFound from "../templates/NotFound.vue";
 import SearchResults from "../templates/SearchResults.vue";
 import Service from '../templates/Service.vue';
 import Services from "../templates/Services.vue";
+import store from "@/store";
 import * as api from "../store/api.js";
 
 Vue.use(Router);
@@ -48,6 +49,7 @@ const router = new Router({
       },
       name: 'collection',
       path: '/collection',
+      
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
         library: route.params.userLocation ? route.params.userLocation : '',
@@ -70,21 +72,8 @@ const router = new Router({
     },
     {
       component: Collection,
-      name: 'Collection-type-slug',
+      name: 'collection-type-slug',
       path: '/collection/:type/:slug',
-      beforeEnter(to, from, next){
-        if(router.app.$store.audience.length < 1 && router.app.$store.genres.length < 1 && router.app.$store.state.featuredCollections.length < 1){
-          next();
-        } 
-        const terms = [
-          router.app.$store.dispatch("getFeaturedCollections"),
-          router.app.$store.dispatch("getAudiences"),
-          router.app.$store.dispatch("getGenres")
-        ]
-        Promise.all(terms).then(
-          next()
-        )
-      },
       props: route => ({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
         library: route.params.userLocation ? route.params.userLocation : '',
