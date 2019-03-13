@@ -302,7 +302,7 @@ export default new Vuex.Store({
         ...state.services
       ];
 
-      return terms.find(term => term.id == tid)
+      return isNaN(tid) ? terms.find(term => term.slug == tid) : terms.find(term => term.id == tid)
     }
   },
 
