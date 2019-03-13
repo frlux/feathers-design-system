@@ -210,6 +210,7 @@ export default {
     margin:1px 0;
     border-radius:2px;
     &:hover{
+      background-color:$color-gray;
       &:before{
         content: "+";
         position:absolute;
