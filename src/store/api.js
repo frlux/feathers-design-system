@@ -14,6 +14,8 @@ export const urls = {
   resources: 'https://fontana.librarians.design/wp-json/wp/v2/resources',
   services: 'https://fontana.librarians.design/wp-json/wp/v2/services',
   events: 'https://fontana.librarians.design/wp-json/wp/v2/events?',
+  organizersBySlug: 'https://fontana.librarians.design/wp-json/tribe/events/v1/organizers/by-slug/',
+
   };
 export const fetchData = (type, param = []) => {
   try {
@@ -28,6 +30,16 @@ export const fetchData = (type, param = []) => {
 export const fetchLink = (link) => {
   try {
     return axios.get(link)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+export const fetchPerson = (type, slug) => {
+  
+  try {
+    let person = urls[type] + slug;
+    return axios.get(person)
   } catch (error) {
     console.error(error)
   }

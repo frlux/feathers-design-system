@@ -22,6 +22,7 @@
 
 </template>
 <script>
+import * as api from '../store/api.js';
 export default {
   name: "Person",
   computed:{
@@ -43,7 +44,7 @@ export default {
         switch(this.type){
         case 'organizer': 
           const slug = this.personObject.post_name ? this.personObject.post_name : this.personObject.slug;
-          const profile = this.fetchPerson(`https://fontana.librarians.design/wp-json/tribe/events/v1/organizers/by-slug/${slug}`);
+          const profile = this.fetchPerson(slug);
           image = profile && profile.image ? [url => profile.image.url, w => profile.image.width, h => profile.image.height ] : [] ; break;
         case 'blog': return this.personObject.avatar_URL; break;
         default: return this.personObject.avatar_urls[96]; break;
@@ -74,7 +75,6 @@ export default {
         
         return this.title;
       }
-      console.log(this.type);
        if(this.personObject){
         return this.type==='organizer'
                 ? this.personObject.description || this.personObject.post_content
@@ -94,8 +94,8 @@ export default {
     }
   },
   methods:{
-    async fetchPerson(url){
-      await axios.get(url)
+    async fetchPerson(slug){
+      await api.fetchPerson('organizersBySlug', slug)
         .then((response) =>{
           switch(this.type){
             case 'organizer': this.profile = response.data; return response.data;
