@@ -211,10 +211,15 @@ export default {
       this.filter=this.$route.query.search;
     }
     if(this.$route.query.level ){
-      /**
-       * GET THE TERM NAME FROM URL - into ID
-       */
-      //this.selected=this.$route.query.search;
+      let level = this.$store.getters.getTerm(this.$route.query.level, 'audience')
+      this.selected.audience.push(level.id);
+    }
+    if(this.$route.query.location){
+      this.location = this.$route.query.location;
+    }
+    if(this.$route.query.genre ){
+      let genre = this.$store.getters.getTerm(this.$route.query.genre, 'genres')
+      this.selected.genres.push(genre.id);
     }
   },
   watch:{

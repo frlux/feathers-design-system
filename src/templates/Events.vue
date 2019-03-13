@@ -150,20 +150,21 @@ export default {
     },
   },
     watch:{
-      q: function(newValue, oldValue){
-        this.page=1;
+      q(){
+        this.$root.$emit('resetpage')
     },
       library(){
-        this.page=1;
+        //this.page=1;
+        this.$root.$emit('resetpage')
       },
       selectedDate(){
-        this.page=1;
+        //this.page=1;
+        this.$root.$emit('resetpage')
       },
-
     },
   mounted() {
     this.getMoreEvents();
-    this.q=this.filter;
+    this.q= !this.q ? this.filter : this.q;
     this.$root.$on('inputData', data=>{
       this.q=data;
     });
@@ -173,6 +174,15 @@ export default {
   },
   beforeMount(){
     this.eventsContainer = this.$store.state.events;
+    if(this.$route.query.search){
+      this.q=this.$route.query.search;
+    }
+    if(this.$route.query.location){
+      this.library = this.$route.query.location;
+    }
+    if(this.$route.query.date ){
+      this.selectedDate = this.$route.query.date
+    }
   },
   props: {
     filter: {

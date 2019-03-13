@@ -86,6 +86,9 @@ export default {
       return this.$store.state.locations;
     },
     terms(){
+      if(!this.selected || this.selected.length == 0){
+        return null;
+      }
       Object.keys(this.selected).forEach(tax => {
         if(!this.termlist[tax] || this.termlist[tax].length<0){
           this.termlist[tax] = this.taxonomies[tax]['hierarchical'] === true ? this.getChildren(tax):this.$store.state[tax] 
@@ -127,12 +130,13 @@ export default {
       }
       this.$emit('selectedterms', select);
     },
-    getTerms(){
-       let terms = [];
-       Object.keys(this.selected).forEach(tax => {
+    /* getTerms(){
+      let terms = [];
+
+      Object.keys(this.selected).forEach(tax => {
         terms[tax] = this.taxonomies[tax].hierarchical === true ? this.getChildren(tax): this.$store.state[tax] })
         return terms;
-    },
+    }, */
     getChildren(tax){
       let parents = this.$store.state[tax].filter(term => !term.parent || term.parent== 0);
       parents.forEach(
@@ -145,7 +149,7 @@ export default {
     }
   },
   beforeMount(){
-    this.getTerms();
+    //this.getTerms();
   },
   mounted() {
     if(this.dateFilter === true){
@@ -202,7 +206,7 @@ export default {
 .taglist {
   list-style-type: none;
   background-color:$color-blue-dark;
-  margin:1rem 0;
+  margin:.5rem 0 1.5rem 0;
   padding:1rem .5rem;
   box-shadow: $box-shadow-small;
   &__tag{

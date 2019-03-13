@@ -38,6 +38,9 @@ export default {
         : null;
     },
     tags(){
+      if(!this.terms || this.terms == 0){
+        return null;
+      }
       let terms = [];
       for (const [taxonomy, value] of Object.entries(this.terms)){
         value.forEach(val => {
@@ -47,8 +50,6 @@ export default {
           }
       })
       }
-      
-      console.log(terms);
       return terms;
     }
   },

@@ -1,8 +1,6 @@
 <template>
   <section class="content" v-if="content">
-
-    <template v-if="!apiType">
-      <template v-for="item in content[page-1]">
+    <template v-for="item in content">
       
         <!-- events card -->
         <event-card v-if="type=='events' || item.type=='event'"
@@ -74,88 +72,6 @@
           </template>
 
         </card><!-- end pages card -->
-      </template>
-    </template>
-    <template v-else-if="apiType">
-      <template v-for="item in content">
-      
-        <template v-if="type=='events' || item.type=='event'">
-          <!-- events card -->
-          <event-card class="card--background-gray my-2"
-                      :event="item"
-                      :key="item.id"/><!-- end events card -->
-        </template>
-
-        <template v-else-if="(type == 'pages' || type=='articles') || ((item.type=='post' || item.type=='page') && !item.site_ID)">
-          <!-- pages card -->
-          <card :badge-label="type =='pages' || item.type=='page' ? 'Information' : 'Article'"
-                :heading="item.title.rendered"
-                :class="type =='pages' || item.type=='page' ? 'card--background-white text--dark border' : 'card--background-gray'"
-                content-type="blog"
-                :key="item.id"
-                class="my-2">
-            <div slot="copy">
-              {{ getExcerpt(item.content.rendered) }}
-            </div>
-
-            <template slot="action">
-              <router-link class="button" :class="type =='pages' || item.type=='page' ? 'button--aqua' : 'button--orange'" :to="{name: item.type=='page' ? 'pages-slug' : 'articles-slug', params:{pageObject: item, slug: item.slug}}">More</router-link>
-            </template>
-
-          </card><!-- end pages card -->
-        </template>
-
-      <!--collection card-->
-        <template v-else-if="type == 'collection' || item.type=='collection-item'">
-                      
-          <collection-item class="card--background-blue-dark my-2"
-                          :item="item"
-                          heading-level="h3"
-                          :key="item.id"
-                          subheading-class="mt-1 text--white"
-                          subheading-level="h4"/><!--end collection card-->
-        </template>
-
-      <!-- blog template-->
-        <template v-else-if="type=='blog' || item.type=='post'">
-          <card :key="item.id"
-                class="card--background-white text--dark border my-2"
-                content-type="blog"
-                :explainer="item.author.nice_name"
-                :sub-explainer="item.date | moment('dddd, MMMM Do')"
-                :heading="item.title">
-
-            <div slot="copy">
-              <div v-html="item.excerpt"></div>
-            </div>
-
-            <template slot="action">
-              <router-link class="button button--aqua" :to="{name: 'blog-slug', params:{slug: item.slug, pageObject: item}}">
-                Info
-              </router-link>
-            </template>
-
-          </card><!-- end blog card -->
-        </template>
-        <!-- pages card -->
-        <template v-else>
-          <card :badge-label="item.type=='resources' ? 'Resource' : ' '"
-                :sub-explainer="item.type.toUpperCase()"
-                :heading="item.title.rendered || item.title"
-                class='card--background-blue-dark text--white my-2'
-                content-type="resource"
-                :key="item.id">
-            <div slot="copy">
-              {{ getExcerpt(item.content && item.content.rendered? item.content.rendered: item.content? item.content: item.description ? item.description : item.acf.description) }}
-            </div>
-
-            <template slot="action">
-              <router-link class="button button--teal" :to="{name:item.type+'-slug', params:{pageObject: item, slug: item.slug}}">More</router-link>
-            </template>
-
-          </card><!-- end pages card -->
-        </template>
-      </template>
     </template>
 
     <pagination v-if="total > 0"
@@ -187,9 +103,15 @@ export default {
   },
   computed: {
     content(){
-      if(!this.apiType){
+      if(!this.apiType && this.paged){
+        console.log('saved...');
+        return this.paged[this.page-1];
+      }
+      if(!this.apiType && !this.paged){
+        console.log('re-paging...');
         let content = this.filterContent(this.filter, this.selectedDate, this.location);
-        return chunk(content, this.perPage);
+        this.paged = chunk(content, this.perPage);
+        return this.paged[this.page-1];
       }
       let params = this.apiParams ? this.apiParams : {};
       params.per_page = this.perPage;
@@ -227,7 +149,8 @@ export default {
   },
   created(){
     this.$root.$on('resetpage', () => {
-    	this.page=1;
+      this.page=1;
+      this.paged=null;
     })
   },
   data() {
@@ -235,6 +158,7 @@ export default {
       page: 1,
       apiTotal: 0,
       apiContent:[],
+      paged:null
     };
   },
   methods: {
@@ -260,20 +184,13 @@ export default {
           item => item.acf && item.acf.location && item.acf.location.some(location => location.slug === library)
         );
       //Filter by terms
-      for (const [taxonomy, value] of Object.entries(this.termFilter)){
-        //value.forEach(val=> content = content.filter(item=>item[taxonomy] && item[taxonomy].includes(val)))
-        //value.some(val => content = content.filter(item=>item[taxonomy] && item[taxonomy].includes(val)))
-        //content = content.filter(item => item[taxonomy] && item[taxonomy].some(term => value.includes(term)))
-        if(value && value.length > 0){
-        content = content.filter(item => item[taxonomy] && item[taxonomy].some(val =>value.includes(val)))
+      if(this.termFilter && this.termFilter.length > 0){
+        for (const [taxonomy, value] of Object.entries(this.termFilter)){
+          if(taxonomy && value && value.length > 0){
+          content = content.filter(item => item[taxonomy] && item[taxonomy].some(val =>value.includes(val)))
+          }
         }
-
       }
-      /* Object.keys(this.termFilter).forEach(taxonomy=>{ this.termFilter[taxonomy].forEach(val =>
-          content = content.filter(item=>item[taxonomy] && item[taxonomy].includes(val)
-          )
-          )} */
-      //);
 
       // Filter events by Query String
       let value = filter ? filter.toLowerCase() : null;
