@@ -43,17 +43,23 @@
         <label class="form-label text--bold text--sans text--dark">
         {{taxonomies[taxonomy].label}}
         </label>
-        <ul class="text--sans taglist" v-if='terms[taxonomy]'>
+        <ul class="taglist text--sans" :class="`taglist--${taxonomy}`" v-if='terms[taxonomy]'>
         <template v-for="parent in terms[taxonomy]">
-        <li :key="parent.id"
-            class="taglist__parent"
-            :class="{'selected' : selected[taxonomy].includes(parent.id)}"
-            ><a href="javascript:void(null);" @click="selectTerms(taxonomy, parent)" v-html="parent.name"></a>
+        <li :key="parent.id">
+          <a href="javascript:void(null);"
+            @click="selectTerms(taxonomy, parent)"
+            class="taglist__tag"
+            :class="{'selected' : selected[taxonomy].includes(parent.id)}">
+              <span class="taglist__tag--close">&times;</span><span class="taglist__tag--name" v-html="parent.name"></span></a>
             <ul v-if="parent.children && parent.children.length>0" class="taglist__children">
-              <li v-for="child in parent.children" :key="child.id"
-                  class="taglist__child"
-                  :class="{'selected' : selected[taxonomy].includes(child.parent) || selected[taxonomy].includes(child.id) }"
-                  ><a href="javascript:void(null);" @click="selectTerms(taxonomy, child)"  v-html="child.name"></a></li>
+              <li v-for="child in parent.children" :key="child.id">
+                <a href="javascript:void(null);"
+                  @click="selectTerms(taxonomy, child)"
+                  class="taglist__tag"
+                  :class="{'selected' : selected[taxonomy].includes(child.parent) || selected[taxonomy].includes(child.id) }">
+                <span class="taglist__tag--close">&times;</span>
+                <span class="taglist__tag--name" v-html="child.name"></span></a>
+                </li>
 
             </ul>
             </li>
@@ -107,7 +113,6 @@ export default {
       this.$root.$emit('resetpage');
     },
     selectTerms(tax, term){
-
       let select = {taxonomy: tax, terms:[]};
       if(this.selected[tax].includes(term.id) && (!term.children || term.children.length==0) ){
         select.terms = this.selected[tax].filter(val => val != term.id)
@@ -193,20 +198,70 @@ export default {
     clear: both;
   }
 }
-.selected{
-  background-color:red;
-}
-.taglist,
-.taglist__children{
+
+.taglist {
   list-style-type: none;
   padding:0;
+  margin:0;
+  &__tag{
+    text-decoration:none;
+    display:inline-block;
+    padding-right:7px;
+    margin:1px 0;
+    border-radius:2px;
+    &:hover{
+      &:before{
+        content: "+";
+        position:absolute;
+      }
+    }
+  }
+  &__tag.selected{
+    background: $color-gray-dark;
+    font-weight:bold;
+    color:#fff;
+    -webkit-transform-origin:0% 50%;
+    -webkit-animation: swing 1s;
+    -o-animation: swing 1s;
+    animation: swing 1s ;
+    &:hover{
+      &:before{
+        content: "";
+        display:none;
+      }
+    }
+  }
+  &--genres{
+    .taglist__tag.selected{
+    background: $color-pink;
+    }
+  }
+  &--audience{
+    .taglist__tag.selected{
+    background: $color-orange;
+    }
+  }
+    
+  &__children{
+    list-style-type: none;
+    padding:0;
+    .taglist__tag{
+      margin-left:1em;
+    }
+  }
+} 
+
+.taglist__tag--close{
+  visibility: hidden;
+  display:inline-block;
+  margin: 0 2px;  
 }
-.taglist>li{
-  margin:5px 0;
+.taglist__tag.selected:hover .taglist__tag--close {
+    
+    visibility: visible;
+    color: rgba(255,255,255,.5);
 }
-.taglist__children{
-  margin-left:1em;
-}
+
 .flatpickr-calendar {
   opacity: 0;
   display: none;

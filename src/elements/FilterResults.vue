@@ -93,11 +93,10 @@ export default {
 .filter-results__tag{
   margin: 0 2px;
   &--genre{
-    background-color: $color_pink !important;
+    background-color: $color-pink !important;
   }
   &--audience{
-    background-color: $color_orange !important;
+    background-color: $color-orange !important;
   }
 }
-
 </style>
