@@ -10,7 +10,7 @@
         <span v-if="contentName === 'event'">happening</span> at <router-link class="link" :to="{name: 'locations-slug', params:{slug: locationDetails.slug, pageObject: locationDetails}}">{{ locationDetails.name }}</router-link>
       </template> {{ tags && tags.length > 0 ? 'tagged:' : '.' }}
       <template v-for="tag in tags">
-        <span :key="tag.id" class="badge filter-results__tag" :class="tag.taxonomy=='audience' ? 'badge-primary' : tag.taxonomy=='genres' ? 'badge-info' : 'badge-secondary'" v-html="tag.name"></span> 
+        <span :key="tag.id" class="badge filter-results__tag" :class="tag.taxonomy=='audience' ? 'badge-primary filter-results__tag--audience' : tag.taxonomy=='genres' ? 'badge-info filter-results__tag--genre' : 'badge-secondary'" v-html="tag.name"></span> 
         </template>
       
     </p>
@@ -42,9 +42,12 @@ export default {
       for (const [taxonomy, value] of Object.entries(this.terms)){
         value.forEach(val => {
           const t = this.getTerm(val, taxonomy);
-          terms.push(t);
+          if(!value.includes(t.parent)){
+            terms.push(t);
+          }
       })
       }
+      
       console.log(terms);
       return terms;
     }
@@ -89,6 +92,12 @@ export default {
 }
 .filter-results__tag{
   margin: 0 2px;
+  &--genre{
+    background-color: $color_pink;
+  }
+  &--audience{
+    background-color: $color_orange;
+  }
 }
 
 </style>
