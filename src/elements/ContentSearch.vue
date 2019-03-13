@@ -201,16 +201,19 @@ export default {
 
 .taglist {
   list-style-type: none;
-  padding:0;
-  margin:0;
+  background-color:$color-blue-dark;
+  margin:1rem 0;
+  padding:1rem .5rem;
+  box-shadow: $box-shadow-small;
   &__tag{
+    color:$color-white;
     text-decoration:none;
     display:inline-block;
     padding-right:7px;
     margin:1px 0;
-    border-radius:2px;
+    border-radius:5px;
     &:hover{
-      background-color:$color-gray;
+      background-color:$color-blue-alternate;
       &:before{
         content: "+";
         position:absolute;
