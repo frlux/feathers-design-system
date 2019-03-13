@@ -21,10 +21,10 @@
                         
                     </div>
 
-                    <div class="card__badge__explainer text--extra-small text--right" v-if="explainer" v-html="explainer">
+                    <div class="card__badge__explainer text--extra-small text--right" v-if="explainer">{{decodeHtml(explainer)}}
                         <br>
 
-                        <div class="card__badge__sub-explainer" v-if="subExplainer" v-html="subExplainer"></div>
+                        <div class="card__badge__sub-explainer" v-if="subExplainer">{{decodeHtml(subExplainer)}}</div>
                     </div>
 
                 </div>
