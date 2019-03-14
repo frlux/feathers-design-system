@@ -1,5 +1,6 @@
 <template>
-  <section class="content" v-if="content">
+  <section class="content" v-if="content" :key='apiContent.length+apiPage+apiType'>
+    {{ apiContent.length+apiPage+apiType}}
     <template v-for="item in content">
       
         <!-- events card -->
@@ -113,55 +114,123 @@ export default {
         this.paged = chunk(content, this.perPage);
         return this.paged[this.page-1];
       }
-      let params = this.apiParams ? this.apiParams : {};
-      params.per_page = this.perPage;
-      params.page = this.page;
-      if(this.filter){
-        params.search = this.filter;
+      if(this.apiType !== 'mixed'){
+        return this.apiContent; 
       }
-      if(this.location){
-        let loc = this.$store.state.locations.find(location => location.slug === this.location);
-        params.locations = loc.id;
-      }
-      if(this.selectedDate){
-        
-        if(this.type !== 'events'){
-          params.after = moment(this.selectedDate, 'YYYY-MM-DD').subtract(14, 'days');
-          params.before = moment(this.selectedDate, 'YYYY-MM-DD').add(14, 'days');
-        } else{
-          params.start_date = this.selectedDate;
-        }
-        
-      }
-      
-      const results = api.fetchData(this.apiType, params).then(results=>{
-        this.apiTotal = results.headers['x-wp-total'];
-        this.apiContent = results.data;
-      }
-      );
-      return this.apiContent; 
+      let content = this.mixed(this.apiPage);
+      return content;
     },
     total(){
       this.$emit('totalresults', this.apiTotal);
       return this.apiTotal;
     },
+    searchableTypes(){
+      return Object.keys(api.content).filter( key => api.content[key].searchable === true);
+    }
 
   },
   created(){
     this.$root.$on('resetpage', () => {
+      this.apiContent.destroy();
+      this.apiPage.destroy();
       this.page=1;
-      this.paged=null;
+      this.paged=null; 
     })
   },
   data() {
     return {
       page: 1,
+      apiPage: 1,
       apiTotal: 0,
       apiContent:[],
       paged:null
     };
   },
   methods: {
+    async mixed(){
+      let content = chunk(this.apiContent, this.perPage);
+      if(this.page-1 >= content.length){
+        this.apiPage++;
+        this.fetchData().then(
+          content = chunk(this.apiContent, this.perPage)
+        ); 
+      }
+      
+      return content[this.page-1];
+    },
+    async fetchData(){
+      let params;
+
+      if(this.apiType == 'mixed'){
+        /* for (const [taxonomy, value] of Object.entries(this.termFilter)){
+          if(taxonomy && value && value.length > 0){
+          content = content.filter(item => item[taxonomy] && item[taxonomy].some(val =>value.includes(val)))
+          }
+        } */
+        //const types = Object.keys(api.content.filter(item => item.searchable === true));
+        let results = [];
+        this.searchableTypes.forEach(type=>{
+          params=this.getParams(type, this.apiPage);
+          console.log(params);
+         let result = await api.fetchData(type, params);
+            let data = type != 'posts' ? result.data : result.data.posts;
+
+            results = [...results, ...data];
+            this.apiTotal += type != 'posts' ? Number(result.headers['x-wp-total']) : Number(result.data.found);
+          
+          }
+        )
+        console.log(results);
+        console.log(this.apiTotal);
+        results.sort(function(a,b){
+              if(!a.date || !b.date ){ return 0 }
+              let date1 = new Date(a.date);
+              let date2 = new Date(b.date);
+              return date1.getTime() - date2.getTime() });
+        this.apiContent = [...this.apiContent, ...results];
+
+      } else{
+        params = this.getParams(this.apiType, this.page);
+        const results = await api.fetchData(this.apiType, params);
+        console.log(results);
+        this.apiTotal = this.apiType != 'posts' ? Number(results.headers['x-wp-total']) : results.data.found;
+        this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
+        return results;
+      }
+      
+    },
+    getParams(type, page){
+      const taxonomies = Object.keys(api.content).filter( key => api.content[key].content == 'taxonomy');//Object.keys(api.content.filter(item => item.type == 'taxonomy'));
+      console.log(taxonomies);
+      let params = this.apiParams ? this.apiParams : {};
+      if(type != 'posts'){
+        params.per_page = this.perPage;
+      }else{
+        params.number = this.perPage;
+      }
+
+      params.page = page;
+
+      if(this.filter){
+        params.search = this.filter;
+      }
+      if(this.location && type != 'posts'){
+        let loc = this.$store.state.locations.find(location => location.slug === this.location);
+        params.locations = loc.id;
+      } else if (this.location) {
+        params.tag=this.location;
+      }
+
+      if(this.selectedDate){
+        if(type !== 'events' && !taxonomies.include(type)){
+          params.after = moment(this.selectedDate, 'YYYY-MM-DD').subtract(14, 'days');
+          params.before = moment(this.selectedDate, 'YYYY-MM-DD').add(14, 'days');
+        } else if(type=='events'){
+          params.start_date = this.selectedDate;
+        }
+      }
+      return params;
+    },
     async fetchContent(type,params){
       api.fetchData(type, params)
           .then(response =>{
@@ -218,12 +287,41 @@ export default {
   },
   watch:{
     page(){
-      this.$router.push({query:{page:this.page}});
-    }
+      //this.$router.push({query:{page:this.page}});
+      /* const results = this.fetchData().then(results=>{
+        this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
+        }
+      ); */
+    },
+    /* filter(){
+      const results = this.fetchData().then(results=>{
+        this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
+        }
+      );
+    },
+    location(){
+      const results = this.fetchData().then(results=>{
+        this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
+        }
+      );
+    }, */
+    contents(){
+      this.paged=null;
+    },
   },
+/*   created(){
+    const results = this.fetchData().then(results=>{
+      this.apiTotal = this.apiType != 'posts' ? Number(results.headers['x-wp-total']) : results.data.found;
+      this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
+      }
+    );
+  }, */
   beforeMount(){
     if(this.$route.query.page > 1){
       this.page=this.$route.query.page;
+    }
+    if(this.$route.query.search){
+      this.q=this.$route.query.search;
     }
   },
   props: {

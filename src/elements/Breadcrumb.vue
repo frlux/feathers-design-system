@@ -73,4 +73,7 @@ export default {
 </script>
 <style lang="scss">
 @import "~bootstrap/scss/_breadcrumb";
+.breadcrumb{
+  margin-top:0;
+}
 </style>

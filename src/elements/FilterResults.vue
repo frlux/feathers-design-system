@@ -19,7 +19,9 @@
     <p class="channel__subtitle text--dark text--large" v-if="selectedDate">
       Here are all the events that match your search for "{{ selectedDate }}".
     </p>
-    <div v-if="total > 0" v-html="total==1 ? `1 ${contentName} found.` : total + ` ${contentName}s found.`" class="results_total text--dark text--sans m-2">
+    <div v-if="total > 0" class="results_total text--dark text--sans m-2">
+      <p v-if="!prefetchTotal">{{ contentName== 'result' ? total : total==1 ? `1 ${contentName}` : total + ` ${contentName}s` }} found.</p>
+        <p v-else>currently showing {{ contentName== 'result' ? total : total==1 ? `1 ${contentName}` : total + ` ${contentName}s` }} of {{prefetchTotal}} total results.</p>
     </div>
           
   </div>
@@ -82,6 +84,9 @@ export default {
     },
     terms:{
       type: Object
+    },
+    prefetchTotal:{
+      type:Number
     }
   },
 }

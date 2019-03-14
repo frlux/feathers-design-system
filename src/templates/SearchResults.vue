@@ -36,46 +36,18 @@
 
                     <div class="col col-lg-8">
 
-                        <div class="alert alert--primary mb-3 pl-4 pr-4" v-if="filter">
-                            <heading class="h3 text--dark text--serif" level="h2">Search</heading>
-                            <p class="channel__subtitle mt-1 text--dark text--sans" v-if="filter">
-                                Here is everything we can find that matches your search for <mark class="mark">{{ filter }}</mark>.
-                            </p>
-                        </div>
+                        <filter-results :total="total"
+                                      :filter="q"/>
 
-                        <template v-for="result in filteredSearchResults">
+                        <content-stream :key="'search-'+q"
+                                        type="mixed"
+                                        @totalresults="total=$event"
+                                        :filter="q"
+                                        api-type='mixed'/>
 
-                            <card v-if="result.type && result.type ==='post'" class="card--background-gray mt-4" :key="result.id"
-                            content-type="blog"
-                            :heading="result.title.rendered ? result.title.rendered : result.title">
-                            <div slot="copy">
-                                        <div v-html="result.excerpt ? result.excerpt : result.content ? result.content : result.description"></div>
-                                    </div>
-                            </card>
-                            <card v-else-if="result.taxonomy && result.taxonomy ==='services'" class="card--background-gray mt-4" :key="result.id"
-                                  content-type="service"
-                                  :copy="result.description"
-                                  :heading="result.name">
-                            </card>
-                             <event-card v-else-if="result.start_date"
-                        class="card--background-gray"
-                        :event="result"
-                        heading-class="h4 text--bold mt-4"
-                        :truncate-excerpt="true"
-                        :key="result.id"
-                        />
-                        <collection-item v-else-if="result.type && result.type ==='collection-item'" :key="result.id" class="card--background-blue-dark"
-                           :item="randomCollectionItem"
-                           heading-level="h3"
-                           subheading-class="mt-1 text--white"
-                           subheading-level="h4"
-                           variant="feature"/>
-
-                        </template>
-
-                        <template v-if="filteredSearchResults.length === 0">
+                        <!-- <template v-if="filteredSearchResults.length === 0">
                             <p>Sorry, we couldn't find any results.</p>
-                        </template>
+                        </template> -->
                     </div>
 
                 </div>
@@ -89,6 +61,9 @@
 <script>
 import CallToAction from "../patterns/CallToAction.vue"
 import Heading from "../elements/Heading.vue"
+import ContentStream from "../patterns/ContentStream.vue"
+import FilterResults from '../elements/FilterResults.vue'
+
 
 export default {
   name: "SearchResults",
@@ -96,26 +71,86 @@ export default {
   components: {
     CallToAction,
     Heading,
+    ContentStream,
+    FilterResults
   },
-
+  data(){
+    return{
+      results: [],
+      total: 0,
+      count:{
+        events: 0,
+        pages: 0,
+        posts: 0,
+        articles: 0,
+        collection: 0,
+        resources: 0,
+        services: 0,
+        locations: 0,
+        featuredCollections: 0,
+      },
+      q: null
+    }
+  },
   computed: {
-    filteredSearchResults() {
-      if (!this.filter) {
-        return '';
+    sortedResults() {
+      let results;
+      if (!this.q) {
+        results = this.$store.getters.getSiteContent();
+      } else {
+        results = this.results;
       }
+      
+      if(results.length > 0){
+          results = this.results.sort(function(a,b){
+              let date1 = new Date(a.date);
+              let date2 = new Date(b.date);
+              return date1.getTime() - date2.getTime() });
+        }
 
-      const regex = new RegExp(`${this.filter}`, 'i');
+        return results;
+      /* const regex = new RegExp(`${this.q}`, 'i');
       return this.searchResults.filter(result => Object.keys(result)
-        .some(key => regex.test(result[key])));
-    },
-
-    searchResults() {
-      let stuff =this.$store.getters.getSiteContent();
-      console.log(stuff)
-      return stuff
+        .some(key => regex.test(result[key]))); */
     },
   },
+  mounted(){
+    this.q=this.filter;
+  },
+  created(){
+    this.$root.$on('inputData', data=>{
+      this.q=data;
+    });
+  },
+  methods:{
+    async getContent(){
+      this.pageObject._links['wp:post_type'].forEach(link=>{
+        let name = link.href.match(/(?:\/([a-z|-]*?)\?)/);
+        name=name[1]=='calls-to-action' ? 'callsToAction' : name[1];
 
+        this.fetchContent(name, link.href);
+      })
+    }, 
+    async fetchContent(type, link){
+      api.fetchLink(link)
+          .then(response =>{
+            this.count[type] = Number(response.headers['x-wp-total']);
+            this.addContent(response.data, type);
+          }).catch(error=> console.log(error));
+    },
+    addContent(items,type){
+        if(this.results.length == 0){
+          this.results = items;
+        } else {
+          for (let i=0; i < items.length; i++){
+            const index = this.results.findIndex(item => item.id === items[i].id)
+            if (index === -1){ 
+              this.results.push(items[i]);
+            }
+          }
+        }
+    },
+  },
   props: {
     filter: {
       type: String,

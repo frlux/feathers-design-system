@@ -1,6 +1,6 @@
 <template>
-    <main class="service" role="main">
-      <breadcrumb :title="pageObject.name"/>
+    <main class="service background--white " role="main">
+      
 
 
         <template v-if="pageObject">
@@ -14,13 +14,13 @@
                                 :heading="call.acf.heading"
                                 :link="call.acf.link"></call-to-action>
             </template>
-
-            <header class="background--white d-flex p-4">
+<breadcrumb :title="pageObject.name"/>
+            <header class="d-flex p-4">
+              
 
                 <div class="col-md-10 m-auto">
 
                     <div class="col-md-8">
-
                         <heading class="channel__title text--dark text--serif"
                                  level="h1" v-html="pageObject.name">
                         </heading>
@@ -42,45 +42,77 @@
                         <!-- BEGIN SIDEBAR -->
                         <div class="co col-md-6 col-lg-4">
                           <!-- begin load more content buttons -->
-                          <!-- <div v-if="active=='channel'">
-                            <a class="button button button--pink"
-                                v-if="total.pages > pages.length || pages.length > 10"
-                                @click="getMoreContent('pages');">
-                                See More Information
+                          <div class='service__channel--content d-flex flex-column align-items-start' v-if="active=='channel'">
+                            <a class="button button button--blue-base flex-grow-0"
+                                v-if="count.pages"
+                                @click="active='pages'">
+                                See More Information Pages <span class="badge badge-light">{{ count.pages }}</span>
                             </a>
-                            <a class="button button button--pink"
-                                v-if="total.articles > articles.length || articles.length > 10"
-                                @click="getMoreContent('articles');">
-                                See More Articles
+                            <a class="button button button--blue-alternate flex-grow-0"
+                                v-if="count.posts"
+                                @click="active='articles'">
+                                See More Articles <span class="badge badge-light">{{ count.posts }}</span>
                             </a>
-                            <a class="button button button--pink"
-                                v-if="total.collection > collection.length || collection.length > 10"
-                                @click="getMoreContent('collection');">
-                                See More Collection Items
+                            <a class="button button button--pink flex-grow-0"
+                                v-if="count.collection"
+                                @click="active='collection'">
+                                See More Collection Items <span class="badge badge-light">{{ count.collection }}</span>
                             </a>
-                            <a class="button button button--pink"
-                                v-if="total.events > events.length || events.length > 10"
-                                @click="getMoreContent('events');">
-                                See More Events
+                            <a class="button button button--teal flex-grow-0"
+                                v-if="count.events"
+                                @click="active='events'">
+                                See More Events <span class="badge badge-light">{{ count.events }}</span>
+                            </a>
+                            <a class="button button button--orange flex-grow-0"
+                                v-if="count.resources"
+                                @click="active='resources'">
+                                See More Resources <span class="badge badge-light">{{ count.resources }}</span>
                             </a>
                           </div>
                           <div v-if="active !=='channel'">
                             <a class="button button button--aqua"
-                                @click="backToChannel();">
+                                @click="active='channel'">
                                 Back to {{ pageObject.name }} Channel
                             </a>
-                          </div>  --><!--end load more content buttons -->
+                          </div> 
+                          <!--end load more content buttons -->
+                          <content-search :filter="filter" @querycontent="filter=$event"
+                          :library="location" @filterlibrary="location = $event"
+                          @clearcontentfilter="clearFilter()"/>
                           <!--end sidebar content-->
-                        </div><!-- END SIDEBAR -->
+                        </div>
                         
                         <!-- BEGIN MAIN CONTENT -->
                         <div class="col col-lg-8">
+                          <filter-results v-if="active == 'channel'"
+                                      :total="total"
+                                      :filter="filter"
+                                      :location="location"
+                                      :prefetch-total='apiTotal'/>
+                            <filter-results v-if="active != 'channel'"
+                                      :total="total"
+                                      :filter="filter"
+                                      :location="location"/>
+ 
+                            <Showcase v-if="active=='channel' && collection && collection.length != 0"
+                                      :collection-items="collection"
+                                      heading="Related Materials" /> 
+                            <content-stream v-if="active==='channel'"
+                                            :contents="content"
+                                            @totalresults="total=$event"
+                                            :filter="filter"
+                                            :location="location"
+                                            type="mixed" />
 
-                            <!-- <Showcase v-if="collection"
-                                      :collection-items="collection.slice(1,10)"
-                                      heading="Related Materials" /> -->
-                            <content-stream :contents="content"
-                                          type="mixed" />
+
+                            <content-stream v-if="active!='channel'"
+                                            :api-type='active'
+                                            :api-params="{services: pageObject.id}"
+                                            :type="active"
+                                            :filter="filter"
+                                            :location="location"
+                                            @totalresults="total=$event"/>
+
                             
 
                         </div><!-- END MAIN CONTENT COLUMN -->
@@ -99,13 +131,11 @@
 import * as api from '../store/api.js';
 import Breadcrumb from "../elements/Breadcrumb.vue";
 import CallToAction from '../patterns/CallToAction.vue';
-import Card from '../patterns/Card.vue';
-import CollectionItem from '../patterns/CollectionItem.vue';
 import ContentStream from "../patterns/ContentStream.vue";
-import EventCard from '../patterns/EventCard.vue';
+import ContentSearch from '../elements/ContentSearch.vue';
+import FilterResults from '../elements/FilterResults.vue';
 import Heading from '../elements/Heading.vue';
 import Showcase from '../patterns/Showcase.vue';
-import Pagination from '../elements/Pagination.vue';
 
 export default {
   name: 'Service',
@@ -113,46 +143,57 @@ export default {
   components: {
     Breadcrumb,
     CallToAction,
-    Card,
-    CollectionItem,
     ContentStream,
-    EventCard,
+    ContentSearch,
+    FilterResults,
     Heading,
     Showcase,
-    Pagination
   },
 
   computed: {
     callsToAction() {
-      /* const serviceCTA = this.content.filter(item => item.type && item.type === 'actions');
-
-      if (serviceCTA.length > 0) {
-        return serviceCTA;
-      }
-      this.fetchContent('callsToAction', {services: this.pageObject.id});*/
-      let ctas = this.content.filter(item => item.type && item.type === 'actions')
+      let ctas = this.actions.filter(item => item.type && item.type === 'actions')
       const payload = {contentType: 'callsToAction', content: ctas};
       this.$store.commit('addMoreContent', payload); 
       
       return this.content.length==0? null : ctas && ctas.length > 0 ? ctas : this.$store.getters.getContentByService('callsToAction', 'any', this.location) ;
+    },
+    collection(){
+      const items = this.content.filter(item => item.type == 'collection-item');
+      return items.slice(0,8);
+    },
+    event(){
+      let events = this.content.filter(item => item.type == 'event');
+      let randomEvent1 = events[Math.floor(Math.random() * events.length)];
+      events = events.filter(item => item.id !== randomEvent1.id);
+      
+      return [events[Math.floor(Math.random() * events.length)], randomEvent1]
+    },
+    apiTotal(){
+      let vals = Object.values(this.count);
+      return vals.reduce(function (accumulator, currentValue) {
+            return accumulator + currentValue;
+        }, 0)
     },
   },
   data(){
     return{
       content: [],
       count:{
-        callsToAction: 1,
-        events: 1,
-        pages: 1,
-        posts: 1,
-        articles: 1,
-        collection: 1,
-        resources: 1,
+        callsToAction: 0,
+        events: 0,
+        pages: 0,
+        posts: 0,
+        articles: 0,
+        collection: 0,
+        resources: 0,
       },
+      total: 0,
       page: 1,
       active: 'channel',
-      events:[],
       actions:[],
+      location: null,
+      filter: null,
     }
   },
   methods: {
@@ -160,11 +201,7 @@ export default {
       const author = this.$store.getters.getAuthorById(Number(authorId));
       return author.name;
     },
-    checkContent(store, min, num, name){
-      const content = this.content.filter(item => item.type && item.type === name);
-      this.fetchContent(store, {services: this.pageObject.id, per_page: num});
-    },
-  async getContent(type, args=null){
+  async getContent(){
       this.pageObject._links['wp:post_type'].forEach(link=>{
         let name = link.href.match(/(?:\/([a-z|-]*?)\?)/);
         name=name[1]=='calls-to-action' ? 'callsToAction' : name[1];
@@ -173,27 +210,24 @@ export default {
       })
     }, 
     async fetchContent(type, link){
-      console.log('fetching...');
       api.fetchLink(link)
           .then(response =>{
-            this.count[type] = response.headers['x-wp-total'];
+            this.count[type] = Number(response.headers['x-wp-total']);
             this.addContent(response.data, type);
           }).catch(error=> console.log(error));
     },
     addContent(items,type){
-      console.log(type);
-      if(type == 'callsToAction' || type == 'events'){
-        for (let i=0; i < items.length; i++){
-        const index = this[type].findIndex(item => item.id === items[i].id)
-          if (index === -1){ 
-            this[type].push(items[i]);
-          }
-        }
+      if(type == 'callsToAction' ){
+        this.actions=items;
       } else{
-        for (let i=0; i < items.length; i++){
-          const index = this.content.findIndex(item => item.id === items[i].id)
-          if (index === -1){ 
-            this.content.push(items[i]);
+        if(this.content.length == 0){
+          this.content = items;
+        } else {
+          for (let i=0; i < items.length; i++){
+            const index = this.content.findIndex(item => item.id === items[i].id)
+            if (index === -1){ 
+              this.content.push(items[i]);
+            }
           }
         }
       }
@@ -201,16 +235,18 @@ export default {
           this.content.sort(function(a,b){
               let date1 = new Date(a.date);
               let date2 = new Date(b.date);
-              return date1.getTime() - date2.getTime()});
+              return date1.getTime() - date2.getTime() });
         }
-    }
+    },
+    clearFilter() {
+      this.filter = null;
+      this.location = null;
+    },
   },
   
   mounted(){
     //let content = api.followLinks(this.pageObject);
     this.getContent();
-    console.log(this.content);
-
   },
 
   props: {
@@ -218,10 +254,23 @@ export default {
       type: Object,
     },
   },
+  watch:{
+    filter(){
+      this.$root.$emit('resetpage')
+    },
+    location(){
+      this.$root.$emit('resetpage')
+    }
+  }
 };
 </script>
 
 <style lang="scss">
+.service__channel--content a.button {
+  /* float:left;
+  clear:both; */
+  margin:.5em 0;
+}
 .event {
   font-family: $font-family-text;
 

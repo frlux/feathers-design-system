@@ -185,7 +185,7 @@ const router = new Router({
       name: "search",
       path: "/search",
       props: route => ({
-        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
+        filter: route.params.filter ? route.params.filter : route.query && route.query.search ? route.query.search : '',
         location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '' 
       })
     },

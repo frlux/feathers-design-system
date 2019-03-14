@@ -77,7 +77,6 @@ import ContentSearch from '../elements/ContentSearch.vue';
 import ContentStream from "../patterns/ContentStream.vue";
 import Heading from "../elements/Heading.vue";
 import * as api from '../store/api.js';
-import {chunk} from "lodash";
 import FilterResults from '../elements/FilterResults.vue';
 
 export default {

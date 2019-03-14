@@ -122,7 +122,7 @@ export default {
 
       api.fetchData('events', params)
           .then(response =>{
-            if(this.$store.state != response.headers['x-wp-total']){
+            if(this.$store.state.counts.events != response.headers['x-wp-total']){
               this.$store.commit('addCount',{type: 'events', count: response.headers['x-wp-total']});
             }
             this.addEvents(response.data);

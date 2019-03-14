@@ -86,9 +86,8 @@ export default {
   name: "Pagination",
   props: {
     value: {
-      type: Number,
       default: 1,
-      validator: val => val > 0
+      validator: val => Number(val) > 0
     },
     total: {
       type: Number,

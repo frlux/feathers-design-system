@@ -14,7 +14,7 @@
 
     </header>
 
-    <Search :search-action="$route.name"/>
+    <Search :search-action="$route.name" :filter="!$route.query && !$route.query.search ? '' : $route.query.search"/>
 
     <router-view class="view" />
 

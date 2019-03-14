@@ -273,6 +273,9 @@ export default new Vuex.Store({
         ...state.pages,
         ...state.posts,
         ...state.services,
+        ...state.resources,
+        ...state.locations,
+        ...state.articles,
       ];
     },
 

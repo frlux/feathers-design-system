@@ -47,20 +47,18 @@
                     <div class="col col-lg-8">
 
                         <template v-if="network === 'blog' || network === 'pages' || network === 'articles'">
-                          <content-stream v-if="!loadmore && !filter && !library && !selectedDate"
-                                          :contents="content"
-                                          :type="network"
+                          <filter-results :total="total"
+                                          :selectedDate="selectedDate"
                                           :filter="filter"
-                                          :selected-date="selectedDate"
-                                          :location="library"/>
-                          <content-stream v-else
-                                          :type="network"
+                                          :location="library"
+                                          :contentName="network.slice(-1) == 's' ? network.substring(0, network.length - 1) : network"/>
+                          <content-stream :type="network"
+                                          @totalresults="total=$event"
                                           :filter="filter"
                                           :selected-date="selectedDate"
                                           :location="library"
-                                          :api-type="network=='blog'? 'posts': network"
+                                          :api-type="network=='blog' ? 'posts': network"
                                           />
-
                         </template>
 
                     </div>
@@ -96,31 +94,13 @@ export default {
     callsToAction() {
       return this.$store.getters.getCallsToActionByCategory(this.slug);
     },
-
-    collection() {
-      return this.$store.getters.getContentByService("collection", this.slug);
-    },
-    locations(){
-      return this.$store.state.locations;
-    },
-    pages() {
-      return this.$store.getters.getContentByService("pages", this.slug);
-    },
-    
-    posts() {
-      return this.$store.state.posts;
-    },
-
-    service() {
-      return this.$store.getters.getServiceBySlug(this.slug);
-    },
-    content(){
-      return this.network==='blog' ? this.$store.state.posts : this.$store.state[this.network];
-    }
   },
   created(){
     this.$root.$on('loadmore', data=>{
       this.loadmore=true;
+    });
+    this.$root.$on('resetPage', data=>{
+      this.page=1;
     });
   },
   data(){
@@ -130,6 +110,19 @@ export default {
       library: null,
       selectedDate: null,
       loadmore: null,
+      page: 1,
+      total: 0,
+    }
+  },
+  watch:{
+    selectedDate(){
+      this.$root.$emit('resetpage')
+    },
+    filter(){
+      this.$root.$emit('resetpage')
+    },
+    library(){
+      this.$root.$emit('resetpage')
     }
   },
   methods:{
@@ -137,6 +130,7 @@ export default {
       this.selectedDate = null;
       this.filter = null;
       this.library = null;
+      this.page = 1;
     },
 
   },
