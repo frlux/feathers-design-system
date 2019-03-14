@@ -345,6 +345,9 @@ export default new Vuex.Store({
     },
 
     addMoreContent(state, payload) {
+      if(!state[payload.contentType] || state[payload.contentType].length == 0){
+        state[payload.contentType] = payload.content;
+      }
       for (let i=0; i < payload.content.length; i++){
         const index = state[payload.contentType].findIndex(item => item.id === payload.content[i].id)
         if (index === -1){ 

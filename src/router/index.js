@@ -187,6 +187,24 @@ const router = new Router({
         `,
       }),
     },
+    {
+      component: Channel,
+      name: 'resources',
+      path: "/resources",
+      beforeEnter(to, from, next){
+        if(!router.app.$store.state.resources || router.app.$store.state.pages.resources < 10){
+          router.app.$store.dispatch("getResources").then(next())
+        } else{
+          next();
+        }
+      },
+      props: route => ({
+        network: 'resources',
+        channelTitle: 'Library Databases and Online Resources',
+        channelDescription: `
+        `,
+      }),
+    },
 
     {
       component: SearchResults,
@@ -212,25 +230,6 @@ const router = new Router({
       name:"services-slug",
       path: "/services/:slug",
       meta: {parent: {name: "services", text: "Services"}},
-      props: route => ({
-        pageObject: !route.params.pageObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.pageObject,
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
-      }),
-    },
-    {
-      component: Services,
-      name: "resources",
-      path: "/resources",
-      props: route => ({
-        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
-      })
-    },
-    {
-      component: Service,
-      name:"resources-slug",
-      path: "/resources/:slug",
-      meta: {parent: {name: 'resources', text:"Resources"}},
       props: route => ({
         pageObject: !route.params.pageObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.pageObject,
         location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
@@ -263,6 +262,16 @@ const router = new Router({
       meta: {parent: {name:"blog", text:"Shelf Life in the Mountains"}, type: {store: 'posts', wp: 'post'}, breadcrumb:true},
       props: route => ({
         pageObject: !route.params.pageObject ? getContentBySlug(route.params.slug, 'posts') : route.params.pageObject,
+        moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
+      }),
+    },
+    {
+      component: Page,
+      name: 'resources-slug',
+      path: "/resources/:slug",
+      meta: {parent: {name:"resources", text:"Library Databases and Online Resources"}, type: {store: 'resources', wp: 'resource'}, breadcrumb:true},
+      props: route => ({
+        pageObject: !route.params.pageObject ? getContentBySlug(route.params.slug, 'resources') : route.params.pageObject,
         moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
       }),
     },

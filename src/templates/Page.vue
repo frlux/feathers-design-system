@@ -1,5 +1,5 @@
 <template>
-    <main class="background--white event" role="main">
+    <main class="background--white event" role="main" v-if="page">
       <breadcrumb v-if="page" :route="$route" :title="page.title && page.title.rendered ? page.title.rendered : page.title"/>
         <article v-if="page">
           <header class="col-11 col-md-10 col-lg-6 m-auto p-lg-4">
@@ -21,6 +21,8 @@
                 <div class="heading__separator"></div>
                 <p class="event__excerpt" v-if="page.excerpt && page.excerpt.rendered" v-html="page.excerpt.rendered"></p>
                 <p class="event__excerpt" v-else-if="page.excerpt" v-html="page.excerpt"></p>
+                <p class="event__excerpt" v-else-if="page.acf && page.acf.description" v-html="page.acf.description"></p>
+                <a class="button" v-if="page.acf && page.acf.url" :href="page.acf.url">Visit {{page.acf.name}}</a>
                 <div class="mb-3 clearfix" v-if="type === 'blog'">
                   <a :href="page.URL" class="float-left">
                   <c-button aria-label="read on wordpress.com"
@@ -128,8 +130,8 @@ export default {
       } */
 
       let page = this.fetchPage(type).then(page=>{
-        let t = page.type=='page' ? 'pages' : page.site_ID && page.site_ID=='11573626' ? 'posts' : 'articles';
-      
+        let t = page.type=='page' ? 'pages' : page.type=='post' && page.site_ID ? 'posts' : page.type=='post' ? 'articles' : page.type+'s';
+      this.page=page;
       this.$store.commit('addMoreContent', {contentType: t, content:[page]});
       });
       
@@ -157,13 +159,25 @@ export default {
         }
         this.related = [...this.related, results.data];
       })
+      await api.fetchData('resources', {slug: this.$route.params.slug}).then(results=>{
+        if(!post){
+          post = results.data[0];
+        }
+        this.related = [...this.related, results.data];
+      })
       
       if(!post){
         post=this.related[0];
       }
-      
+      console.log(post);
       return post;
     }
+  },
+  beforeMount(){
+    if(!this.pageObject){
+      this.getPage(this.$route.params.slug, this.$route.name);
+    }
+
   },
   mounted(){
     this.page = this.getPage(this.$route.params.slug, this.$route.name);

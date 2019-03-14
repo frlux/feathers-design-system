@@ -58,7 +58,6 @@
 
                         <filter-results :total="total"
                                       :filter="q"/>
-                          {{active}}
                         <Showcase v-if="active=='channel' && collection && collection.length != 0"
                                   :collection-items="collection"
                                   heading="Related Materials" /> 

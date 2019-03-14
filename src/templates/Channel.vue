@@ -36,17 +36,17 @@
 
 
                     <div class="col-md-4">
-                      <content-search :date-filter="true"
-                          :selected-date="selectedDate" @selectdate="selectedDate = $event"
+                      <content-search :date-filter="network !== 'resources' ? true : false" :location-filter="network !== 'resources' ? true : false"
+                          :selected-date="network !== 'resources' ? selectedDate : null" @selectdate="selectedDate = $event"
                           :filter="filter" @querycontent="filter=$event"
-                          :library="library" @filterlibrary="library = $event"
+                          :library="network !== 'resources' ? library : null" @filterlibrary="library = $event"
                           @clearcontentfilter="clearFilter()"
                           />
                     </div>
 
                     <div class="col col-lg-8">
 
-                        <template v-if="network === 'blog' || network === 'pages' || network === 'articles'">
+                        <template v-if="network">
                           <filter-results :total="total"
                                           :selectedDate="selectedDate"
                                           :filter="filter"

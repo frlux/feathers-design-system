@@ -18,7 +18,7 @@
                 >
       </div>
 
-      <div class="form-group"  v-if="searchFilter">
+      <div class="form-group"  v-if="locationFilter">
         <label class="form-label text--bold text--sans text--dark"
                 for="eventSidebarLocation">
         Filter {{contentName}}s by location
