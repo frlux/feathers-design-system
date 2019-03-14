@@ -41,6 +41,29 @@ export default new Vuex.Store({
       });
     });
   },
+    async getMenus({ commit }) {
+      return new Promise(resolve => {
+        const authors = api.fetchData('menuItems',[], '/top')
+      .then( data=>{
+        let menu ={name: 'top', items: data.data};
+        commit('addMenuItemsToState', menu);
+        resolve();
+      });
+    });
+      /* return new Promise(resolve => {
+        const authors = api.fetchData('menuItems')
+      .then( data=>{
+        data.data.forEach(item=>{
+          api.fetchData('menuItems', [], '/'+item.slug).then(menus=>{
+            let menu ={name: item.slug, items: menus.data};
+            commit('addMenuItemsToState', menu);
+          }
+          ).catch(error => {console.log(error)})
+        })
+        resolve();
+      });
+    }); */
+  },
     async getAuthors({ commit }) {
       return new Promise(resolve => {
         const authors = api.fetchData('authors')
@@ -340,9 +363,15 @@ export default new Vuex.Store({
       state.locations = locations;
     },
     
-    addMenuItemsToState(state, menuItems) {
-      state.menuItems = menuItems;
+    addMenusToState(state, menuItems) {
+      menuItems.forEach(item=>{
+        Vue.set(state.menuItems, item.slug, '')
+      })
     },
+    addMenuItemsToState(state, payload) {
+        state.menu.push(payload);
+    },
+
 
     addMoreContent(state, payload) {
       if(!state[payload.contentType] || state[payload.contentType].length == 0){

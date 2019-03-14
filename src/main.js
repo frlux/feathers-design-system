@@ -17,6 +17,7 @@ Vue.config.productionTip = false;
 
 const home = [
   store.dispatch("getLocations"),
+  store.dispatch("getMenus"),
   store.dispatch("getGenres"),
   store.dispatch("getAudiences"),
   store.dispatch("getFeaturedCollections"),

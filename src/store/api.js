@@ -122,9 +122,10 @@ export const content = {
     }
   };
 
-export const fetchData = (type, param = []) => {
+export const fetchData = (type, param = [], append=null) => {
+  const url = append ? content[type].url + append : content[type].url;
   try {
-    return axios.get(content[type].url,{
+    return axios.get(url, {
       params: param
     })
   } catch (error) {
