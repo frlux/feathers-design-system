@@ -116,9 +116,8 @@ export default new Vuex.Store({
 
       async getPosts({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('posts')
+          const authors = api.fetchData('posts',{number: 10})
         .then( data=>{
-          console.log(data);  
           commit("addCount",{type: 'posts', count: data.data.found});        
           commit('addPostsToState', data.data.posts);
           resolve();
@@ -293,7 +292,6 @@ export default new Vuex.Store({
       }
     
       content = content.filter(item => item.slug && item.slug === slug);
-      console.log(content);
   
       return !all ? content[0] : content;
     },
@@ -347,7 +345,6 @@ export default new Vuex.Store({
     },
 
     addMoreContent(state, payload) {
-      console.log("ADDING...");
       for (let i=0; i < payload.content.length; i++){
         const index = state[payload.contentType].findIndex(item => item.id === payload.content[i].id)
         if (index === -1){ 

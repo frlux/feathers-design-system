@@ -119,9 +119,7 @@ export default {
   },
   methods:{
      getPage(slug, type){
-      console.log(this.pageObject);
       if(this.pageObject && (this.pageObject.slug || this.pageObject.id)){
-        console.log("RETURN")
         return this.pageObject;
       } 
       /* let page = this.$store.getters.getContentBySlug(slug, type);
@@ -163,14 +161,12 @@ export default {
       if(!post){
         post=this.related[0];
       }
-      console.log("POSTS");
-      console.log(this.related);
+      
       return post;
     }
   },
   mounted(){
     this.page = this.getPage(this.$route.params.slug, this.$route.name);
-    console.log(this.page);
   },
   watch:{
     pageObject(){

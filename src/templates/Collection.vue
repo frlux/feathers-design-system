@@ -235,7 +235,7 @@ export default {
       this.$root.$emit('resetpage')
     },
     $route(){
-      console.log(this.$route);
+     
     }
   }
 };

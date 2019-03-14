@@ -26,7 +26,6 @@ export default {
   methods:{
     getItemsFromRoute(){
       let items = [];
-      console.log(this.$route);
     
 
         const current = this.$route.params.object ?

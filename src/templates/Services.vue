@@ -180,7 +180,6 @@ export default {
   },
   mounted(){
     this.$root.$on('inputData', data=>{
-      console.log(data);
       this.q=data;
     });
 

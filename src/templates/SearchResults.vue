@@ -58,26 +58,29 @@
 
                         <filter-results :total="total"
                                       :filter="q"/>
-
-                       <!--  <content-stream :key="'search-'+q"
-                                        type="mixed"
-                                        @totalresults="total=$event"
-                                        :filter="q"
-                                        api-type='mixed'/> -->
+                          {{active}}
                         <Showcase v-if="active=='channel' && collection && collection.length != 0"
                                   :collection-items="collection"
                                   heading="Related Materials" /> 
-                        <content-stream :key="active"
-                                        :contents="active==='channel'? results : null"
+                                  <!-- <template v-if="active=='channel'"> -->
+
+                                  <content-stream v-if="active=='channel'" :key="active"
+                                                  :contents="results"
+                                                  @totalresults="total=$event"
+                                                  :filter="q"
+                                                  type='mixed'
+                                                  :apiType='null'
+                                                  :location="library"/>
+  
+                                 <!-- </template>-->
+                        <content-stream v-else
+                                        :key="active"
                                         @totalresults="total=$event"
                                         :filter="q"
-                                        :type="active==='channel'? 'mixed' : active"
-                                        :api-type="active==='channel'? null : active"/>
+                                        :type="active"
+                                        :api-type="active"
+                                        :location="library"/>
 
-
-                        <!-- <template v-if="filteredSearchResults.length === 0">
-                            <p>Sorry, we couldn't find any results.</p>
-                        </template> -->
                     </div>
 
                 </div>
@@ -161,6 +164,7 @@ export default {
   methods:{
     async getContent(){
       this.searchableTypes.forEach(type=>{
+        if(type){
         let params = {search: this.q};
 
         if(type!=='posts'){
@@ -176,6 +180,7 @@ export default {
           params.tag=this.location;
         }
         this.fetchContent(type, params);
+        }
       })
     }, 
     async fetchContent(type, params){
@@ -228,9 +233,19 @@ export default {
   },
   watch:{
     q(){
+      this.results = [];
+      this.getContent();
       this.$root.$emit('resetpage')
     },
-    library(){
+   library(){
+     console.log(this.library);
+      this.getContent();
+      this.$root.$emit('resetpage')
+    }, 
+    '$store.state.userLocation'(){
+      this.library=this.$store.state.userLocation;
+      this.results = [];
+      this.getContent();
       this.$root.$emit('resetpage')
     }
   }

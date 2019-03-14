@@ -5,7 +5,7 @@ export const content = {
     content: 'taxonomy',
     field: 'audience',
     acf_field: 'target_readership',
-    searchable: true,
+    searchable: false,
     label: '',
     contentName: 'audience'
   },
@@ -34,7 +34,7 @@ export const content = {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/featured-collections',
     content: 'taxonomy',
     field: 'featured-collections',
-    searchable: true,
+    searchable: false,
     label: '',
     contentName: 'featured collection'
   },
@@ -43,7 +43,7 @@ export const content = {
     content: 'taxonomy',
     field: 'genres',
     acf_field: 'genre',
-    searchable: true,
+    searchable: false,
     label: '',
     contentName: 'genre'
   },

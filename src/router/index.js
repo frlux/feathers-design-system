@@ -22,6 +22,14 @@ const router = new Router({
 
   routes: [
     {
+        name: 'external',
+        path:'/catalog-search',
+        beforeEnter(to, from, next) {
+            // Put the full page url including the protocol http(s) below
+            window.location = 'https://www.nccardinal.org/eg/opac/results?query='+to.params.query+'&qtype=keyword&locg=1'
+        }
+    },
+    {
       component: Channel,
       meta: {
         title: 'Blog',
