@@ -6,27 +6,37 @@ export const content = {
     field: 'audience',
     acf_field: 'target_readership',
     searchable: true,
+    label: '',
+    contentName: 'audience'
   },
   authors: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/users',
     content: 'user',
     searchable: false,
+    label: '',
+    contentName: ''
   },
   callsToAction: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/calls-to-action',
     content: 'post',
     searchable: false,
+    label: '',
+    contentName: ''
   },
   collection: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/collection',
     content: 'post',
     searchable: true,
+    label: 'See More Collection Items',
+    contentName: 'collection item'
   },
   featuredCollections: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/featured-collections',
     content: 'taxonomy',
     field: 'featured-collections',
     searchable: true,
+    label: '',
+    contentName: 'featured collection'
   },
   genres: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/genres',
@@ -34,11 +44,15 @@ export const content = {
     field: 'genres',
     acf_field: 'genre',
     searchable: true,
+    label: '',
+    contentName: 'genre'
   },
   menuItems: {
     url: 'https://fontana.librarians.design/wp-json/fontana/v1/menus',
     content: 'menu',
     searchable: false,
+    label: '',
+    contentName: ''
   },
   locations: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/locations',
@@ -46,26 +60,36 @@ export const content = {
     field: 'locations',
     acf_field: 'location',
     searchable: true,
+    label: '',
+    contentName: 'location'
   },
   pages: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/pages',
     content: 'page',
     searchable: true,
+    label: '',
+    contentName: 'page'
   },
   posts: {
     url: 'https://public-api.wordpress.com/rest/v1.1/sites/fontanalib.wordpress.com/posts',
     content: 'blog',
     searchable: true,
+    label: '',
+    contentName: 'blog post'
   },
   articles: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/posts',
     content: 'post',
     searchable: true,
+    label: '',
+    contentName: 'article'
   },
   resources: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/resources',
     content: 'post',
     searchable: true,
+    label: '',
+    contentName: 'resource'
   },
   services: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/services',
@@ -73,11 +97,15 @@ export const content = {
     field: 'services',
     acf_field: 'services',
     searchable: true,
+    label: '',
+    contentName: 'service'
   },
   events: {
     url: 'https://fontana.librarians.design/wp-json/wp/v2/events?',
     content: 'event',
     searchable: true,
+    label: '',
+    contentName: 'event'
   },
   subjects:{
     url: 'https://fontana.librarians.design/wp-json/wp/v2/subjects',
@@ -85,6 +113,8 @@ export const content = {
     field: 'subjects',
     acf_field: 'subjects',
     searchable: false,
+    label: '',
+    contentName: 'subject'
   },
   links:{
     organizersBySlug: 'https://fontana.librarians.design/wp-json/tribe/events/v1/organizers/by-slug/',
@@ -94,7 +124,6 @@ export const content = {
 
 export const fetchData = (type, param = []) => {
   try {
-    console.log(type)
     return axios.get(content[type].url,{
       params: param
     })

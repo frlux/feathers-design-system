@@ -114,25 +114,21 @@ export default {
         this.paged = chunk(content, this.perPage);
         return this.paged[this.page-1];
       }
-      if(this.apiType !== 'mixed'){
-        return this.apiContent; 
-      }
-      let content = this.mixed(this.apiPage);
-      return content;
+
+      return this.apiContent; 
     },
+
     total(){
       this.$emit('totalresults', this.apiTotal);
       return this.apiTotal;
     },
-    searchableTypes(){
-      return Object.keys(api.content).filter( key => api.content[key].searchable === true);
+    taxonomies(){
+      return Object.keys(api.content).filter( key => api.content[key].content == 'taxonomy');
     }
 
   },
   created(){
     this.$root.$on('resetpage', () => {
-      this.apiContent.destroy();
-      this.apiPage.destroy();
       this.page=1;
       this.paged=null; 
     })
@@ -147,65 +143,18 @@ export default {
     };
   },
   methods: {
-    async mixed(){
-      let content = chunk(this.apiContent, this.perPage);
-      if(this.page-1 >= content.length){
-        this.apiPage++;
-        this.fetchData().then(
-          content = chunk(this.apiContent, this.perPage)
-        ); 
-      }
-      
-      return content[this.page-1];
-    },
     async fetchData(){
-      let params;
-
-      if(this.apiType == 'mixed'){
-        /* for (const [taxonomy, value] of Object.entries(this.termFilter)){
-          if(taxonomy && value && value.length > 0){
-          content = content.filter(item => item[taxonomy] && item[taxonomy].some(val =>value.includes(val)))
-          }
-        } */
-        //const types = Object.keys(api.content.filter(item => item.searchable === true));
-        let results = [];
-        this.searchableTypes.forEach(type=>{
-          params=this.getParams(type, this.apiPage);
-          console.log(params);
-         let result = await api.fetchData(type, params);
-            let data = type != 'posts' ? result.data : result.data.posts;
-
-            results = [...results, ...data];
-            this.apiTotal += type != 'posts' ? Number(result.headers['x-wp-total']) : Number(result.data.found);
-          
-          }
-        )
-        console.log(results);
-        console.log(this.apiTotal);
-        results.sort(function(a,b){
-              if(!a.date || !b.date ){ return 0 }
-              let date1 = new Date(a.date);
-              let date2 = new Date(b.date);
-              return date1.getTime() - date2.getTime() });
-        this.apiContent = [...this.apiContent, ...results];
-
-      } else{
-        params = this.getParams(this.apiType, this.page);
-        const results = await api.fetchData(this.apiType, params);
-        console.log(results);
-        this.apiTotal = this.apiType != 'posts' ? Number(results.headers['x-wp-total']) : results.data.found;
-        this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
-        return results;
-      }
-      
+      const params = this.getParams(this.apiType, this.page);
+      const results = await api.fetchData(this.apiType, params);
+      this.apiTotal = this.apiType != 'posts' ? Number(results.headers['x-wp-total']) : results.data.found;
+      this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
+      return results;
     },
-    getParams(type, page){
-      const taxonomies = Object.keys(api.content).filter( key => api.content[key].content == 'taxonomy');//Object.keys(api.content.filter(item => item.type == 'taxonomy'));
-      console.log(taxonomies);
+    getParams(type, page){      
       let params = this.apiParams ? this.apiParams : {};
       if(type != 'posts'){
         params.per_page = this.perPage;
-      }else{
+      } else{
         params.number = this.perPage;
       }
 
@@ -222,7 +171,7 @@ export default {
       }
 
       if(this.selectedDate){
-        if(type !== 'events' && !taxonomies.include(type)){
+        if(type !== 'events' && !this.taxonomies.include(type)){
           params.after = moment(this.selectedDate, 'YYYY-MM-DD').subtract(14, 'days');
           params.before = moment(this.selectedDate, 'YYYY-MM-DD').add(14, 'days');
         } else if(type=='events'){
@@ -234,18 +183,18 @@ export default {
     async fetchContent(type,params){
       api.fetchData(type, params)
           .then(response =>{
-            const total = response.headers['x-wp-total'];
+            const total = type!=='posts' ? Number(response.headers['x-wp-total']) : Number(response.data.found);
             return response.data
           }).catch(error=> console.log(error));
 
     },
     filterContent(filter, datestring, library){
       let content = !datestring ? this.contents : this.contents.filter(
-          item => (item.type == 'event' && 
+          item => (item.type && item.type == 'event' && 
             `${item.start_date_details.year}-${
               item.start_date_details.month
             }-${item.start_date_details.day}` >= datestring) 
-            || item.type != 'event' && item.modified.substring(0,7) == this.selectedDate || item.date.substring(0, 7) == this.selectedDate.substring(0,7)
+            || item.type && item.type != 'event' && item.modified.substring(0,7) == this.selectedDate || item.date.substring(0, 7) == this.selectedDate.substring(0,7)
         );
 
       //Filter Events by library
@@ -287,11 +236,10 @@ export default {
   },
   watch:{
     page(){
-      //this.$router.push({query:{page:this.page}});
-      /* const results = this.fetchData().then(results=>{
+      const results = this.fetchData().then(results=>{
         this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
         }
-      ); */
+      ); 
     },
     /* filter(){
       const results = this.fetchData().then(results=>{
@@ -309,13 +257,13 @@ export default {
       this.paged=null;
     },
   },
-/*   created(){
+  created(){
     const results = this.fetchData().then(results=>{
       this.apiTotal = this.apiType != 'posts' ? Number(results.headers['x-wp-total']) : results.data.found;
       this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
       }
     );
-  }, */
+  }, 
   beforeMount(){
     if(this.$route.query.page > 1){
       this.page=this.$route.query.page;
