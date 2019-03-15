@@ -63,7 +63,8 @@
                                   heading="Related Materials" /> 
                                   <!-- <template v-if="active=='channel'"> -->
 
-                                  <content-stream v-if="active=='channel'" :key="active"
+                                  <content-stream :key="active"
+                                                  v-if="active=='channel'"
                                                   :contents="results"
                                                   @totalresults="total=$event"
                                                   :filter="q"
@@ -73,7 +74,7 @@
   
                                  <!-- </template>-->
                         <content-stream v-else
-                                        :key="active"
+                                        :key="`${active}-${filter}-${library}`"
                                         @totalresults="total=$event"
                                         :filter="q"
                                         :type="active"

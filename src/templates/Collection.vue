@@ -50,14 +50,24 @@
                                       :location="location"
                                       :terms="selected"
                                       contentName="collection item"/>
-
-                        <content-stream v-if="collection && collection.length>0"
+                        <template>
+                        <content-stream v-if="(!this.network || this.network == 'new') && collection && collection.length>0"
+                                        :key="`${network}`"
                                         :contents="collection"
                                         type="collection"
                                         @totalresults="total=$event"
                                         :filter="filter"
                                         :location="location"
                                         :term-filter='selected'/>
+                        <content-stream v-else
+                                        :key="`${network}-${filter}-${location}-${selected.genres.join('')}-${selected.audience.join('')}`"
+                                        type="collection"
+                                        @totalresults="total=$event"
+                                        :filter="filter"
+                                        :location="location"
+                                        :term-filter='selected'
+                                        api-type='collection'/>
+                        </template>
 
                         
 
@@ -115,6 +125,7 @@ export default {
       },
       loaded: false,
       browse: true,
+      chosen: ''
     }
   },
   mounted(){

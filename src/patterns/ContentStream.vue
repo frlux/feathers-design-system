@@ -206,6 +206,10 @@ export default {
   },
   methods: {
     async fetchData(){
+      if(!this.apiType){
+        console.log(this.apiType);
+        return;
+      }
       const params = this.getParams(this.apiType, this.page);
       const results = await api.fetchData(this.apiType, params);
       this.apiTotal = this.apiType != 'posts' && results ? Number(results.headers['x-wp-total']) : results && results.data && results.data.found ? results.data.found : 0;
@@ -293,7 +297,7 @@ export default {
     page(){
       if(this.apiType){
         const results = this.fetchData().then(results=>{
-          this.apiContent = this.apiType != 'posts' ? results.data : results.data.posts;
+          this.apiContent = this.apiType != 'posts' && results ? results.data :results && results.data && results.data.posts ? results.data.posts : [];
           }
         ); 
       }
@@ -315,11 +319,13 @@ export default {
     },
   },
   created(){
-    const results = this.fetchData().then(results=>{
-      this.apiTotal = this.apiType != 'posts' && results ? Number(results.headers['x-wp-total']) : results && results.data && results.data.found ? results.data.found : 0;
-      this.apiContent = this.apiType != 'posts' && results ? results.data :results && results.data && results.data.posts ? results.data.posts : [];
-      }
-    );
+    if(this.apiType){
+      const results = this.fetchData().then(results=>{
+        this.apiTotal = this.apiType != 'posts' && results ? Number(results.headers['x-wp-total']) : results && results.data && results.data.found ? results.data.found : 0;
+        this.apiContent = this.apiType != 'posts' && results ? results.data :results && results.data && results.data.posts ? results.data.posts : [];
+        }
+      );
+    }
   }, 
   beforeMount(){
     if(this.$route.query.page > 1){
@@ -328,6 +334,7 @@ export default {
     if(this.$route.query.search){
       this.q=this.$route.query.search;
     }
+  
   },
   props: {
     contents: {

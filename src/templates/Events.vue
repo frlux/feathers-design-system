@@ -47,7 +47,8 @@ Through partnerships in the community, we are able to bring you art and historic
                                         :location="library"
                                         contentName="event"/>
 
-                        <content-stream :contents="eventsContainer"
+                        <content-stream :key="`${q}-${selectedDate}-${library}`"
+                                        :contents="eventsContainer"
                                         type="events"
                                         @totalresults="total=$event"
                                         :filter="q"
@@ -161,6 +162,10 @@ export default {
         //this.page=1;
         this.$root.$emit('resetpage')
       },
+      '$store.state.userLocation'(){
+        this.library = this.$store.state.userLocation;
+        this.$root.$emit('resetpage')
+      }
     },
   mounted() {
     this.getMoreEvents();

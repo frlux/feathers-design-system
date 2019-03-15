@@ -5,17 +5,17 @@
         <div class="col-md-6 col-xl-4 pl-0 pr-0 pt-md-3 mb-3">
 
             <card class="card--background-blue-dark mb-3"
-                  :heading="pageObject.name"
+                  :heading="library.name"
                   subheading="Fontana Regional Library"
                   subheading-class="h4 mt-0 text--white"
-                  v-if="pageObject">
+                  v-if="library">
 
                 <template slot="copy">
-                    {{pageObject.acf.phone}} <br><br>
-                    {{pageObject.acf.librarian}} <br>
-                    {{pageObject.acf.address}} <br>
-                    {{pageObject.acf.city}}, {{pageObject.acf.state}} {{pageObject.acf.zip}} <br><br>
-                    Fax: {{pageObject.acf.fax}}
+                    {{library.acf.phone}} <br><br>
+                    {{library.acf.librarian}} <br>
+                    {{library.acf.address}} <br>
+                    {{library.acf.city}}, {{library.acf.state}} {{library.acf.zip}} <br><br>
+                    Fax: {{library.acf.fax}}
                     </template>
 
             </card>
@@ -92,11 +92,15 @@ export default {
     Search,
   },
   computed:{
-
     menuList() {
       const menus = this.$store.state.menu;
       return menus.find(menu=>menu.name==='top');
     },
+    library(){
+      return this.pageObject ? this.pageObject 
+                  : this.$store.state.userLocation ? this.$store.getters.getLocationBySlug(this.$store.state.userLocation)
+                  : this.$store.getters.getLocationBySlug('headquarters');
+    }
   },
   methods: {
     /**

@@ -22,14 +22,6 @@ const router = new Router({
 
   routes: [
     {
-        name: 'external',
-        path:'/catalog-search',
-        beforeEnter(to, from, next) {
-            // Put the full page url including the protocol http(s) below
-            window.location = 'https://www.nccardinal.org/eg/opac/results?query='+to.params.query+'&qtype=keyword&locg=1'
-        }
-    },
-    {
       component: Channel,
       meta: {
         title: 'Blog',
@@ -124,6 +116,7 @@ const router = new Router({
       },
       props: route => ({
         pageObject: !route.params.pageObject ? router.app.$store.getters.getEventBySlug(route.params.slug) : route.params.pageObject,
+        slug: route.params.slug
       }),
     },
     {
@@ -232,7 +225,8 @@ const router = new Router({
       meta: {parent: {name: "services", text: "Services"}},
       props: route => ({
         pageObject: !route.params.pageObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.pageObject,
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
+        slug: route.params.slug
       }),
     },
     {
@@ -243,6 +237,7 @@ const router = new Router({
       props: route => ({
         pageObject: !route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, 'pages') : route.params.pageObject,
         moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
+        slug: route.params.slug
       }),
     },
     {
@@ -252,7 +247,8 @@ const router = new Router({
       meta: {parent: {name: "articles", text: 'Articles'}, type: {store: 'articles', wp: 'post'}, breadcrumb:true},
       props: route => ({
         pageObject: route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, 'articles') : route.params.pageObject,
-        moreContent: route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent
+        moreContent: route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
+        slug: route.params.slug
       }),
     },
     {
@@ -263,6 +259,7 @@ const router = new Router({
       props: route => ({
         pageObject: !route.params.pageObject ? getContentBySlug(route.params.slug, 'posts') : route.params.pageObject,
         moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
+        slug: route.params.slug
       }),
     },
     {
@@ -273,6 +270,7 @@ const router = new Router({
       props: route => ({
         pageObject: !route.params.pageObject ? getContentBySlug(route.params.slug, 'resources') : route.params.pageObject,
         moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
+        slug: route.params.slug
       }),
     },
     {

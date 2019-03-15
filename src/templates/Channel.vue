@@ -52,7 +52,8 @@
                                           :filter="filter"
                                           :location="library"
                                           :contentName="network.slice(-1) == 's' ? network.substring(0, network.length - 1) : network"/>
-                          <content-stream :type="network"
+                          <content-stream :key="`${network}-${filter}-${library}-${selectedDate}`" 
+                                          :type="network"
                                           @totalresults="total=$event"
                                           :filter="filter"
                                           :selected-date="selectedDate"

@@ -18,7 +18,7 @@
 
     <router-view class="view" />
 
-    <app-footer />
+    <app-footer :page-object="$store.state.userLocation ? $store.getters.getLocationBySlug($store.state.userLocation) : $store.getters.getLocationBySlug('headquarters')"/>
 
   </div>
 </template>

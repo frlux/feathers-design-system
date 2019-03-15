@@ -97,7 +97,8 @@
                             <Showcase v-if="active=='channel' && collection && collection.length != 0"
                                       :collection-items="collection"
                                       heading="Related Materials" /> 
-                            <content-stream v-if="active==='channel'"
+                            <content-stream :key="pageObject.id"
+                                            v-if="active==='channel'"
                                             :contents="content"
                                             @totalresults="total=$event"
                                             :filter="filter"
@@ -105,7 +106,8 @@
                                             type="mixed" />
 
 
-                            <content-stream v-if="active!='channel'"
+                            <content-stream :key="`${active}-${filter}-${location}`"
+                                            v-if="active!='channel'"
                                             :api-type='active'
                                             :api-params="{services: pageObject.id}"
                                             :type="active"

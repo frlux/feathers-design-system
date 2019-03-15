@@ -116,10 +116,9 @@ export const content = {
     label: '',
     contentName: 'subject'
   },
-  links:{
+};
+export const links = {
     organizersBySlug: 'https://fontana.librarians.design/wp-json/tribe/events/v1/organizers/by-slug/',
-    searchable: false,
-    }
   };
 
 export const fetchData = (type, param = [], append=null) => {
@@ -144,7 +143,7 @@ export const fetchLink = (link) => {
 export const fetchPerson = (type, slug) => {
   
   try {
-    let person = content.links[type] + slug;
+    let person = links[type] + slug;
     return axios.get(person)
   } catch (error) {
     console.error(error)
