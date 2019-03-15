@@ -256,6 +256,9 @@ export default {
     pageObject: {
       type: Object,
     },
+    slug: {
+      type: String,
+    }
   },
   watch:{
     filter(){

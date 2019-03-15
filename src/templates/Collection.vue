@@ -190,6 +190,7 @@ export default {
       this.filter = null;
       this.location = '';
       this.selected.audience = [];
+      this.streamkey='all';
     },
   },
   props: {
@@ -239,11 +240,11 @@ export default {
       this.$root.$emit('resetpage')
     },
     filter(){
-      this.streamkey=filter;
+      this.streamkey=this.filter;
       this.$root.$emit('resetpage')
     },
     location(){
-      this.streamkey=location;
+      this.streamkey=this.library;
       this.$root.$emit('resetpage')
     },
   }
