@@ -184,15 +184,11 @@ export default {
       this.$emit('totalresults', this.apiTotal);
       return this.apiTotal;
     },
-    taxonomies(){
-      return Object.keys(api.content).filter( key => api.content[key].content == 'taxonomy');
-    }
-
   },
   created(){
     this.$root.$on('resetpage', () => {
-      this.page=1;
       this.paged=null; 
+      this.page=1;
     })
   },
   data() {
@@ -201,7 +197,8 @@ export default {
       apiPage: 1,
       apiTotal: 0,
       apiContent:[],
-      paged:null
+      paged:null,
+      taxonomies:[]
     };
   },
   methods: {
@@ -237,9 +234,9 @@ export default {
       }
 
       if(this.selectedDate){
-        if(type !== 'events' && !this.taxonomies.include(type)){
-          params.after = moment(this.selectedDate, 'YYYY-MM-DD').subtract(14, 'days');
-          params.before = moment(this.selectedDate, 'YYYY-MM-DD').add(14, 'days');
+        if(type !== 'events' && !this.taxonomies.includes(type)){
+          params.after = moment(this.selectedDate, 'YYYY-MM-DD').subtract(14, 'days').format('YYYY-MM-DD');
+          params.before = moment(this.selectedDate, 'YYYY-MM-DD').add(14, 'days').format('YYYY-MM-DD');
         } else if(type=='events'){
           params.start_date = this.selectedDate;
         }
@@ -261,7 +258,9 @@ export default {
           item => item.acf && item.acf.location && item.acf.location.some(location => location.slug === library)
         );
       //Filter by terms
-      if(this.termFilter && this.termFilter.length > 0){
+      //console.log(this.termFilter);
+      if(this.termFilter){
+        console.log(this.termFilter);
         for (const [taxonomy, value] of Object.entries(this.termFilter)){
           if(taxonomy && value && value.length > 0){
           content = content.filter(item => item[taxonomy] && item[taxonomy].some(val =>value.includes(val)))
@@ -326,6 +325,7 @@ export default {
         }
       );
     }
+    this.taxonomies = Object.keys(api.content).filter( key => api.content[key].content == 'taxonomy');
   }, 
   beforeMount(){
     if(this.$route.query.page > 1){

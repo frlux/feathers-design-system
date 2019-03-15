@@ -6,7 +6,8 @@
         <template v-if="pageObject">
 
             <template v-for="(call, index) in callsToAction" >
-                <call-to-action v-if="index === 0"
+                <call-to-action class="call-to-action--large"
+                                v-if="index === 0"
                                 :key="call.id"
                                 :action="call.acf.action"
                                 :copy="call.acf.copy"

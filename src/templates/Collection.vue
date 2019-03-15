@@ -4,7 +4,7 @@
             <call-to-action v-if="index === 0"
                             :key="call.id"
                             :action="call.acf.action"
-                            class="p-3"
+                            class="p-3 call-to-action--large"
                             :copy="call.acf.copy"
                             :image="call.acf.image"
                             :heading="call.acf.heading"></call-to-action>
@@ -52,7 +52,7 @@
                                       contentName="collection item"/>
                         <template>
                         <content-stream v-if="(!this.network || this.network == 'new') && collection && collection.length>0"
-                                        :key="`${network}`"
+                                        :key="streamkey"
                                         :contents="collection"
                                         type="collection"
                                         @totalresults="total=$event"
@@ -60,7 +60,7 @@
                                         :location="location"
                                         :term-filter='selected'/>
                         <content-stream v-else
-                                        :key="`${network}-${filter}-${location}-${selected.genres.join('')}-${selected.audience.join('')}`"
+                                        :key="streamkey"
                                         type="collection"
                                         @totalresults="total=$event"
                                         :filter="filter"
@@ -125,7 +125,8 @@ export default {
       },
       loaded: false,
       browse: true,
-      chosen: ''
+      chosen: '',
+      streamkey: ''
     }
   },
   mounted(){
@@ -148,6 +149,7 @@ export default {
   },
   methods:{
     addSelected(selected){
+      this.streamkey = selected.terms.join('');
       this.selected[selected.taxonomy] = selected.terms;
     },
    getNew(bulk=null){
@@ -236,18 +238,14 @@ export default {
     selected(){
       this.$root.$emit('resetpage')
     },
-    selectedAudience(){
-      this.$root.$emit('resetpage')
-    },
     filter(){
+      this.streamkey=filter;
       this.$root.$emit('resetpage')
     },
     location(){
+      this.streamkey=location;
       this.$root.$emit('resetpage')
     },
-    $route(){
-     
-    }
   }
 };
 </script>

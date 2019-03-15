@@ -70,7 +70,7 @@
 
             </div>
 
-            <div class="card background--gray p-4 mb-3">
+            <div class="card background--gray mb-3">
 
                 <template v-if="call" >
           <call-to-action :action="call.acf.action"
