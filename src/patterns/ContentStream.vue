@@ -92,13 +92,13 @@
         <!-- pages card -->
         <template v-else-if="item.type=='page' || (item.type=='post' && !item.site_ID)">
         <card :badge-label="type =='pages' || item.type=='page' ? 'Information' : 'Article'"
-              :heading="item.title.rendered"
+              :heading="item.title && item.title.rendered ? item.title.rendered : item.title"
               :class="type =='pages' || item.type=='page' ? 'card--background-white text--dark border' : 'card--background-gray'"
               content-type="blog"
               :key="item.id"
               class="my-2">
           <div slot="copy">
-            {{ getExcerpt(item.content.rendered) }}
+            {{ getExcerpt(item.content) }}
           </div>
 
           <template slot="action">
@@ -283,6 +283,10 @@ export default {
     getExcerpt(excerpt) {
       if(!excerpt || excerpt.length === 0){
         return "";
+      }
+      if (excerpt && excerpt.rendered){
+        excerpt = excerpt.rendered;
+
       }
       const excerptContainer = document.createElement('div');
       excerptContainer.innerHTML = excerpt;
