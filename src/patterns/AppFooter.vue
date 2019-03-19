@@ -35,7 +35,7 @@
                         <template slot="label">{{ item.title }}</template>                        
                         <template slot="items"
                                 v-for="subMenu in menuLoad(menuItems.items, item.ID)">
-                            <a v-if="subMenu.target === '_blank'" :href="subMenu.url" target="_blank" :key="item.object_id">
+                            <a v-if="subMenu.target === '_blank'" :href="subMenu.url" target="_blank" :key="subMenu.object_id">
                                 {{ subMenu.title }}
                             </a>
                             <router-link v-else
@@ -142,7 +142,7 @@ export default {
      * An array of menu items that include `title` and `url` properties.
      */
     menuItems: {
-      type: Object,
+      type: Array,
     },
 
     /**
