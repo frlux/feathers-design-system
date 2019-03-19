@@ -98,7 +98,7 @@
               :key="item.id"
               class="my-2">
           <div slot="copy">
-            {{ getExcerpt(item.content) }}
+            {{ item.content && item.content.rendered ? getExcerpt(item.content.rendered) : getExcerpt(item.content) }}
           </div>
 
           <template slot="action">
@@ -125,12 +125,12 @@
         <card v-else-if="item.type!=='post'"
               :badge-label="item.type && item.type=='resources' ? 'Resource' : ' '"
               :sub-explainer="item.type ? item.type.toUpperCase() : item.taxonomy ? item.taxonomy.toUpperCase() : ''"
-              :heading="item.title.rendered || item.title"
+              :heading="item.title && item.title.rendered ? item.title.rendered : item.title"
               class='card--background-blue-dark text--white my-2'
               content-type="resource"
               :key="item.id">
           <div slot="copy">
-            {{ getExcerpt(item.content && item.content.rendered? item.content.rendered: item.content? item.content: item.description ? item.description : item.acf.description) }}
+            {{ item.content && item.content.rendered ? getExcerpt(item.content.rendered) : item.content? getExcerpt(item.content): item.description ? getExcerpt(item.description) : getExcerpt(item.acf.description) }}
           </div>
 
           <template slot="action">
@@ -283,10 +283,6 @@ export default {
     getExcerpt(excerpt) {
       if(!excerpt || excerpt.length === 0){
         return "";
-      }
-      if (excerpt && excerpt.rendered){
-        excerpt = excerpt.rendered;
-
       }
       const excerptContainer = document.createElement('div');
       excerptContainer.innerHTML = excerpt;
