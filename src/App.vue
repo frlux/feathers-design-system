@@ -18,7 +18,8 @@
 
     <router-view class="view" />
 
-    <app-footer :page-object="$store.state.userLocation ? $store.getters.getLocationBySlug($store.state.userLocation) : $store.getters.getLocationBySlug('headquarters')"/>
+    <app-footer :page-object="$store.state.userLocation ? $store.getters.getLocationBySlug($store.state.userLocation) : $store.getters.getLocationBySlug('headquarters')" 
+                :menu-items="getFooterMenu()"/>
 
   </div>
 </template>
@@ -38,6 +39,12 @@ export default {
     Menu,
     Search,
   },
+  methods:{
+    getFooterMenu(){
+      const footerMenu = this.$store.state.menu.find(menu=>menu.name==='top');
+      return footerMenu.items;
+    }
+  }
 };
 </script>
 
