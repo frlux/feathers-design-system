@@ -107,13 +107,13 @@ export default {
     },
 
     isCatalogSearch() {
-      return this.searchType.toLowerCase() === 'catalog'
-        || this.searchType.toLowerCase() === 'index';
+      return this.searchType && this.searchType.toLowerCase() === 'catalog'
+        || this.searchType && this.searchType.toLowerCase() === 'index';
     },
 
     isEventSearch() {
-      return this.searchType.toLowerCase() === 'events'
-        || this.searchType.toLowerCase() === 'events-slug';
+      return this.searchType && this.searchType.toLowerCase() === 'events'
+        || this.searchType && this.searchType.toLowerCase() === 'events-slug';
     },
 
     isEverythingSearch() {
@@ -122,8 +122,8 @@ export default {
     },
 
     isServicesSearch() {
-      return this.searchType.toLowerCase() === 'services'
-        || this.searchType.toLowerCase() === 'services-slug';
+      return this.searchType && this.searchType.toLowerCase() === 'services'
+        || this.searchType && this.searchType.toLowerCase() === 'services-slug';
     },
 
     locationFilter() {
