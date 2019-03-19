@@ -245,12 +245,13 @@ export default {
     },
 
     filterContent(filter, datestring, library){
+
       let content = !datestring ? this.contents : this.contents.filter(
           item => (item.type && item.type == 'event' && 
             `${item.start_date_details.year}-${
               item.start_date_details.month
             }-${item.start_date_details.day}` >= datestring) 
-            || item.type && item.type != 'event' && item.modified.substring(0,7) == this.selectedDate || item.date.substring(0, 7) == this.selectedDate.substring(0,7)
+            || ((item.type && item.type != 'event') && (item.modified.substring(0,7) == this.selectedDate || item.date.substring(0, 7) == this.selectedDate.substring(0,7)))
         );
 
       //Filter Events by library

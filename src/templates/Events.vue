@@ -47,7 +47,7 @@ Through partnerships in the community, we are able to bring you art and historic
                                         :location="library"
                                         contentName="event"/>
 
-                        <content-stream :key="`${q}-${selectedDate}-${library}`"
+                        <content-stream :key="selectedDate + q + library"
                                         :contents="eventsContainer"
                                         type="events"
                                         @totalresults="total=$event"
