@@ -24,17 +24,17 @@
                 <!-- Footer menu: only one dropdown level anticipated -->
         <nav class="d-flex flex-wrap menu menu--footer p-3" role="navigation">
 
-            <div class="p-0" v-for="item in menuItems.items" :key="item.ID">
+            <div class="p-0" v-for="item in menuItems" :key="item.ID">
 
                 <!-- Top-level menu items with children generate dropdown with no click available -->
-                <div class="p-2" v-if="menuParent(menuItems.items, item)">
+                <div class="p-2" v-if="menuParent(menuItems, item)">
                     <Dropdown button-class="menu__item menu__item--location nav-link text--ellipsis text--nowrap text--white"
                             class="align-self-center nav-item"
                             dropdown-menu-class="text--nowrap text--right"
                             label-class="menu__item__label">
                         <template slot="label">{{ item.title }}</template>                        
                         <template slot="items"
-                                v-for="subMenu in menuLoad(menuItems.items, item.ID)">
+                                v-for="subMenu in menuLoad(menuItems, item.ID)">
                             <a v-if="subMenu.target === '_blank'" :href="subMenu.url" target="_blank" :key="subMenu.object_id">
                                 {{ subMenu.title }}
                             </a>
