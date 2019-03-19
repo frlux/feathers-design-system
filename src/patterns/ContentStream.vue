@@ -303,6 +303,7 @@ export default {
           }
         ); 
       }
+      this.$router.push({query:{page: this.page}})
     },
     /* filter(){
       const results = this.fetchData().then(results=>{
