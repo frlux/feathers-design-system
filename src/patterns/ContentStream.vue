@@ -64,10 +64,11 @@
         </card>
       </template>
         <!-- events card -->
-        <event-card v-if="item.type=='event'"
-                    class="card--background-gray my-2"
+        <template v-else-if="item.type=='event'">
+        <event-card class="card--background-gray my-2"
                     :event="item"
                     :key="item.id"/><!-- end events card -->
+        </template>
         <!-- blog template-->
         <template v-else-if="item.type=='post' && item.site_ID">
         <card :key="item.id"
@@ -122,10 +123,10 @@
     
 
         <!-- pages card -->
-        <card v-else-if="item.type!=='post'"
-              :badge-label="item.type && item.type=='resources' ? 'Resource' : ' '"
+        <template v-else>
+        <card :badge-label="item.type && item.type=='resources' ? 'Resource' : ' '"
               :sub-explainer="item.type ? item.type.toUpperCase() : item.taxonomy ? item.taxonomy.toUpperCase() : ''"
-              :heading="item.title && item.title.rendered ? item.title.rendered : item.title"
+              :heading="item.title && item.title.rendered ? item.title.rendered :item.title ? item.title : item.acf.name"
               class='card--background-blue-dark text--white my-2'
               content-type="resource"
               :key="item.id">
@@ -138,6 +139,7 @@
           </template>
 
         </card><!-- end pages card -->
+        </template>
     </template>
 
     <pagination v-if="total > 0"
