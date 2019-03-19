@@ -124,7 +124,7 @@
         <!-- pages card -->
         <card v-else-if="item.type!=='post'"
               :badge-label="item.type && item.type=='resources' ? 'Resource' : ' '"
-              :sub-explainer="item.type.toUpperCase() || item.taxonomy.toUpperCase()"
+              :sub-explainer="item.type ? item.type.toUpperCase() : item.taxonomy ? item.taxonomy.toUpperCase() : ''"
               :heading="item.title.rendered || item.title"
               class='card--background-blue-dark text--white my-2'
               content-type="resource"
