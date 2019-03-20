@@ -1,6 +1,6 @@
 {
   "name": "fontanalib-design-system",
-  "version": "0.20.1-beta.0",
+  "version": "0.20.1-beta.1",
   "private": false,
   "description": "Vue Design System - Fontana Regional Library",
   "author": "amy_actually <awest@fontanalib.org>",
@@ -42,6 +42,7 @@
     "vue-fontawesome": "0.0.2",
     "vue-link": "^1.6.1",
     "vue-lodash": "^2.0.2",
+    "vue-meta": "^1.5.8",
     "vue-moment": "^4.0.0",
     "vue-responsive-components": "^0.2.3",
     "vue-router": "^3.0.2",
