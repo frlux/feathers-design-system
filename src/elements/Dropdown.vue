@@ -1,5 +1,5 @@
 <template>
-    <component class="dropdown" :is="element">
+    <component class="dropdown" :is="element" v-on-clickaway="closeDropdown">
         <span :aria-expanded="isOpen"
                 aria-haspopup="true"
                 class="dropdown__toggle dropdown-toggle"
@@ -25,7 +25,8 @@ import { mixin as clickaway } from "vue-clickaway"
 
 export default {
   name: "Dropdown",
-
+  status: "prototype",
+  release: "1.0.0",
   data() {
     return {
       isOpen: false,
