@@ -12,7 +12,8 @@
 <script>
 export default {
   name: "CButton",
-
+  status: "ready",
+  release: "1.0.0",
   props: {
     /**
      * The element the component renders as.

@@ -84,6 +84,8 @@
 <script>
 export default {
   name: "Pagination",
+  status: "prototype",
+  release: "1.0.0",
   props: {
     value: {
       default: 1,

@@ -31,6 +31,8 @@
 <script>
 export default {
   name: 'FilterResults',
+  status: "prototype",
+  release: "1.0.0",
   computed:{
     locationDetails() {
       return this.location
