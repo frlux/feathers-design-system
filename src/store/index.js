@@ -34,7 +34,7 @@ export default new Vuex.Store({
   actions: {
     async getAudiences({ commit }) {
       return new Promise(resolve => {
-        const authors = api.fetchData('audience', {per_page: 50})
+        const authors = api.fetchData('audience', {per_page: 100})
       .then( data=>{
         resolve();
         commit('addTermsToState', {taxonomy: 'audience', terms: data.data});
@@ -73,7 +73,7 @@ export default new Vuex.Store({
 },
     async getAuthors({ commit }) {
       return new Promise(resolve => {
-        const authors = api.fetchData('authors')
+        const authors = api.fetchData('authors', {per_page: 100})
       .then( data=>{
         commit('addAuthorsToState', data.data);
         resolve();
@@ -83,7 +83,7 @@ export default new Vuex.Store({
 
       async getCallsToAction({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('callsToAction')
+          const authors = api.fetchData('callsToAction', {per_page: 100})
         .then( data=>{
           commit('addCallsToActionToState', data.data);
           resolve();
@@ -93,7 +93,7 @@ export default new Vuex.Store({
 
       async getCollection({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('collection')
+          const authors = api.fetchData('collection', {per_page: 100})
         .then( data=>{
           commit('addCollectionToState', data.data);
           resolve();
@@ -104,7 +104,7 @@ export default new Vuex.Store({
 
       async getFeaturedCollections({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('featuredCollections')
+          const authors = api.fetchData('featuredCollections', {per_page: 100})
         .then( data=>{
           commit('addFeaturedCollectionToState', data.data);
           resolve();
@@ -114,7 +114,7 @@ export default new Vuex.Store({
 
     async getGenres({ commit }) {
       return new Promise(resolve => {
-        const authors = api.fetchData('genres', {per_page: 50})
+        const authors = api.fetchData('genres', {per_page: 100})
       .then( data=>{
         resolve();
         commit('addTermsToState', {taxonomy: 'genres', terms: data.data});
@@ -124,7 +124,7 @@ export default new Vuex.Store({
 
       async getLocations({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('locations')
+          const authors = api.fetchData('locations', {per_page: 100})
         .then( data=>{
           commit('addLocationsToState', data.data);
           resolve();
@@ -134,7 +134,7 @@ export default new Vuex.Store({
 
       async getPages({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('pages')
+          const authors = api.fetchData('pages', {per_page: 100})
         .then( data=>{
           commit("addCount", {type: 'pages', count: data.headers['x-wp-total']});
           commit('addPagesToState', data.data);
@@ -146,7 +146,7 @@ export default new Vuex.Store({
 
       async getPosts({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('posts',{number: 10})
+          const authors = api.fetchData('posts',{number: 100})
         .then( data=>{
           commit("addCount",{type: 'posts', count: data.data.found});        
           commit('addPostsToState', data.data.posts);
@@ -157,7 +157,7 @@ export default new Vuex.Store({
 
       async getArticles({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('articles')
+          const authors = api.fetchData('articles', {per_page: 100})
         .then( data=>{
           commit("addCount", {type: 'articles', count: data.headers['x-wp-total']});
           commit('addArticlesToState', data.data);
@@ -168,7 +168,7 @@ export default new Vuex.Store({
 
       async getResources({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('resources')
+          const authors = api.fetchData('resources', {per_page: 100})
         .then( data=>{
           commit("addCount", {type: 'resources', count: data.headers['x-wp-total']});
           commit('addResourcesToState', data.data);
@@ -191,7 +191,7 @@ export default new Vuex.Store({
 
       async getUpcomingEvents({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('events')
+          const authors = api.fetchData('events', {per_page: 100})
         .then( data=>{
           commit("addCount", {type: 'events', count: data.headers['x-wp-total']});
           commit('addEventsToState', data.data);
