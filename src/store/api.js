@@ -116,9 +116,10 @@ export const content = {
     label: '',
     contentName: 'subject'
   },
-};
+}
 export const links = {
     organizersBySlug: 'https://fontana.librarians.design/wp-json/tribe/events/v1/organizers/by-slug/',
+    getBlogBySlug: 'https://public-api.wordpress.com/rest/v1.1/sites/fontanalib.wordpress.com/posts/slug:'
   };
 
 export const fetchData = (type, param = [], append=null) => {
@@ -141,10 +142,18 @@ export const fetchLink = (link) => {
 }
 
 export const fetchPerson = (type, slug) => {
-  
   try {
     let person = links[type] + slug;
     return axios.get(person)
+  } catch (error) {
+    console.error(error)
+  }
+}
+export const fetchMenu = (parentSlug, param=[])=> {
+  try {
+    return axios.get(content.menuItems.url + `/${parentSlug}`, {
+      params: param
+    })
   } catch (error) {
     console.error(error)
   }

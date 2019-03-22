@@ -13,6 +13,8 @@
 <script>
 export default {
   name: "Breadcrumb",
+  status: "prototype",
+  release: "1.0.0",
   computed:{
     trail(){
       if(this.items && this.items.length>0){
@@ -76,3 +78,10 @@ export default {
   margin-top:0;
 }
 </style>
+<docs>
+  ```jsx
+  <div>
+<breadcrumb route="$route" title="Page Title" :items='[{text: "Parent", to:"blog"}, {text: "Child", to:"blog-slug"}]'/>
+  </div>
+  ```
+</docs>

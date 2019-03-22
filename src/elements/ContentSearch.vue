@@ -80,6 +80,8 @@ import flatpickr from 'flatpickr';
 
 export default {
   name: 'ContentSearch',
+  status: "prototype",
+  release: "1.0.0",
 
   computed: {
     locations() {

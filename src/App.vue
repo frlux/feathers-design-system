@@ -41,8 +41,10 @@ export default {
   },
   methods:{
     getFooterMenu(){
-      const footerMenu = this.$store.state.menu.find(menu=>menu.name==='top');
-      return footerMenu.items;
+      let menu = this.$store.state.menu;
+      menu = menu[0];
+      console.log(menu);
+      return menu && menu.menu ? menu.menu.items : [];
     }
   }
 };

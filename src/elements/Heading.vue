@@ -12,7 +12,7 @@
  */
 export default {
   name: "Heading",
-  status: "prototype",
+  status: "ready",
   release: "1.0.0",
   props: {
     /**

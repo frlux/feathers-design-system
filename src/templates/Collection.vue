@@ -52,7 +52,7 @@
                                       contentName="collection item"/>
                         <template>
                         <content-stream v-if="(!this.network || this.network == 'new') && collection && collection.length>0"
-                                        :key="streamkey"
+                                        :key="filter+location+selected.genres.join('')+selected.audience.join('')"
                                         :contents="collection"
                                         type="collection"
                                         @totalresults="total=$event"
@@ -60,7 +60,7 @@
                                         :location="location"
                                         :term-filter='selected'/>
                         <content-stream v-else
-                                        :key="streamkey"
+                                        :key="filter+location+selected.genres.join('')+selected.audience.join('')"
                                         type="collection"
                                         @totalresults="total=$event"
                                         :filter="filter"
