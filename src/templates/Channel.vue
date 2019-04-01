@@ -39,7 +39,7 @@
                     <div class="col-md-4">
                       <content-search :date-filter="network !== 'resources' ? true : false" :location-filter="network !== 'resources' ? true : false"
                           :selected-date="network !== 'resources' ? selectedDate : null" @selectdate="selectedDate = $event"
-                          :filter="filter" @querycontent="filter=$event"
+                          :filter="q" @querycontent="q=$event"
                           :library="network !== 'resources' ? library : null" @filterlibrary="library = $event"
                           @clearcontentfilter="clearFilter()"
                           />
@@ -50,16 +50,16 @@
                         <template v-if="network">
                           <filter-results :total="total"
                                           :selectedDate="selectedDate"
-                                          :filter="filter"
+                                          :filter="q"
                                           :location="library"
                                           :contentName="network.slice(-1) == 's' ? network.substring(0, network.length - 1) : network"/>
-                          <content-stream :key="`${network}-${filter}-${library}-${selectedDate}`" 
+                          <content-stream :key="`${network}-${q}-${library}-${selectedDate}`"
+                                          :contents="contentContainer" 
                                           :type="network"
                                           @totalresults="total=$event"
-                                          :filter="filter"
+                                          :filter="q"
                                           :selected-date="selectedDate"
                                           :location="library"
-                                          :api-type="network=='blog' ? 'posts': network"
                                           />
                         </template>
 
@@ -108,7 +108,7 @@ export default {
   data(){
     return{
       items: [],
-      filter: null,
+      q: null,
       library: null,
       selectedDate: null,
       loadmore: null,
@@ -120,7 +120,7 @@ export default {
     selectedDate(){
       this.$root.$emit('resetpage')
     },
-    filter(){
+    q(){
       this.$root.$emit('resetpage')
     },
     library(){
@@ -130,11 +130,15 @@ export default {
   methods:{
     clearFilter() {
       this.selectedDate = null;
-      this.filter = null;
+      this.q = null;
       this.library = null;
       this.page = 1;
     },
 
+  },
+  mounted(){
+    this.library = this.location;
+    this.q = this.filter;
   },
   props: {
     channelDescription: {
@@ -145,11 +149,19 @@ export default {
       type: String,
       default: "Shelf Life in the Mountains"
     },
-
     network: {
       type: String,
       default:'blog'
     },
+    contentContainer: {
+      type: Array
+    }, 
+    location:{
+      type: String
+    },
+    filter:{
+      type: String
+    }
   },
 };
 </script>

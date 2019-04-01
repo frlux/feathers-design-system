@@ -91,15 +91,9 @@ export default {
     return {
       selectedDate: null,
       library: this.location,
-      eventsContainer: [],
       total: 0,
       page: 1,
       q: this.filter,
-      perPage: 5,
-      eventsApi: {
-        per_page:100,
-        page: 1,
-      },
     };
   },
 
@@ -111,7 +105,7 @@ export default {
       this.page = 1;
     },
 
-  getMoreEvents() {
+  /* getMoreEvents() {
       while(Math.ceil(this.$store.state.counts.events/this.eventsApi.per_page) >= this.eventsApi.page){
         this.fetchEvents();
         this.eventsApi.page++;
@@ -148,7 +142,7 @@ export default {
               return date1.getTime() - date2.getTime()});
         }
 
-    },
+    }, */
   },
     watch:{
       q(){
@@ -168,7 +162,7 @@ export default {
       }
     },
   mounted() {
-    this.getMoreEvents();
+    //this.getMoreEvents();
     this.q= !this.q ? this.filter : this.q;
     this.$root.$on('inputData', data=>{
       this.q=data;
@@ -178,7 +172,6 @@ export default {
     });
   },
   beforeMount(){
-    this.eventsContainer = this.$store.state.events;
     if(this.$route.query.search){
       this.q=this.$route.query.search;
     }
@@ -197,6 +190,9 @@ export default {
       default: '',
       type: String,
     },
+    eventsContainer:{
+      type: Array
+    }
   },
 };
 </script>

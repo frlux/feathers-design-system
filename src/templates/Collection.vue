@@ -50,24 +50,14 @@
                                       :location="location"
                                       :terms="selected"
                                       contentName="collection item"/>
-                        <template>
-                        <content-stream v-if="(!this.network || this.network == 'new') && collection && collection.length>0"
-                                        :key="filter+location+selected.genres.join('')+selected.audience.join('')"
+                        <content-stream :key="filter+location+selected.genres.join('')+selected.audience.join('')"
                                         :contents="collection"
                                         type="collection"
                                         @totalresults="total=$event"
                                         :filter="filter"
                                         :location="location"
                                         :term-filter='selected'/>
-                        <content-stream v-else
-                                        :key="filter+location+selected.genres.join('')+selected.audience.join('')"
-                                        type="collection"
-                                        @totalresults="total=$event"
-                                        :filter="filter"
-                                        :location="location"
-                                        :term-filter='selected'
-                                        api-type='collection'/>
-                        </template>
+
 
                         
 
@@ -111,7 +101,6 @@ export default {
   },
   data(){
     return{
-      collection: [],
       filter: null,
       location: this.library ? this.library : '',
       total: 0,
@@ -120,9 +109,6 @@ export default {
         genres:[],
         audience:[]
       },
-      counts:{
-        collection: 0,
-      },
       loaded: false,
       browse: true,
       chosen: '',
@@ -130,13 +116,6 @@ export default {
     }
   },
   mounted(){
-    if(!this.network || this.network == 'new'){
-        this.browse=false;
-        this.getNew();
-      }
-      if(this.network && this.network !== 'new' && this.slug !== 'any' && this.term){
-        this.getCollectionByTerm();
-      }
       this.$root.$on('inputData', data=>{
       this.q=data;
     });
@@ -152,39 +131,7 @@ export default {
       this.streamkey = selected.terms.join('');
       this.selected[selected.taxonomy] = selected.terms;
     },
-   getNew(bulk=null){
-    this.fetchContent('collection',{per_page:100});
-    },
-    getCollectionByTerm(){
-      switch(this.network){
-        case 'genres': this.fetchContent('collection', {per_page:100, genres: this.term.id});
-        // case 'featured-collection': this.fetchContent('collection',{per_page:100, page: 1, 'featured-collection': });
-      }
-    },
 
-    fetchContent(type, params){
-      api.fetchData(type, params).then(response =>{
-            this.counts[type] = response.headers['x-wp-total'];
-            if(params.page){
-              params.page++;
-            }
-            this.addItems(type, response.data, params);
-            this.loaded=true;
-          }).catch(error=> console.log(error)); 
-    },
-    addItems(store, items, params=null){
-      for (let i=0; i < items.length; i++){
-        const index = this[store].findIndex(item => item.id === items[i].id)
-        if (index === -1){ 
-          this[store].push(items[i]);
-        }
-      }
-      if(params && params.page && params.new){
-        while(Math.ceil(this.counts[store]/100) >= params.page){
-          this.fetchContent('collection', params);
-        }
-      }
-    },
     clearFilter() {
       this.selected.genres = [];
       this.filter = null;
@@ -217,6 +164,9 @@ export default {
     },
     library:{
       type: String,
+    },
+    collection:{
+      type: Array
     }
   },
   beforeMount(){

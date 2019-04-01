@@ -39,6 +39,9 @@ const router = new Router({
         `,
         network: 'blog',
         slug: 'any',
+        contentContainer: router.app.$store.state.posts,
+        location: route.query.location,
+        filter: route.query.search
       }),
     },
 
@@ -54,6 +57,7 @@ const router = new Router({
         channelTitle: route.params.channel ? route.params.channel : 'Collection',
         library: route.params.userLocation ? route.params.userLocation : '',
         slug: 'any',
+        collection: router.app.$store.state.collection,
       }),
     },
     {
@@ -68,6 +72,7 @@ const router = new Router({
         library: route.params.userLocation ? route.params.userLocation : '',
         slug: 'any',
         network: route.params.type,
+        collection: router.app.$store.state.collection,
       }),
     },
     {
@@ -79,6 +84,7 @@ const router = new Router({
         library: route.params.userLocation ? route.params.userLocation : '',
         slug: route.params.slug,
         network: route.params.type,
+        collection: router.app.$store.state.collection,
       }),
     },
 
@@ -102,8 +108,9 @@ const router = new Router({
       name: "events",
       path: "/events",
       props: route => ({
-        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '' 
+        filter: route.params.filter ? route.params.filter : route.query.search ? router.query.search : '',
+        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
+        eventsContainer: router.app.$store.state.events,
       })
     },
 
@@ -116,7 +123,6 @@ const router = new Router({
       },
       props: route => ({
         pageObject: !route.params.pageObject ? router.app.$store.getters.getEventBySlug(route.params.slug) : route.params.pageObject,
-        slug: route.params.slug
       }),
     },
     {
@@ -127,7 +133,7 @@ const router = new Router({
       name: "locations",
       path: "/locations",
       props: route => ({
-        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
+        filter: route.params.filter ? route.params.filter : route.query.search ? router.query.search : '',
       })
     },
 
@@ -159,6 +165,9 @@ const router = new Router({
         channelDescription: `
           Find Information about general library services, how-to's and more.
         `,
+        contentContainer: router.app.$store.state.pages,
+        location: route.query.location,
+        filter: route.query.search
       }),
     },
     {
@@ -178,6 +187,9 @@ const router = new Router({
         channelDescription: `
           Find updates and news about Library activities, services, and more.
         `,
+        contentContainer: router.app.$store.state.articles,
+        location: route.query.location,
+        filter: route.query.search
       }),
     },
     {
@@ -196,6 +208,9 @@ const router = new Router({
         channelTitle: 'Library Databases and Online Resources',
         channelDescription: `
         `,
+        contentContainer: router.app.$store.state.resources,
+        location: route.query.location,
+        filter: route.query.search
       }),
     },
 
@@ -235,7 +250,7 @@ const router = new Router({
       path: "/pages/:slug",
       meta: {parent: {name:"pages", text:"Information"}, type: {store: 'pages', wp: 'page'}, breadcrumb:true},
       props: route => ({
-        pageObject: !route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, 'pages') : route.params.pageObject,
+        pageObject: router.app.$store.getters.getContentBySlug(route.params.slug, 'pages'),
         moreContent: !route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
         slug: route.params.slug
       }),
@@ -246,7 +261,7 @@ const router = new Router({
       path: "/articles/:slug",
       meta: {parent: {name: "articles", text: 'Articles'}, type: {store: 'articles', wp: 'post'}, breadcrumb:true},
       props: route => ({
-        pageObject: route.params.pageObject ? router.app.$store.getters.getContentBySlug(route.params.slug, 'articles') : route.params.pageObject,
+        pageObject: router.app.$store.getters.getContentBySlug(route.params.slug, 'articles'),
         moreContent: route.params.moreContent ? router.app.$store.getters.getContentBySlug(route.params.slug, null, 'all') : route.params.moreContent,
         slug: route.params.slug
       }),

@@ -1,5 +1,5 @@
 <template>
-  <section class="content" v-if="content" :key='apiContent.length+apiPage+apiType'>
+  <section class="content" v-if="content">
     <template v-for="item in content">
       <!-- SERVICE CARD -->
       <template v-if="!item.type && item.taxonomy">
@@ -171,19 +171,15 @@ export default {
   },
   computed: {
     content(){
-      if(!this.apiType && this.paged){
+      if(this.paged){
         return this.paged[this.page-1];
       }
-      if(!this.apiType && !this.paged){
-        let content = this.filterContent(this.filter, this.selectedDate, this.location);
-        this.paged = chunk(content, this.perPage);
-        return this.paged[this.page-1];
-      }
-      return this.apiContent; 
+      let content = this.filterContent(this.filter, this.selectedDate, this.location);
+      this.paged = chunk(content, this.perPage);
+      return this.paged[this.page-1];
     },
 
     total(){
-      this.$emit('totalresults', this.apiTotal);
       return this.apiTotal;
     },
   },
@@ -204,18 +200,8 @@ export default {
     };
   },
   methods: {
-    async fetchData(){
-      if(!this.apiType){
-        console.log(this.apiType);
-        return;
-      }
-      const params = this.getParams(this.apiType, this.page);
-      const results = await api.fetchData(this.apiType, params);
-      this.apiTotal = this.apiType != 'posts' && results ? Number(results.headers['x-wp-total']) : results && results.data && results.data.found ? results.data.found : 0;
-      this.apiContent = this.apiType != 'posts' && results ? results.data : results && results.data ? results.data.posts: [];
-      return results;
-    },
-    getParams(type, page){      
+    
+    /* getParams(type, page){      
       let params = this.apiParams ? this.apiParams : {};
       if(type != 'posts'){
         params.per_page = this.perPage;
@@ -244,7 +230,7 @@ export default {
         }
       }
       return params;
-    },
+    }, */
 
     filterContent(filter, datestring, library){
 
@@ -263,7 +249,6 @@ export default {
       //Filter by terms
       //console.log(this.termFilter);
       if(this.termFilter){
-        console.log(this.termFilter);
         for (const [taxonomy, value] of Object.entries(this.termFilter)){
           if(taxonomy && value && value.length > 0){
           content = content.filter(item => item[taxonomy] && item[taxonomy].some(val =>value.includes(val)))
@@ -280,6 +265,7 @@ export default {
                   ));
 
         this.apiTotal = content.length;
+        this.$emit('totalresults', this.apiTotal);
         return content;
     },
     getExcerpt(excerpt) {
@@ -297,12 +283,12 @@ export default {
   },
   watch:{
     page(){
-      if(this.apiType){
+      /* if(this.apiType){
         const results = this.fetchData().then(results=>{
           this.apiContent = this.apiType != 'posts' && results ? results.data :results && results.data && results.data.posts ? results.data.posts : [];
           }
         ); 
-      }
+      } */
       this.$router.push({query:{page: this.page}})
     },
     /* filter(){
@@ -322,13 +308,6 @@ export default {
     },
   },
   created(){
-    if(this.apiType){
-      const results = this.fetchData().then(results=>{
-        this.apiTotal = this.apiType != 'posts' && results ? Number(results.headers['x-wp-total']) : results && results.data && results.data.found ? results.data.found : 0;
-        this.apiContent = this.apiType != 'posts' && results ? results.data :results && results.data && results.data.posts ? results.data.posts : [];
-        }
-      );
-    }
     this.taxonomies = Object.keys(api.content).filter( key => api.content[key].content == 'taxonomy');
   }, 
   beforeMount(){
@@ -351,12 +330,6 @@ export default {
     perPage:{
       type: Number,
       default: 5
-    },
-    apiType:{
-      type: String
-    },
-    apiParams:{
-      type: Object
     },
     filter:{
       type: String

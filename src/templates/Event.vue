@@ -69,7 +69,8 @@
 
                     <heading class="text--dark" level="h3">Where</heading>
 
-                    <router-link class="d-block text--dark text--underline" :to="{name:'locations-slug', params:{slug: event.venue.slug}}">{{ event.venue.venue }}</router-link>
+                    <router-link v-if="isLibraryEvent" class="d-block text--dark text--underline" :to="`/locations/${event.venue.slug}`"> {{ event.venue.venue }}</router-link>
+                    <a v-else class="d-block text--dark text--underline" :href="event.venue.website">{{ event.venue.venue }} --</a>
                     <span class="d-block">{{ event.venue.address }}</span>
                     <span class="d-block">{{ event.venue.city }}, {{ event.venue.state }} {{ event.venue.zip }}</span>
                     <span class="d-block">{{ event.venue.phone }}</span>
@@ -110,6 +111,10 @@ export default {
     author() {
       return this.$store.getters.getAuthorById(Number(this.event.author));
     },
+    isLibraryEvent(){
+      const arr =this.$store.state.locations.map(location => location.slug);
+      return this.event.venue && this.event.venue.slug ? arr.includes(this.event.venue.slug) : false;
+    }
   },
   data(){
     return{

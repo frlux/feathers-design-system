@@ -36,7 +36,7 @@
 
               <template slot="action">
 
-                <router-link class="button button--orange" :to="{name: 'services-slug', params:{slug: randomServiceItem.slug, pageObject: randomServiceItem}}">
+                <router-link class="button button--orange" :to="`/services/${randomServiceItem.slug}`">
                   {{ randomServiceItem.acf.button_text ? randomServiceItem.acf.button_text : 'Explore'}}
                 </router-link>
 
@@ -80,7 +80,7 @@
               </div>
 
               <template slot="action">
-                <router-link class="button button--aqua" :to="{name: 'blog-slug', params:{slug: post.slug, pageObject: post}}">
+                <router-link class="button button--aqua" :to="`/blog/${post.slug}`">
                   Info
                 </router-link>
               </template>

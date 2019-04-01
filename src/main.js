@@ -27,6 +27,7 @@ const home = [
   store.dispatch("getUpcomingEvents"),
   store.dispatch("getServices"),
   store.dispatch("getPosts"),
+  store.dispatch("getArticles")
 ];
 Promise.all(home).then(results=> {
   new Vue({

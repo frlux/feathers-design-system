@@ -45,7 +45,7 @@
                                   :key="service.id" style="min-height: 197px;">
 
                                 <template slot="action">
-                                    <router-link class="button button--orange" :to="{name: 'services-slug', params: {slug:service.slug, pageObject: service}}">More</router-link>
+                                    <router-link class="button button--orange" :to="`/services/${service.slug}`">More</router-link>
                                 </template>
 
                             </card>
@@ -103,7 +103,7 @@
 
 
                                 <template slot="action">
-                                    <router-link class="button button--orange" :to="{name: 'services-slug', params: {slug:service.slug, pageObject: service}}">
+                                    <router-link class="button button--orange" :to="`/services/${service.slug}`">
                                         {{ service.acf.button_text ? service.acf.button_text : 'Read more'}}
                                     </router-link>
                                 </template>

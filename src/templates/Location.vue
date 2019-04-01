@@ -71,7 +71,7 @@
                       </div>
 
                       <router-link v-if="library.slug !== 'headquarters'" itemprop="branchOf" class="link mt-4"
-                    :to="{name:'locations-slug', params:{slug: library.slug, pageObject: library}}">
+                    :to="`/locations/${library.slug}`">
                         Member of Fontana Regional Library
                   </router-link>
                       
@@ -140,19 +140,18 @@
                               </div>
 
                   <router-link class="link pl-3 pb-3"
-                    :to="{name: `events`, params:{userLocation: library.slug}}">
+                    :to="`/events?location=${library.slug}`">
                         View more events at {{ library.name }}
                   </router-link>
 
               </div>
               
-
-              
-
-                <template v-for="page in locationPages"><!-- pages card -->
+              <div v-if="locationPages && locationPages.length > 0"
+                class="card--background-blue-alternate py-2 mb-3 location-pages">
+               <template v-for="page in locationPages.slice(0,2)"><!-- pages card -->
                   <card badge-label="Information"
                         :heading="page.title.rendered"
-                        class="card--background-gray text--dark my-2"
+                        class="card--background-gray text--dark m-2"
                         content-type="blog"
                         :key="page.id">
                     <div slot="copy">
@@ -160,16 +159,22 @@
                     </div>
 
                     <template slot="action">
-                      <router-link class="button button--aqua" :to="{name:'pages-slug', params:{slug: page.slug, pageObject: page}}">More</router-link>
+                      <router-link class="button button--aqua" :to="`/pages/${page.slug}`">More</router-link>
                     </template>
 
                   </card>
                 </template><!-- end pages card -->
-
-                <template v-for="article in locationArticles"><!-- articles card -->
+                <router-link v-if="locationPages && locationPages.length > 2" class="pl-3 pb-3 mb-2 text--white"
+                    :to="`/pages?location=${library.slug}`">
+                        View more Information Pages for {{ library.name }}
+                  </router-link>
+                  </div>
+<div v-if="locationArticles && locationArticles.length > 0"
+                class="card--background-blue-alternate py-2 mb-3 location-articles">
+                <template v-for="article in locationArticles.slice(0,2)"><!-- articles card -->
                   <card badge-label="Article"
                         :heading="article.title.rendered"
-                        class="card--background-gray"
+                        class="card--background-gray m-2"
                         content-type="blog"
                         :explainer="article.date | moment('dddd, MMMM Do')"
                         :key="article.id">
@@ -178,11 +183,16 @@
                     </div>
 
                     <template slot="action">
-                      <router-link class="button button--orange" :to="{name:'articles-slug', params:{slug: article.slug, pageObject: article}}">More</router-link>
+                      <router-link class="button button--orange" :to="`/articles/${article.slug}`">More</router-link>
                     </template>
 
                   </card>
                 </template><!-- end articles card -->
+                <router-link v-if="locationArticles && locationArticles.length > 2" class="pl-3 pb-3 mb-2 text--white"
+                    :to="`/articles?location=${library.slug}`">
+                        View more Articles for {{ library.name }}
+                  </router-link>
+              </div>
                
               <!-- END CHANNEL CONTENT -->
 
@@ -230,28 +240,32 @@ export default {
       return (cta && cta.length>0) ? cta[0] : null;
     },
     locationCollection() {
-      return this.$store.getters.getContentByService(
+      const collection = this.$store.getters.getContentByService(
         'collection', '',
         this.library.slug,
       );
+      return collection.slice(0,8);
     },
     locationPages() {
-       return this.$store.getters.getContentByService(
+       const pages = this.$store.getters.getContentByService(
           'pages', '',
           this.library.slug,
         );
+        return pages.slice(0,3);
     },
     locationArticles() {
        return this.$store.getters.getContentByService(
           'articles', '',
           this.library.slug,
         );
+        return articles.slice(0,3);
     },
     locationEvents() {
-       return this.$store.getters.getContentByService(
+       const events = this.$store.getters.getContentByService(
           'events', '',
           this.library.slug,
         );
+        return events.slice(0,3);
     },
   },
   data() {

@@ -57,7 +57,7 @@
                       </div>
                                      </div>
                                 <template slot="action">
-                                    <router-link class="button button--blue-alternate" :to="{name:'locations-slug', params:{slug: alternateLocation.slug, pageObject: alternateLocation}}">More</router-link>
+                                    <router-link class="button button--blue-alternate" :to="`/locations/${alternateLocation.slug}`">More</router-link>
                                 </template>
 
                             </card>
@@ -147,7 +147,7 @@
                       </div>
                                      </div>
                                 <template slot="action">
-                                    <router-link class="button button--blue-alternate" :to="{name: 'locations-slug',params:{slug: library.slug, pageObject: library}}">More</router-link>
+                                    <router-link class="button button--blue-alternate" :to="{path: `/locations/${library.slug}`}">More</router-link>
                                 </template>
 
                             </card>

@@ -191,7 +191,7 @@ export default new Vuex.Store({
 
       async getUpcomingEvents({ commit }) {
         return new Promise(resolve => {
-          const authors = api.fetchData('events')
+          const authors = api.fetchData('events', {per_page: 100})
         .then( data=>{
           commit("addCount", {type: 'events', count: data.headers['x-wp-total']});
           commit('addEventsToState', data.data);
