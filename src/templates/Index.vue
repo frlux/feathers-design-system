@@ -198,6 +198,20 @@ export default {
       default: 'div',
     },
   },
+  beforeMount(){
+  this.$store.dispatch("getLocations"),
+  this.$store.dispatch("getMenus"),
+  this.$store.dispatch("getGenres"),
+  this.$store.dispatch("getAudiences"),
+  this.$store.dispatch("getFeaturedCollections"),
+  this.$store.dispatch("getCollection"),
+  this.$store.dispatch("getAuthors"),
+  this.$store.dispatch("getCallsToAction"),
+  this.$store.dispatch("getUpcomingEvents"),
+  this.$store.dispatch("getServices"),
+  this.$store.dispatch("getPosts"),
+  this.$store.dispatch("getArticles")
+  }
 };
 </script>
 

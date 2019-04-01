@@ -31,9 +31,8 @@
 
                 <div class="d-md-flex flex-md-wrap">
 
-                    <template v-for="(service, index) in featuredServices" v-if="index < 6">
 
-                        <div class="mb-4 col-md-6" :key="service.id">
+                        <div class="mb-4 col-md-6" v-for="service in featuredServices.slice(0,6)" :key="service.id">
 
                             <card :badge-label="service.name"
                                   class="card--background-white"
@@ -51,8 +50,6 @@
                             </card>
 
                         </div>
-
-                    </template>
 
                 </div>
 
