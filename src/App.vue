@@ -4,7 +4,7 @@
 
     <header class="align-items-center d-flex justify-content-center justify-content-md-between library__header p-3">
 
-      <router-link :to="{name:'index'}">
+      <router-link to="/">
 
         <Logo fill="white" />
 

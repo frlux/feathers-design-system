@@ -13,7 +13,7 @@
 
 
           <template slot="action">
-              <router-link class="button button--orange" :to="{name: 'services-slug', params: {slug:item.slug, pageObject: item}}">
+              <router-link class="button button--orange" :to="`/services/${item.slug}`">
                   {{ item.acf.button_text ? item.acf.button_text : 'Read more'}}
               </router-link>
           </template>
@@ -44,7 +44,7 @@
                     </div>
                   </div>
             <template slot="action">
-                <router-link class="button button--blue-alternate" :to="{name: 'locations-slug',params:{slug: item.slug, pageObject: item}}">More</router-link>
+                <router-link class="button button--blue-alternate" :to="`/locations/${item.slug}`">More</router-link>
             </template>
 
         </card>
@@ -58,7 +58,7 @@
               :key="item.id" style="min-height: 197px;">
 
             <template slot="action">
-                <router-link class="button button--orange" :to="{name: item.taxonomy+'-slug', params: {slug:item.slug, pageObject: item}}">More</router-link>
+                <router-link class="button button--orange" :to="`/${item.taxonomy}/${item.slug}`">More</router-link>
             </template>
 
         </card>
@@ -83,7 +83,7 @@
           </div>
 
           <template slot="action">
-            <router-link class="button button--aqua" :to="{name: 'blog-slug', params:{slug: item.slug, pageObject: item}}">
+            <router-link class="button button--aqua" :to="`/blog/${item.slug}`">
               Info
             </router-link>
           </template>
@@ -103,7 +103,7 @@
           </div>
 
           <template slot="action">
-            <router-link class="button" :class="type =='pages' || item.type=='page' ? 'button--aqua' : 'button--orange'" :to="{name: item.type=='page' ? 'pages-slug' : 'articles-slug', params:{pageObject: item, slug: item.slug}}">More</router-link>
+            <router-link class="button" :class="type =='pages' || item.type=='page' ? 'button--aqua' : 'button--orange'" :to="`/pages/${item.slug}`">More</router-link>
           </template>
 
         </card>
@@ -135,7 +135,7 @@
           </div>
 
           <template slot="action">
-            <router-link class="button button--teal" :to="{name:item.type+'-slug', params:{pageObject: item, slug: item.slug}}">More</router-link>
+            <router-link class="button button--teal" :to="`/${item.type}/${item.slug}`">More</router-link>
           </template>
 
         </card><!-- end pages card -->

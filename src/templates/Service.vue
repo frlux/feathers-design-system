@@ -15,7 +15,7 @@
                                 :heading="call.acf.heading"
                                 :link="call.acf.link"></call-to-action>
             </template>
-<breadcrumb :title="pageObject.name"/>
+<breadcrumb :title="pageObject.name" :items="[{text: 'Services', to: '/services'},{text: pageObject.name, active: true}]"/>
             <header class="d-flex p-4">
               
 

@@ -204,8 +204,8 @@ const router = new Router({
       name: "search",
       path: "/search",
       props: route => ({
-        filter: route.params.filter ? route.params.filter : route.query && route.query.search ? route.query.search : '',
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '' 
+        filter: route.query.search,
+        location: route.query.location 
       })
     },
 
@@ -214,8 +214,8 @@ const router = new Router({
       name: "services",
       path: "/services",
       props: route => ({
-        filter: route.params.filter ? route.params.filter : route.query.filter ? router.query.filter : '',
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : ''
+        filter: route.query.search,
+        location: route.query.location
       })
     },
     {
@@ -298,7 +298,7 @@ function getContentBySlug(slug, type){
   return item;
 
 }
-/* router.beforeEach((to, from, next) => {
+ router.beforeEach((to, from, next) => {
   if(!hasLocationQueryParameter(to) && hasLocationQueryParameter(from)){
     next({name: to.name, query: from.query});
   } else {
@@ -309,10 +309,10 @@ function getContentBySlug(slug, type){
 function hasLocationQueryParameter(route) {
   return !!route.query.location;
 }
-async function getpageObject(eventSlug){
+/* async function getpageObject(eventSlug){
   await api.fetchData('events', {slug: eventSlug}).then(results=>{
     return results.data;
   });
-} */
+}  */
 
 export default router;

@@ -1,6 +1,6 @@
 <template>
     <main class="background--white event" role="main">
-    <breadcrumb :title="event.title"/>
+    <breadcrumb :title="event.title" :items="[{text: 'Events', to: '/events'},{text: event.title, active: true}]"/>
 
 
         <article v-if="event">

@@ -7,7 +7,7 @@
       Here is everything we can find that matches your search
       {{ filter ? 'for' : '' }} <mark class="mark">{{ filter }}</mark>
       <template v-if="location && locationDetails">
-        <span v-if="contentName === 'event'">happening</span> at <router-link class="link" :to="{name: 'locations-slug', params:{slug: locationDetails.slug, pageObject: locationDetails}}">{{ locationDetails.name }}</router-link>
+        <span v-if="contentName === 'event'">happening</span> at <router-link class="link" :to="`locations/${locationDetails.slug}`">{{ locationDetails.name }}</router-link>
       </template> {{ tags && tags.length > 0 ? 'tagged:' : '.' }}
       <template v-for="tag in tags">
         <span :key="tag.id" class="badge filter-results__tag" :class="tag.taxonomy=='audience' ? 'badge-primary filter-results__tag--audience' : tag.taxonomy=='genres' ? 'badge-info filter-results__tag--genre' : 'badge-secondary'" v-html="tag.name"></span> 

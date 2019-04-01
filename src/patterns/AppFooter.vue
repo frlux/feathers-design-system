@@ -114,7 +114,7 @@ export default {
                 }
                 start = url.lastIndexOf('/');
                 if (start != -1) {
-                    url = '/page' + url.substring(start,end);
+                    url = '/pages' + url.substring(start,end);
                 }
             }
         }

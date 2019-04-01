@@ -38,12 +38,12 @@ export default {
             : {text: this.$route.params.slug, active: true};
 
         if(this.$route.meta && this.$route.meta.grandParent){
-          const grandParent = {text: this.$route.meta.grandParent[0].toUpperCase() + this.$route.meta.grandParent.substring(1).toLowerCase(), to: {name: this.$route.meta.grandParent}};
+          const grandParent = {text: this.$route.meta.grandParent[0].toUpperCase() + this.$route.meta.grandParent.substring(1).toLowerCase(), to: this.$route.meta.grandParent};
           items.push(grandParent);
         }
 
         if(this.$route.meta && this.$route.meta.parent){
-          const parent = {text: this.$route.meta.parent.text, to: {name: this.$route.meta.parent.name}};
+          const parent = {text: this.$route.meta.parent.text, to: this.$route.meta.parent.name};
           items.push(parent);
         }
 
@@ -81,7 +81,7 @@ export default {
 <docs>
   ```jsx
   <div>
-<breadcrumb route="$route" title="Page Title" :items='[{text: "Parent", to:"blog"}, {text: "Child", to:"blog-slug"}]'/>
+<breadcrumb route="$route" title="Page Title" :items='[{text: "Parent", to:"blog"}, {text: "Child", to:"blog/blog-slug"}]'/>
   </div>
   ```
 </docs>

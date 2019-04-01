@@ -17,7 +17,7 @@
 
         </a>
 
-        <router-link :to="{name: 'events'}" href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white">
+        <router-link to="/events" href="#" class="align-items-center align-self-center d-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white">
 
             <span class="menu__item__icon">
                 <svg id="icon-calendar" fill="white" height="20" viewBox="0 0 32 32">
@@ -32,7 +32,7 @@
 
         <router-link class="align-items-center align-self-center d-none d-lg-flex flex-column flex-fill flex-md-grow-0 menu__item  nav-link nav-item text--white"
                      href="#"
-                     :to="{name: 'services'}" >
+                     to="/services" >
 
             <span class="menu__item__label">Services</span>
 
@@ -55,8 +55,8 @@
             <template slot="label">{{ currentLocation }}</template>
             <template slot="items">
 
-                <a href="javascript:void(null);" role="button" @click="setLocationInQueryParameter('all')">All Libraries</a>
-                <a href="javascript:void(null);" role="button"
+                <a href="javascript:void(null);" @click="setLocationInQueryParameter('all')">All Libraries</a>
+                <a href="javascript:void(null);"
                   class="d-block dropdown__menu__item link link--undecorated mb-1 mt-1 text--underlined"
                  :key="location.id"
                  @click="setLocationInQueryParameter(`${location.slug}`)"
@@ -103,12 +103,16 @@ export default {
   methods: {
     setLocationInQueryParameter(locationSlug) {
       this.$store.commit('setUserLocation', locationSlug);
+      this.$router.push({query: {location:`${locationSlug}`}});
+      /* return {
+        query: Object.assign({}, this.$route.query, { location: `${locationSlug}` }),
+      }; */
     },
   },
-  watch:{
+/*   watch:{
     locationSlug(){
       this.setLocationInQueryParameter(this.locationSlug);
     }
-  }
+  } */
 };
 </script>

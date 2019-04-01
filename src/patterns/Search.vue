@@ -144,25 +144,27 @@ export default {
       if (this.isCatalogSearch) {
         return null;//{name:'external', params: {query: this.searchQuery}};//this.searchCatalog();
       }
-      let route = {name: "search", params:{}, query:{filter:''}};
+      let route = `/search?search=${this.searchQuery}`;
+      /* let route = {name: "search", params:{}, query:{filter:''}};
       route.params.filter = this.searchQuery ? `${this.searchQuery}` : '';
-      route.query.filter = this.searchQuery ? `${this.searchQuery}` : '';
+      route.query.filter = this.searchQuery ? `${this.searchQuery}` : ''; */
       
       if (this.isEventSearch) {
-        route.name= "events";
+        //route.name= "events";
+        route = `/events?search=${this.searchQuery}`;
       }
 
-      if (this.isEverythingSearch) {
+     /*  if (this.isEverythingSearch) {
         route.name= "search";
-      }
+      } */
 
       if (this.isServicesSearch) {
-        route.name= "services";
+        //route.name= "services";
+        route = `/services?search=${this.searchQuery}`;
       }
-      route.params.userLocation = this.locationFilter;
         
       if(this.locationFilter){
-        route.query.filter = this.locationFilter;
+        route += `&location=${this.locationFilter}`;
       }
       
   return route;

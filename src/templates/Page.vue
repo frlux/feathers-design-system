@@ -1,6 +1,6 @@
 <template>
     <main class="background--white event" role="main" v-if="page">
-      <breadcrumb v-if="page" :route="$route" :title="page.title && page.title.rendered ? page.title.rendered : page.title"/>
+      <breadcrumb v-if="page" :route="$route" :title="page.title && page.title.rendered ? page.title.rendered : page.title" :items="breadcrumb"/>
         <article v-if="page">
           <header class="col-11 col-md-10 col-lg-6 m-auto p-lg-4">
               <a v-if="type==='blog'"
@@ -109,7 +109,13 @@ export default {
         let wpAuthor =this.$store.getters.getAuthorById(this.page.author);
         return wpAuthor;
       }
-    }
+    },
+    breadcrumb(){
+      return this.type=='blog' ? [{text: 'Blog', to: '/blog'},{text: this.page.title, active: true}]
+            : this.type=='page' ? [{text: 'Information Pages', to: '/pages'},{text: this.page.title.rendered, active: true}]
+            : this.type=='post' ? [{text: 'Articles', to: '/articles'},{text: this.page.title.rendered, active: true}]
+            : [{text: 'Resources', to: '/resources'},{text: this.page.title.rendered, active: true}]
+    },
 
   },
   data(){
