@@ -77,8 +77,8 @@
                             </a>
                           </div> 
                           <!--end load more content buttons -->
-                          <content-search :filter="filter" @querycontent="filter=$event"
-                          :library="location" @filterlibrary="location = $event"
+                          <content-search :filter="q" @querycontent="q=$event"
+                          :library="library" @filterlibrary="library = $event"
                           @clearcontentfilter="clearFilter()"/>
                           <!--end sidebar content-->
                         </div>
@@ -87,34 +87,32 @@
                         <div class="col col-lg-8">
                           <filter-results v-if="active == 'channel'"
                                       :total="total"
-                                      :filter="filter"
-                                      :location="location"
+                                      :filter="q"
+                                      :location="library"
                                       :prefetch-total='apiTotal'/>
                             <filter-results v-if="active != 'channel'"
                                       :total="total"
-                                      :filter="filter"
-                                      :location="location"/>
+                                      :filter="q"
+                                      :location="library"/>
  
                             <Showcase v-if="active=='channel' && collection && collection.length != 0"
                                       :collection-items="collection"
                                       heading="Related Materials" /> 
-                            <content-stream :key="pageObject.id"
+                            <content-stream :key="`${active}-${q}-${library}`"
                                             v-if="active==='channel'"
-                                            :contents="content"
+                                            :contents="contentContainer"
                                             @totalresults="total=$event"
-                                            :filter="filter"
-                                            :location="location"
+                                            :filter="q"
+                                            :location="library"
+                                            type="mixed" />
+                            <content-stream :key="`${active}-${q}-${library}`"
+                                            v-if="active!='channel'"
+                                            :contents="channelContainer"
+                                            @totalresults="total=$event"
+                                            :filter="q"
+                                            :location="library"
                                             type="mixed" />
 
-
-                            <content-stream :key="`${active}-${filter}-${location}`"
-                                            v-if="active!='channel'"
-                                            :api-type='active'
-                                            :api-params="{services: pageObject.id}"
-                                            :type="active"
-                                            :filter="filter"
-                                            :location="location"
-                                            @totalresults="total=$event"/>
 
                             
 
@@ -154,19 +152,21 @@ export default {
   },
 
   computed: {
+    count(){
+      return this.$store.state.serviceCall;  
+    },
     callsToAction() {
-      let ctas = this.actions.filter(item => item.type && item.type === 'actions')
-      const payload = {contentType: 'callsToAction', content: ctas};
-      this.$store.commit('addMoreContent', payload); 
-      
-      return this.content.length==0? null : ctas && ctas.length > 0 ? ctas : this.$store.getters.getContentByService('callsToAction', 'any', this.location) ;
+      let ctas = this.$store.getters.getContentByService('callsToAction', this.slug, this.library);
+      //const payload = {contentType: 'callsToAction', content: ctas};
+      //this.$store.commit('addMoreContent', payload); 
+      return ctas && ctas.length > 0 ? ctas : this.$store.getters.getContentByService('callsToAction', 'any', this.library) ;
     },
     collection(){
-      const items = this.content.filter(item => item.type == 'collection-item');
+      const items = this.contentContainer.filter(item => item.type == 'collection-item');
       return items.slice(0,8);
     },
     event(){
-      let events = this.content.filter(item => item.type == 'event');
+      let events = this.contentContainer.filter(item => item.type == 'event');
       let randomEvent1 = events[Math.floor(Math.random() * events.length)];
       events = events.filter(item => item.id !== randomEvent1.id);
       
@@ -178,25 +178,18 @@ export default {
             return accumulator + currentValue;
         }, 0)
     },
+    contentContainer(){
+      return this.$store.getters.getContentByService(null, this.slug, this.library);
+    }
   },
   data(){
     return{
-      content: [],
-      count:{
-        callsToAction: 0,
-        events: 0,
-        pages: 0,
-        posts: 0,
-        articles: 0,
-        collection: 0,
-        resources: 0,
-      },
       total: 0,
       page: 1,
       active: 'channel',
-      actions:[],
-      location: null,
-      filter: null,
+      q: null,
+      library: null,
+      channelContainer: [],
     }
   },
   methods: {
@@ -204,68 +197,34 @@ export default {
       const author = this.$store.getters.getAuthorById(Number(authorId));
       return author.name;
     },
-  async getContent(){
-      this.pageObject._links['wp:post_type'].forEach(link=>{
-        let name = link.href.match(/(?:\/([a-z|-]*?)\?)/);
-        name=name[1]=='calls-to-action' ? 'callsToAction' : name[1];
-
-        this.fetchContent(name, link.href);
-      })
-    }, 
-    async fetchContent(type, link){
-      api.fetchLink(link)
-          .then(response =>{
-            this.count[type] = Number(response.headers['x-wp-total']);
-            this.addContent(response.data, type);
-          }).catch(error=> console.log(error));
-    },
-    addContent(items,type){
-      if(type == 'callsToAction' ){
-        this.actions=items;
-      } else{
-        if(this.content.length == 0){
-          this.content = items;
-        } else {
-          for (let i=0; i < items.length; i++){
-            const index = this.content.findIndex(item => item.id === items[i].id)
-            if (index === -1){ 
-              this.content.push(items[i]);
-            }
-          }
-        }
-      }
-      if(this.content.length > 0){
-          this.content.sort(function(a,b){
-              let date1 = new Date(a.date);
-              let date2 = new Date(b.date);
-              return date1.getTime() - date2.getTime() });
-        }
-    },
     clearFilter() {
-      this.filter = null;
-      this.location = null;
+      this.q = null;
+      this.library = null;
     },
   },
-  
-  mounted(){
-    //let content = api.followLinks(this.pageObject);
-    this.getContent();
-  },
-
   props: {
     pageObject: {
       type: Object,
     },
     slug: {
       type: String,
+    },
+    location: {
+      type: String
+    },
+    filter: {
+      type: String
     }
   },
   watch:{
-    filter(){
+    q(){
       this.$root.$emit('resetpage')
     },
-    location(){
+    library(){
       this.$root.$emit('resetpage')
+    },
+    active(){
+      this.$emit('channel', {service: this.slug, channel: this.active});
     }
   }
 };

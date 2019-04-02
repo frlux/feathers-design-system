@@ -43,7 +43,6 @@ export default {
     getFooterMenu(){
       let menu = this.$store.state.menu;
       menu = menu[0];
-      console.log(menu);
       return menu && menu.menu ? menu.menu.items : [];
     }
   }

@@ -15,13 +15,11 @@ Vue.use(Meta);
 
 Vue.config.productionTip = false;
 
-  new Vue({
-    el: "#app",
-    router,
-    store,
-    template: "<App/>",
-    components: { App }
-  });
-
 /* eslint-disable no-new */
-
+new Vue({
+  el: "#app",
+  router,
+  store,
+  template: "<App/>",
+  components: { App }
+});

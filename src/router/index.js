@@ -197,7 +197,7 @@ const router = new Router({
       name: 'resources',
       path: "/resources",
       beforeEnter(to, from, next){
-        if(!router.app.$store.state.resources || router.app.$store.state.pages.resources < 10){
+        if(!router.app.$store.state.resources || router.app.$store.state.resources < 10){
           router.app.$store.dispatch("getResources").then(next())
         } else{
           next();
@@ -228,9 +228,16 @@ const router = new Router({
       component: Services,
       name: "services",
       path: "/services",
+      beforeEnter(to, from, next){
+        if(!router.app.$store.state.services || router.app.$store.state.services < 10){
+          router.app.$store.dispatch("getServices").then(next())
+        } else{
+          next();
+        }
+      },
       props: route => ({
         filter: route.query.search,
-        location: route.query.location
+        location: route.query.location,
       })
     },
     {
@@ -238,10 +245,28 @@ const router = new Router({
       name:"services-slug",
       path: "/services/:slug",
       meta: {parent: {name: "services", text: "Services"}},
+      beforeEnter(to, from, next){
+        if(!router.app.$store.state.services || router.app.$store.state.services < 10){
+          router.app.$store.dispatch("getServices").then(function(results){
+            const serviceObj = results.find(service => service.slug == to.params.slug);
+            console.log(serviceObj);
+            router.app.$store.dispatch("getServiceContent", serviceObj).then(
+            next()
+          )
+            }
+          )
+        } else{
+          console.log("else");
+          console.log(to);
+            router.app.$store.dispatch("getServiceContent", to.params.slug).then(
+            next())
+        }
+      },
       props: route => ({
-        pageObject: !route.params.pageObject ? router.app.$store.getters.getServiceBySlug(route.params.slug) : route.params.pageObject,
-        location: route.params.userLocation ? route.params.userLocation : router.app.$store.state.userLocation ? router.app.$store.state.userLocation : '',
-        slug: route.params.slug
+        pageObject: router.app.$store.getters.getServiceBySlug(route.params.slug),
+        location: route.query.location,
+        filter: route.query.search,
+        slug: route.params.slug,
       }),
     },
     {
